@@ -1,0 +1,12 @@
+[project]
+name = "atlasul-aerului"
+version = "0.1.0"
+requires-python = ">=3.13"
+dependencies = [
+    "pyarrow>=25.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.7",
+]

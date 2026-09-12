@@ -3,7 +3,6 @@ export type AirQualityObservation = {
     stationId: string
     stationName: string
     samplingPointId: string
-    locality: string
     pollutant: string
     value: number
     unit: string
@@ -24,7 +23,6 @@ export const craiovaObservation: AirQualityObservation = {
     stationId: "RO0080A",
     stationName: "DJ-3",
     samplingPointId: "RO/SPO-RO0080A_00008_100",
-    locality: "Craiova",
     pollutant: "NO2",
     value: 22.63848,
     unit: "ug.m-3",
@@ -45,7 +43,6 @@ export const bucharestObservation: AirQualityObservation = {
     stationId: "RO0065A",
     stationName: "B-1",
     samplingPointId: "RO/SPO-RO0065A_00008_100",
-    locality: "București",
     pollutant: "NO2",
     value: 32.34278,
     unit: "ug.m-3",
@@ -66,7 +63,6 @@ export const bucharestPm10Observation: AirQualityObservation = {
     stationId: "RO0065A",
     stationName: "B-1",
     samplingPointId: "RO/SPO-RO0065A_00005_101",
-    locality: "București",
     pollutant: "PM10",
     value: 21.50805,
     unit: "ug.m-3",

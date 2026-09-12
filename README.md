@@ -1,7 +1,7 @@
-# Air Atlas RO
+# Atlasul Aerului
 
-Air Atlas RO (`Atlasul Aerului`) is a public web project for exploring air-quality observations
-across Romania on an interactive map.
+Atlasul Aerului is a public web project for exploring air-quality observations across Romania on
+an interactive map.
 
 ## Current checkpoint
 
@@ -9,11 +9,14 @@ across Romania on an interactive map.
 - one marker per physical monitoring station
 - separate NO2 and PM10 readings in the Bucuresti B-1 popup
 - observation interval, preliminary status and source provenance shown per reading
+- manually run Python importer that discovers EEA Parquet series and station metadata, selects the
+  latest row from one series and emits one normalized observation
 - production build and ESLint checks passing
 
-The current observations are small, real EEA fixtures used to prove the data model and map flow.
-They are not yet fetched automatically, so this version must not be presented as live coverage or
-as a complete national pollution index.
+The frontend still uses small, real EEA fixtures to prove the data model and map flow. The importer
+currently processes only the first URL returned by EEA and prints one observation to standard
+output; it does not yet generate the frontend collection. This version must not be presented as
+live coverage or as a complete national pollution index.
 
 ## Run locally
 
@@ -26,18 +29,28 @@ npm run dev
 
 Vite prints the local URL in the terminal.
 
+To run the bounded EEA importer, install Python 3.13 and
+[uv](https://docs.astral.sh/uv/), then run:
+
+```bash
+uv sync
+uv run python scripts/import_eea.py
+```
+
 ## Checks
 
 ```bash
 npm run build
 npm run lint
+uv run ruff format --check scripts/import_eea.py
+uv run ruff check scripts/import_eea.py
 ```
 
 ## Next milestone
 
-Replace the hand-written fixtures with a manually run EEA importer that discovers reported
-stations and measurements, normalizes them into the existing observation contract and produces a
-collection consumed by the unchanged grouping and map code.
+Extend the bounded importer from one discovered series to a normalized collection, write it to a
+local JSON file and replace the hand-written fixtures without changing the generic station grouping
+and map code.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,
 pollution scoring, a backend, persistence, scheduled refreshes and public hosting. Each source must

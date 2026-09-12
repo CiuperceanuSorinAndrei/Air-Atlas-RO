@@ -21,8 +21,6 @@ function App() {
       <div>
         <h1>Atlasul Aerului</h1>
         <h2>
-          {craiovaObservation.locality}
-          {' · '}
           {craiovaObservation.stationName}
         </h2>
         <p>
