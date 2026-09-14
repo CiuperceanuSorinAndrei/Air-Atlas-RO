@@ -7,16 +7,19 @@ an interactive map.
 
 - React, TypeScript, Vite and Leaflet frontend
 - one marker per physical monitoring station
-- separate NO2 and PM10 readings in the Bucuresti B-1 popup
 - observation interval, preliminary status and source provenance shown per reading
-- manually run Python importer that discovers EEA Parquet series and station metadata, selects the
-  latest row from one series and emits one normalized observation
-- production build and ESLint checks passing
+- manually run Python importer that discovers EEA Parquet series and official station metadata
+- deterministic five-series import that keeps each series' latest observation with EEA validity
+  code `1`, `2`, `3` or `4` and skips series without a valid observation
+- verification code `1` maps to `validated`; codes `2` and `3` map to `preliminary`
+- normalized observations are written to `src/data/observations.json` and consumed by the generic
+  station-grouping and map path
+- focused Python tests, Ruff, production build and ESLint checks passing
 
-The frontend still uses small, real EEA fixtures to prove the data model and map flow. The importer
-currently processes only the first URL returned by EEA and prints one observation to standard
-output; it does not yet generate the frontend collection. This version must not be presented as
-live coverage or as a complete national pollution index.
+The checked-in JSON is a small, manually refreshed EEA sample used to prove the end-to-end data
+path. Selecting the first five discovered series is a bounded technical checkpoint, not national
+coverage or a freshness guarantee. Individual readings can be stale, so this version must not be
+presented as live coverage or as a complete national pollution index.
 
 ## Run locally
 
@@ -42,15 +45,16 @@ uv run python scripts/import_eea.py
 ```bash
 npm run build
 npm run lint
-uv run ruff format --check scripts/import_eea.py
-uv run ruff check scripts/import_eea.py
+uv run pytest
+uv run ruff format --check scripts/import_eea.py tests
+uv run ruff check scripts/import_eea.py tests
 ```
 
 ## Next milestone
 
-Extend the bounded importer from one discovered series to a normalized collection, write it to a
-local JSON file and replace the hand-written fixtures without changing the generic station grouping
-and map code.
+Add explicit freshness and import-error states before describing observations as current. Then
+replace the deterministic five-series sample with a justified selection policy that increases
+useful Romanian station and pollutant coverage without implying national completeness.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,
 pollution scoring, a backend, persistence, scheduled refreshes and public hosting. Each source must

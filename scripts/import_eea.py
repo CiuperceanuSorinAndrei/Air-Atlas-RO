@@ -1,7 +1,9 @@
 import json
+import sys
 import urllib.parse
 import urllib.request
 from datetime import UTC, datetime, timedelta, timezone
+from pathlib import Path
 
 import pyarrow as pa
 import pyarrow.compute as pc
@@ -9,6 +11,10 @@ import pyarrow.parquet as pq
 
 POLLUTANT_NAMES = {1: "SO2", 5: "PM10", 7: "O3", 8: "NO2", 6001: "PM2.5"}
 EEA_TIMEZONE = timezone(timedelta(hours=1))
+
+
+class NoValidObservationsError(ValueError):
+    pass
 
 
 def to_eea_iso(value):
@@ -54,6 +60,24 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
     return urls
 
 
+def select_latest_valid_observation(table: pa.Table) -> dict:
+    validity_mask = pc.is_in(table["Validity"], value_set=pa.array([1, 2, 3, 4]))
+    valid_rows = table.filter(validity_mask)
+    if valid_rows.num_rows == 0:
+        raise NoValidObservationsError("No valid observations found.")
+    latest_end = pc.max(valid_rows["End"])
+    latest_mask = pc.equal(valid_rows["End"], latest_end)
+    latest_rows = valid_rows.filter(latest_mask)
+
+    if latest_rows.num_rows != 1:
+        raise ValueError("Latest observation timestamp is not unique.")
+
+    py_table = latest_rows.to_pylist()
+    latest_observation = py_table[0]
+
+    return latest_observation
+
+
 def fetch_latest_observation(parquet_url: str) -> dict:
     sample_request = urllib.request.Request(parquet_url, method="GET")
 
@@ -62,16 +86,7 @@ def fetch_latest_observation(parquet_url: str) -> dict:
 
     reader = pa.BufferReader(parquet_bytes)
     table = pq.read_table(reader)
-    latest_end = pc.max(table["End"])
-    latest_mask = pc.equal(table["End"], latest_end)
-    latest_rows = table.filter(latest_mask)
-
-    if latest_rows.num_rows != 1:
-        raise ValueError("Rows more than one.")
-
-    py_table = latest_rows.to_pylist()
-    latest_observation = py_table[0]
-
+    latest_observation = select_latest_valid_observation(table)
     return latest_observation
 
 
@@ -180,6 +195,14 @@ def normalize_observation(
 
     normalized_pollutant = POLLUTANT_NAMES[raw_observation["Pollutant"]]
 
+    verification_code = raw_observation["Verification"]
+    if verification_code == 1:
+        normalized_status = "validated"
+    elif verification_code == 2 or verification_code == 3:
+        normalized_status = "preliminary"
+    else:
+        raise ValueError("Invalid Verification Code.")
+
     normalized_measurement = {
         "source": "EEA",
         "samplingPointId": raw_observation["Samplingpoint"],
@@ -193,7 +216,7 @@ def normalize_observation(
         "validity": raw_observation["Validity"],
         "verification": raw_observation["Verification"],
         "sourceUrl": source_url,
-        "status": "preliminary",
+        "status": normalized_status,
         "stationId": station_metadata["stationId"],
         "stationName": station_metadata["stationName"],
         "longitude": station_metadata["longitude"],
@@ -205,16 +228,26 @@ def normalize_observation(
 
 def main() -> None:
     urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
-    parquet_url = urls[0]
-    raw_observation = fetch_latest_observation(parquet_url)
-    sampling_point_id = raw_observation["Samplingpoint"]
-    station_id = extract_station_id(sampling_point_id)
-    station_metadata = fetch_station_metadata(station_id)
-    normalized_observation = normalize_observation(
-        raw_observation, station_metadata, parquet_url
-    )
-    output = json.dumps(normalized_observation, ensure_ascii=False, indent=2)
-    print(output)
+    normalized_observations = []
+    urls = sorted(urls)
+    selected_urls = urls[:5]
+    for parquet_url in selected_urls:
+        try:
+            raw_observation = fetch_latest_observation(parquet_url)
+        except NoValidObservationsError:
+            print(f"No valid observation found for {parquet_url}", file=sys.stderr)
+            continue
+        sampling_point_id = raw_observation["Samplingpoint"]
+        station_id = extract_station_id(sampling_point_id)
+        station_metadata = fetch_station_metadata(station_id)
+        normalized_observation = normalize_observation(
+            raw_observation, station_metadata, parquet_url
+        )
+        normalized_observations.append(normalized_observation)
+    output = json.dumps(normalized_observations, ensure_ascii=False, indent=2)
+    path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(output + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

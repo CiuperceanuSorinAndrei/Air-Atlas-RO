@@ -1,5 +1,5 @@
 import './App.css'
-import { craiovaObservation, observationsByStation } from './airQualityObservation'
+import { observationsByStation } from './airQualityObservation'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 
 
@@ -20,13 +20,6 @@ function App() {
     <main id="center">
       <div>
         <h1>Atlasul Aerului</h1>
-        <h2>
-          {craiovaObservation.stationName}
-        </h2>
-        <p>
-          {craiovaObservation.pollutant}: {craiovaObservation.value}{' '}
-          {craiovaObservation.unit}
-        </p>
       </div>
       <MapContainer
         center={[45.9432, 24.9668]}
