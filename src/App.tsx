@@ -1,7 +1,6 @@
 import './App.css'
-import { observationsByStation } from './airQualityObservation'
+import { observationsByStation, importSummary } from './airQualityObservation'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })
@@ -13,13 +12,24 @@ const statusLabels = {
   modelled: 'Date modelate'
 }
 
+function isObservationStale(observedTo: string): boolean {
+  const observedToMilliseconds = new Date(observedTo).getTime()
+  const currentMilliseconds = Date.now()
+  const ageMilliseconds = currentMilliseconds - observedToMilliseconds
+  const staleThresholdMilliseconds = 24 * 60 * 60 * 1000
+  return ageMilliseconds >= staleThresholdMilliseconds
+}
 
 function App() {
-
   return (
     <main id="center">
       <div>
         <h1>Atlasul Aerului</h1>
+        <p>
+          Eșantion EEA: {importSummary.imported} din {importSummary.attempted}{' '}
+          serii importate · {importSummary.skipped} fără observații valide ·{' '}
+          {importSummary.failed} eșuate
+        </p>
       </div>
       <MapContainer
         center={[45.9432, 24.9668]}
@@ -50,6 +60,8 @@ function App() {
                     {formatDateTime(reading.observedFrom)}
                     {' – '}
                     {formatDateTime(reading.observedTo)}
+                    <br />
+                    {isObservationStale(reading.observedTo) ? 'Măsurare veche' : 'Măsurare recentă'}
                     <br />
                     Statut: {statusLabels[reading.status]}
                     <br />

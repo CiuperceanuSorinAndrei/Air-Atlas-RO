@@ -1,5 +1,6 @@
 import json
 import sys
+import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import UTC, datetime, timedelta, timezone
@@ -226,25 +227,56 @@ def normalize_observation(
     return normalized_measurement
 
 
-def main() -> None:
-    urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
+def collect_observations(selected_urls: list[str]) -> dict:
     normalized_observations = []
-    urls = sorted(urls)
-    selected_urls = urls[:5]
+    skipped_counter = 0
+    failed_counter = 0
     for parquet_url in selected_urls:
         try:
             raw_observation = fetch_latest_observation(parquet_url)
+            sampling_point_id = raw_observation["Samplingpoint"]
+            station_id = extract_station_id(sampling_point_id)
+            station_metadata = fetch_station_metadata(station_id)
+            normalized_observation = normalize_observation(
+                raw_observation, station_metadata, parquet_url
+            )
+            normalized_observations.append(normalized_observation)
         except NoValidObservationsError:
+            skipped_counter += 1
             print(f"No valid observation found for {parquet_url}", file=sys.stderr)
             continue
-        sampling_point_id = raw_observation["Samplingpoint"]
-        station_id = extract_station_id(sampling_point_id)
-        station_metadata = fetch_station_metadata(station_id)
-        normalized_observation = normalize_observation(
-            raw_observation, station_metadata, parquet_url
-        )
-        normalized_observations.append(normalized_observation)
-    output = json.dumps(normalized_observations, ensure_ascii=False, indent=2)
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            pa.ArrowException,
+            ValueError,
+            TypeError,
+            KeyError,
+        ) as error:
+            failed_counter += 1
+            print(f"Error importing {parquet_url}: {error}", file=sys.stderr)
+    assert (
+        len(selected_urls)
+        == len(normalized_observations) + skipped_counter + failed_counter
+    )
+    import_result = {
+        "observations": normalized_observations,
+        "importSummary": {
+            "attempted": len(selected_urls),
+            "skipped": skipped_counter,
+            "failed": failed_counter,
+            "imported": len(normalized_observations),
+        },
+    }
+    return import_result
+
+
+def main() -> None:
+    urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
+    urls = sorted(urls)
+    selected_urls = urls[:5]
+    import_result = collect_observations(selected_urls)
+    output = json.dumps(import_result, ensure_ascii=False, indent=2)
     path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(output + "\n", encoding="utf-8")

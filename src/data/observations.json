@@ -1,40 +1,48 @@
-[
-  {
-    "source": "EEA",
-    "samplingPointId": "RO/SPO-RO0008R_00008_100",
-    "pollutant": "NO2",
-    "value": 5.46586,
-    "unit": "ug.m-3",
-    "reportedAt": "2026-09-14T19:42:35+01:00",
-    "observedFrom": "2026-09-14T19:00:00+01:00",
-    "observedTo": "2026-09-14T20:00:00+01:00",
-    "ingestedAt": "2026-09-14T19:29:38.371927+00:00",
-    "validity": 1,
-    "verification": 3,
-    "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0008R_00008_100.parquet",
-    "status": "preliminary",
-    "stationId": "RO0008R",
-    "stationName": "EM-3",
-    "longitude": 25.134800000082908,
-    "latitude": 47.32470000007069
-  },
-  {
-    "source": "EEA",
-    "samplingPointId": "RO/SPO-RO0009R_00005_101",
-    "pollutant": "PM10",
-    "value": 22.19477,
-    "unit": "ug.m-3",
-    "reportedAt": "2026-06-26T23:22:44+01:00",
-    "observedFrom": "2026-06-26T22:00:00+01:00",
-    "observedTo": "2026-06-26T23:00:00+01:00",
-    "ingestedAt": "2026-09-14T19:29:39.574539+00:00",
-    "validity": 1,
-    "verification": 3,
-    "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0009R_00005_101.parquet",
-    "status": "preliminary",
-    "stationId": "RO0009R",
-    "stationName": "EM-2 (Semenic)",
-    "longitude": 22.055700000096977,
-    "latitude": 45.18109999988736
+{
+  "observations": [
+    {
+      "source": "EEA",
+      "samplingPointId": "RO/SPO-RO0008R_00008_100",
+      "pollutant": "NO2",
+      "value": 5.69315,
+      "unit": "ug.m-3",
+      "reportedAt": "2026-09-16T14:22:34+01:00",
+      "observedFrom": "2026-09-16T14:00:00+01:00",
+      "observedTo": "2026-09-16T15:00:00+01:00",
+      "ingestedAt": "2026-09-16T14:04:30.096261+00:00",
+      "validity": 1,
+      "verification": 3,
+      "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0008R_00008_100.parquet",
+      "status": "preliminary",
+      "stationId": "RO0008R",
+      "stationName": "EM-3",
+      "longitude": 25.134800000082908,
+      "latitude": 47.32470000007069
+    },
+    {
+      "source": "EEA",
+      "samplingPointId": "RO/SPO-RO0009R_00005_101",
+      "pollutant": "PM10",
+      "value": 22.19477,
+      "unit": "ug.m-3",
+      "reportedAt": "2026-06-26T23:22:44+01:00",
+      "observedFrom": "2026-06-26T22:00:00+01:00",
+      "observedTo": "2026-06-26T23:00:00+01:00",
+      "ingestedAt": "2026-09-16T14:04:31.245312+00:00",
+      "validity": 1,
+      "verification": 3,
+      "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0009R_00005_101.parquet",
+      "status": "preliminary",
+      "stationId": "RO0009R",
+      "stationName": "EM-2 (Semenic)",
+      "longitude": 22.055700000096977,
+      "latitude": 45.18109999988736
+    }
+  ],
+  "importSummary": {
+    "attempted": 5,
+    "skipped": 3,
+    "failed": 0,
+    "imported": 2
   }
-]
+}

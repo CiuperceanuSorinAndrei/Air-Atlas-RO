@@ -12,14 +12,22 @@ an interactive map.
 - deterministic five-series import that keeps each series' latest observation with EEA validity
   code `1`, `2`, `3` or `4` and skips series without a valid observation
 - verification code `1` maps to `validated`; codes `2` and `3` map to `preliminary`
-- normalized observations are written to `src/data/observations.json` and consumed by the generic
-  station-grouping and map path
-- focused Python tests, Ruff, production build and ESLint checks passing
+- each reading is labelled `Măsurare recentă` or `Măsurare veche` at render time from its
+  `observedTo` timestamp, using an explicit 24-hour display threshold
+- recoverable per-series download, Parquet, metadata and normalization errors do not stop the
+  remaining selected series from being attempted
+- `src/data/observations.json` contains the normalized observations plus an import summary with
+  attempted, imported, skipped and failed series counts
+- the frontend displays the import summary and consumes the observations through the unchanged
+  generic station-grouping and map path
+- nine focused Python tests, Ruff, production build and ESLint checks passing
 
 The checked-in JSON is a small, manually refreshed EEA sample used to prove the end-to-end data
 path. Selecting the first five discovered series is a bounded technical checkpoint, not national
-coverage or a freshness guarantee. Individual readings can be stale, so this version must not be
-presented as live coverage or as a complete national pollution index.
+coverage or a source-specific freshness guarantee. The 24-hour label is a transparent display rule,
+not a scientific quality classification or proof that the manually refreshed sample is live. A
+completed batch exposes per-series skips and failures; a discovery or process failure before the
+JSON is written cannot update this static report.
 
 ## Run locally
 
@@ -52,8 +60,7 @@ uv run ruff check scripts/import_eea.py tests
 
 ## Next milestone
 
-Add explicit freshness and import-error states before describing observations as current. Then
-replace the deterministic five-series sample with a justified selection policy that increases
+Replace the deterministic first-five-series sample with a justified selection policy that increases
 useful Romanian station and pollutant coverage without implying national completeness.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,

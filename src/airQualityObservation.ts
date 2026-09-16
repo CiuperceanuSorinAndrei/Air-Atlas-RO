@@ -1,4 +1,4 @@
-import rawObservation from "./data/observations.json"
+import rawDocument from "./data/observations.json"
 
 export type AirQualityObservation = {
     source: string
@@ -20,7 +20,21 @@ export type AirQualityObservation = {
     status: 'preliminary' | 'validated' | 'modelled'
 }
 
-export const observations = rawObservation as AirQualityObservation[]
+type ImportSummary = {
+    attempted: number
+    imported: number
+    skipped: number
+    failed: number
+}
+
+type ObservationDocument = {
+    observations: AirQualityObservation[]
+    importSummary: ImportSummary
+}
+
+const observationDocument = rawDocument as ObservationDocument
+export const observations = observationDocument.observations
+export const importSummary = observationDocument.importSummary
 
 export const observationsByStation = new Map<string, AirQualityObservation[]>()
 for (const observation of observations) {

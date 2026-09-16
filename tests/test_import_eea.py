@@ -1,8 +1,11 @@
+import json
 from datetime import UTC, datetime
+from pathlib import Path
 
 import pyarrow
 import pytest
 
+import scripts.import_eea as importer
 from scripts.import_eea import (
     NoValidObservationsError,
     normalize_observation,
@@ -102,3 +105,36 @@ def test_normalize_observation_rejects_unknown_verification() -> None:
         normalize_observation(
             raw_observation, {}, "https://example.com/observation.parquet"
         )
+
+
+def test_checked_in_import_summary_matches_observations() -> None:
+    path = Path("src") / "data" / "observations.json"
+    document = json.loads(path.read_text(encoding="utf-8"))
+    observations = document["observations"]
+    import_summary = document["importSummary"]
+    assert import_summary["imported"] == len(observations)
+    assert (
+        import_summary["attempted"]
+        == import_summary["imported"]
+        + import_summary["skipped"]
+        + import_summary["failed"]
+    )
+
+
+def test_collect_observations_counts_failed_and_skipped(monkeypatch) -> None:
+    def fake_fetch_latest_observation(parquet_url: str) -> dict:
+        if parquet_url == "failed":
+            raise TimeoutError("Timed out")
+        raise importer.NoValidObservationsError("No valid observations found")
+
+    monkeypatch.setattr(
+        importer, "fetch_latest_observation", fake_fetch_latest_observation
+    )
+    result = importer.collect_observations(["failed", "skipped"])
+    assert result["observations"] == []
+    assert result["importSummary"] == {
+        "attempted": 2,
+        "imported": 0,
+        "skipped": 1,
+        "failed": 1,
+    }
