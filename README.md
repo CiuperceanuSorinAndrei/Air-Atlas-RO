@@ -71,9 +71,8 @@ uv run ruff check scripts/import_eea.py tests
 
 ## Next milestone
 
-Publish the reviewed generated checkpoint. Then investigate a justified metadata fallback for the
-12 EEA station IDs absent from the current ArcGIS station layer without inventing locations or
-silently dropping provenance.
+Investigate a justified metadata fallback for the 12 EEA station IDs absent from the current ArcGIS
+station layer without inventing locations or silently dropping provenance.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,
 pollution scoring, a backend, persistence, scheduled refreshes and public hosting. Each source must
