@@ -8,9 +8,13 @@ an interactive map.
 - React, TypeScript, Vite and Leaflet frontend
 - one marker per physical monitoring station
 - observation interval, preliminary status and source provenance shown per reading
-- manually run Python importer that discovers EEA Parquet series and official station metadata
-- deterministic five-series import that keeps each series' latest observation with EEA validity
-  code `1`, `2`, `3` or `4` and skips series without a valid observation
+- manually run Python importer that discovers Romanian NO2 and PM10 EEA Parquet series
+- series grouped by physical station and pollutant, with higher sequence indices attempted first
+  and older sequences used as fallbacks when needed
+- each attempted series keeps its latest observation with EEA validity code `1`, `2`, `3` or `4`
+  and skips series without a valid observation
+- official station metadata fetched on demand and persisted in the ignored local
+  `.cache/eea_station_metadata.json` cache
 - verification code `1` maps to `validated`; codes `2` and `3` map to `preliminary`
 - each reading is labelled `Măsurare recentă` or `Măsurare veche` at render time from its
   `observedTo` timestamp, using an explicit 24-hour display threshold
@@ -20,14 +24,21 @@ an interactive map.
   attempted, imported, skipped and failed series counts
 - the frontend displays the import summary and consumes the observations through the unchanged
   generic station-grouping and map path
-- nine focused Python tests, Ruff, production build and ESLint checks passing
+- 19 focused Python tests, Ruff, production build and ESLint checks passing
+- owner visual review on 2026-09-21 confirmed that the expanded map, markers and popups render and
+  remain usable
 
-The checked-in JSON is a small, manually refreshed EEA sample used to prove the end-to-end data
-path. Selecting the first five discovered series is a bounded technical checkpoint, not national
-coverage or a source-specific freshness guarantee. The 24-hour label is a transparent display rule,
-not a scientific quality classification or proof that the manually refreshed sample is live. A
-completed batch exposes per-series skips and failures; a discovery or process failure before the
-JSON is written cannot update this static report.
+The 2026-09-21 manual run discovered 503 series across 355 station/pollutant groups. It attempted
+360 candidates and wrote 334 observations from 183 stations: 154 NO2 and 180 PM10, with no duplicate
+station/pollutant pairs. The batch classified seven candidates as having no valid observation and
+19 as failed. Eighteen failed attempts belong to 12 station IDs for which the official ArcGIS
+metadata service returned zero features; one candidate timed out. At review time, 301 observations
+were less than 24 hours old and 33 were older.
+
+This expanded result improves useful Romanian coverage but must not be described as complete or
+live national coverage. The 24-hour label is a transparent display rule, not a scientific quality
+classification. A completed batch exposes per-series skips and failures; a discovery or process
+failure before the JSON is written cannot update this static report.
 
 ## Run locally
 
@@ -40,7 +51,7 @@ npm run dev
 
 Vite prints the local URL in the terminal.
 
-To run the bounded EEA importer, install Python 3.13 and
+To run the manual EEA importer, install Python 3.13 and
 [uv](https://docs.astral.sh/uv/), then run:
 
 ```bash
@@ -60,8 +71,9 @@ uv run ruff check scripts/import_eea.py tests
 
 ## Next milestone
 
-Replace the deterministic first-five-series sample with a justified selection policy that increases
-useful Romanian station and pollutant coverage without implying national completeness.
+Publish the reviewed generated checkpoint. Then investigate a justified metadata fallback for the
+12 EEA station IDs absent from the current ArcGIS station layer without inventing locations or
+silently dropping provenance.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,
 pollution scoring, a backend, persistence, scheduled refreshes and public hosting. Each source must

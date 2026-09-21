@@ -12,6 +12,9 @@ import pyarrow.parquet as pq
 
 POLLUTANT_NAMES = {1: "SO2", 5: "PM10", 7: "O3", 8: "NO2", 6001: "PM2.5"}
 EEA_TIMEZONE = timezone(timedelta(hours=1))
+STATION_METADATA_CACHE_PATH = (
+    Path(__file__).resolve().parent.parent / ".cache" / "eea_station_metadata.json"
+)
 
 
 class NoValidObservationsError(ValueError):
@@ -136,8 +139,12 @@ def fetch_station_metadata(station_id: str) -> dict:
         raise ValueError
 
     features = metadata.get("features")
-    if not (isinstance(features, list)) or len(features) != 1:
-        raise ValueError
+    if not isinstance(features, list):
+        raise TypeError(f"Invalid metadata features for {station_id}.")
+    if len(features) != 1:
+        raise ValueError(
+            f"Expected one metadata feature for {station_id}, found {len(features)}."
+        )
 
     station_feature = features[0]
     properties = station_feature.get("properties")
@@ -227,42 +234,75 @@ def normalize_observation(
     return normalized_measurement
 
 
-def collect_observations(selected_urls: list[str]) -> dict:
+def load_station_metadata_cache(cache_path: Path) -> dict:
+    if not cache_path.exists():
+        return {}
+    cache = cache_path.read_text(encoding="utf-8")
+    cache_dict = json.loads(cache)
+    return cache_dict
+
+
+def get_station_metadata(station_id: str, cache_path: Path) -> dict:
+    cache_dict = load_station_metadata_cache(cache_path)
+    if station_id in cache_dict:
+        return cache_dict[station_id]
+    station_metadata = fetch_station_metadata(station_id)
+    cache_dict[station_id] = station_metadata
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    cache_json = json.dumps(cache_dict, ensure_ascii=False, indent=2)
+    cache_path.write_text(cache_json + "\n", encoding="utf-8")
+    return station_metadata
+
+
+def import_observation(
+    parquet_url: str, cache_path: Path = STATION_METADATA_CACHE_PATH
+) -> dict:
+    raw_observation = fetch_latest_observation(parquet_url)
+    sampling_point_id = raw_observation["Samplingpoint"]
+    station_id = extract_station_id(sampling_point_id)
+    station_metadata = get_station_metadata(station_id, cache_path)
+    normalized_observation = normalize_observation(
+        raw_observation, station_metadata, parquet_url
+    )
+    return normalized_observation
+
+
+def collect_observations(parquet_urls: list[str]) -> dict:
     normalized_observations = []
     skipped_counter = 0
     failed_counter = 0
-    for parquet_url in selected_urls:
-        try:
-            raw_observation = fetch_latest_observation(parquet_url)
-            sampling_point_id = raw_observation["Samplingpoint"]
-            station_id = extract_station_id(sampling_point_id)
-            station_metadata = fetch_station_metadata(station_id)
-            normalized_observation = normalize_observation(
-                raw_observation, station_metadata, parquet_url
-            )
-            normalized_observations.append(normalized_observation)
-        except NoValidObservationsError:
-            skipped_counter += 1
-            print(f"No valid observation found for {parquet_url}", file=sys.stderr)
-            continue
-        except (
-            urllib.error.URLError,
-            TimeoutError,
-            pa.ArrowException,
-            ValueError,
-            TypeError,
-            KeyError,
-        ) as error:
-            failed_counter += 1
-            print(f"Error importing {parquet_url}: {error}", file=sys.stderr)
+    attempted_counter = 0
+    grouped_urls = group_series_urls(parquet_urls)
+    for group in grouped_urls.values():
+        for candidate in group:
+            parquet_url = candidate[1]
+            try:
+                attempted_counter += 1
+                normalized_observation = import_observation(parquet_url)
+                normalized_observations.append(normalized_observation)
+                break
+            except NoValidObservationsError:
+                skipped_counter += 1
+                print(f"No valid observation found for {parquet_url}", file=sys.stderr)
+                continue
+            except (
+                urllib.error.URLError,
+                TimeoutError,
+                pa.ArrowException,
+                ValueError,
+                TypeError,
+                KeyError,
+            ) as error:
+                failed_counter += 1
+                print(f"Error importing {parquet_url}: {error}", file=sys.stderr)
     assert (
-        len(selected_urls)
+        attempted_counter
         == len(normalized_observations) + skipped_counter + failed_counter
     )
     import_result = {
         "observations": normalized_observations,
         "importSummary": {
-            "attempted": len(selected_urls),
+            "attempted": attempted_counter,
             "skipped": skipped_counter,
             "failed": failed_counter,
             "imported": len(normalized_observations),
@@ -271,11 +311,38 @@ def collect_observations(selected_urls: list[str]) -> dict:
     return import_result
 
 
+def parse_series_url(parquet_url: str):
+    parsed_url = urllib.parse.urlparse(parquet_url)
+    path = Path(parsed_url.path)
+    splitted = path.stem.split("_")
+    if len(splitted) != 3:
+        raise ValueError("Invalid EEA series filename.")
+    if not (splitted[0].startswith("SPO-")):
+        raise ValueError("Invalid EEA series filename.")
+    station_id = splitted[0].removeprefix("SPO-")
+    pollutant_code = splitted[1]
+    raw_sequence = splitted[2]
+    sequence = int(raw_sequence)
+    return station_id, pollutant_code, sequence
+
+
+def group_series_urls(url_list: list[str]) -> dict:
+    grouped_urls = {}
+    for url in url_list:
+        station_id, pollutant_code, sequence = parse_series_url(url)
+        key = (station_id, pollutant_code)
+        if key not in grouped_urls:
+            grouped_urls[key] = []
+        grouped_urls[key].append((sequence, url))
+    for value in grouped_urls.values():
+        value.sort(reverse=True)
+    return grouped_urls
+
+
 def main() -> None:
     urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
     urls = sorted(urls)
-    selected_urls = urls[:5]
-    import_result = collect_observations(selected_urls)
+    import_result = collect_observations(urls)
     output = json.dumps(import_result, ensure_ascii=False, indent=2)
     path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"
     path.parent.mkdir(parents=True, exist_ok=True)
