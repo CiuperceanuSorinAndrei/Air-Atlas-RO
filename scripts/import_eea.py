@@ -1,5 +1,6 @@
 import json
 import sys
+import tempfile
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -114,6 +115,119 @@ def extract_station_id(sampling_point_id: str) -> str:
     return station_id
 
 
+def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
+    init_url = "https://discomap.eea.europa.eu/App/AQViewer/init?fqn=Airquality_Dissem.b2g.Measurements"
+    init_request = urllib.request.Request(init_url, method="GET")
+
+    with urllib.request.urlopen(init_request, timeout=30) as response:
+        init_body = response.read()
+    init_payload = json.loads(init_body.decode("utf-8"))
+    if not isinstance(init_payload, dict):
+        raise TypeError(
+            f"Invalid Dataflow D init response for {station_id}: expected an object."
+        )
+    if not isinstance(init_payload.get("Request"), dict):
+        raise TypeError(
+            f"Invalid Dataflow D init response for {station_id}: missing Request object."
+        )
+    if not isinstance(init_payload["Request"].get("RequestFilter"), dict):
+        raise TypeError(
+            f"Invalid Dataflow D init response for {station_id}: missing RequestFilter object."
+        )
+    init_payload["Request"]["RequestFilter"]["AirQualityStationEoICode"] = {
+        "FieldName": "AirQualityStationEoICode",
+        "Values": [station_id],
+    }
+
+    filter_url = "https://discomap.eea.europa.eu/App/AQViewer/filter?fqn=Airquality_Dissem.b2g.Measurements"
+    filter_request_body = json.dumps(init_payload["Request"]).encode("utf-8")
+    filter_request = urllib.request.Request(
+        filter_url,
+        data=filter_request_body,
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://discomap.eea.europa.eu/App/AQViewer/index.html?fqn=Airquality_Dissem.b2g.Measurements",
+            "Origin": "https://discomap.eea.europa.eu",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(filter_request, timeout=30) as response:
+        filter_response_body = response.read()
+    filter_payload = json.loads(filter_response_body.decode("utf-8"))
+    if not isinstance(filter_payload, dict):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: expected an object."
+        )
+    if not isinstance(filter_payload.get("Preview"), dict):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing Preview object."
+        )
+    if not isinstance(filter_payload["Preview"].get("Rows"), list):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing Rows list."
+        )
+    if type(filter_payload["Preview"].get("TotalRows")) is not int:
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing TotalRows integer."
+        )
+    if len(filter_payload["Preview"]["Rows"]) != filter_payload["Preview"]["TotalRows"]:
+        raise ValueError(
+            f"Incomplete Dataflow D results for {station_id}: received "
+            f"{len(filter_payload['Preview']['Rows'])} of "
+            f"{filter_payload['Preview'].get('TotalRows')} rows."
+        )
+    if len(filter_payload["Preview"]["Rows"]) == 0:
+        raise ValueError(f"No Dataflow D rows found for {station_id}.")
+    station_variants = set()
+    for row in filter_payload["Preview"]["Rows"]:
+        if not isinstance(row, dict):
+            raise TypeError(
+                f"Invalid Dataflow D row for {station_id}: expected an object."
+            )
+        if row.get("AirQualityStationEoICode") != station_id:
+            raise ValueError(f"Dataflow D row station ID does not match {station_id}.")
+        if row.get("Country") != "Romania":
+            raise ValueError(f"Dataflow D row for {station_id} is not from Romania.")
+        if not isinstance(row.get("AQStationName"), str):
+            raise TypeError(
+                f"Invalid Dataflow D station name for {station_id}: expected text."
+            )
+        if row["AQStationName"].strip() == "":
+            raise ValueError(
+                f"Invalid Dataflow D station name for {station_id}: blank text."
+            )
+        if type(row.get("Longitude")) not in (int, float):
+            raise TypeError(
+                f"Invalid Dataflow D longitude for {station_id}: expected a number."
+            )
+        if not (-180 <= row["Longitude"] <= 180):
+            raise ValueError(
+                f"Invalid Dataflow D longitude for {station_id}: outside -180 to 180."
+            )
+        if type(row.get("Latitude")) not in (int, float):
+            raise TypeError(
+                f"Invalid Dataflow D latitude for {station_id}: expected a number."
+            )
+        if not (-90 <= row["Latitude"] <= 90):
+            raise ValueError(
+                f"Invalid Dataflow D latitude for {station_id}: outside -90 to 90."
+            )
+        station_variants.add((row["AQStationName"], row["Longitude"], row["Latitude"]))
+    if len(station_variants) != 1:
+        raise ValueError(
+            f"Conflicting Dataflow D station metadata for {station_id}: "
+            f"{len(station_variants)} variants."
+        )
+    station_name, longitude, latitude = station_variants.pop()
+    return {
+        "stationId": station_id,
+        "stationName": station_name,
+        "longitude": longitude,
+        "latitude": latitude,
+    }
+
+
 def fetch_station_metadata(station_id: str) -> dict:
     metadata_params = {
         "where": f"AirQualityStationEoICode='{station_id}'",
@@ -130,8 +244,15 @@ def fetch_station_metadata(station_id: str) -> dict:
 
     metadata_request = urllib.request.Request(metadata_url, method="GET")
 
-    with urllib.request.urlopen(metadata_request, timeout=30) as response:
-        metadata_body = response.read()
+    try:
+        with urllib.request.urlopen(metadata_request, timeout=30) as response:
+            metadata_body = response.read()
+    except urllib.error.HTTPError as error:
+        if 500 <= error.code < 600:
+            return fetch_dataflow_d_station_metadata(station_id)
+        raise
+    except (urllib.error.URLError, TimeoutError):
+        return fetch_dataflow_d_station_metadata(station_id)
 
     metadata = json.loads(metadata_body.decode("utf-8"))
 
@@ -141,7 +262,9 @@ def fetch_station_metadata(station_id: str) -> dict:
     features = metadata.get("features")
     if not isinstance(features, list):
         raise TypeError(f"Invalid metadata features for {station_id}.")
-    if len(features) != 1:
+    if len(features) == 0:
+        return fetch_dataflow_d_station_metadata(station_id)
+    elif len(features) > 1:
         raise ValueError(
             f"Expected one metadata feature for {station_id}, found {len(features)}."
         )
@@ -339,14 +462,61 @@ def group_series_urls(url_list: list[str]) -> dict:
     return grouped_urls
 
 
+def write_observation_snapshot(import_result: dict, path: Path) -> None:
+    observations = import_result["observations"]
+    if not observations:
+        raise ValueError(
+            "Import produced no observations; keeping the previous snapshot."
+        )
+
+    current_pairs = {
+        (observation["stationId"], observation["pollutant"])
+        for observation in observations
+    }
+    if len(current_pairs) != len(observations):
+        raise ValueError("Import contains duplicate station/pollutant pairs.")
+    if import_result["importSummary"]["imported"] != len(observations):
+        raise ValueError("Import summary does not match observations.")
+
+    if path.exists():
+        previous = json.loads(path.read_text(encoding="utf-8"))
+        previous_pairs = {
+            (observation["stationId"], observation["pollutant"])
+            for observation in previous["observations"]
+        }
+        missing_pairs = previous_pairs - current_pairs
+        if missing_pairs:
+            raise ValueError(
+                f"Import lost {len(missing_pairs)} existing station/pollutant pairs; "
+                "keeping the previous snapshot."
+            )
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            json.dump(import_result, temporary, ensure_ascii=False, indent=2)
+            temporary.write("\n")
+        temporary_path.replace(path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
 def main() -> None:
     urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
     urls = sorted(urls)
     import_result = collect_observations(urls)
-    output = json.dumps(import_result, ensure_ascii=False, indent=2)
     path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"
-    path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(output + "\n", encoding="utf-8")
+    write_observation_snapshot(import_result, path)
 
 
 if __name__ == "__main__":

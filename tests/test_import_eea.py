@@ -1,6 +1,8 @@
 import json
 from datetime import UTC, datetime
+from io import BytesIO
 from pathlib import Path
+from urllib.error import HTTPError, URLError
 
 import pyarrow
 import pytest
@@ -305,3 +307,300 @@ def test_get_station_metadata_fetches_and_caches_missing_station(
     assert cache_path.exists()
     persisted_cache = json.loads(cache_path.read_text(encoding="utf-8"))
     assert persisted_cache == {"RO0008R": expected_station}
+
+
+def _mock_station_metadata_endpoints(
+    monkeypatch,
+    rows: list[dict],
+    total_rows: int | None = None,
+    features: list[dict] | None = None,
+    arcgis_error: Exception | None = None,
+) -> list:
+    requests = []
+
+    def fake_urlopen(request, timeout: int):
+        assert timeout == 30
+        requests.append(request)
+        if "/MapServer/0/query" in request.full_url:
+            if arcgis_error is not None:
+                raise arcgis_error
+            payload = {"type": "FeatureCollection", "features": features or []}
+        elif "/AQViewer/init?" in request.full_url:
+            payload = {
+                "Request": {
+                    "Page": 0,
+                    "SortBy": None,
+                    "SortAscending": True,
+                    "RequestFilter": {},
+                }
+            }
+        elif "/AQViewer/filter?" in request.full_url:
+            payload = {
+                "Preview": {
+                    "TotalRows": len(rows) if total_rows is None else total_rows,
+                    "Rows": rows,
+                }
+            }
+        else:
+            raise AssertionError(f"Unexpected metadata URL: {request.full_url}")
+        return BytesIO(json.dumps(payload).encode("utf-8"))
+
+    monkeypatch.setattr(importer.urllib.request, "urlopen", fake_urlopen)
+    return requests
+
+
+def test_dataflow_fallback_returns_and_caches_one_station_from_two_pollutant_rows(
+    tmp_path, monkeypatch
+) -> None:
+    station_id = "RO0240A"
+    row = {
+        "Country": "Romania",
+        "AirQualityStationEoICode": station_id,
+        "AQStationName": "B-19",
+        "Longitude": 26.07075,
+        "Latitude": 44.42268,
+    }
+    requests = _mock_station_metadata_endpoints(
+        monkeypatch,
+        [dict(row, AirPollutant="PM10"), dict(row, AirPollutant="PM2.5")],
+    )
+    cache_path = tmp_path / "station_metadata.json"
+    expected = {
+        "stationId": station_id,
+        "stationName": "B-19",
+        "longitude": 26.07075,
+        "latitude": 44.42268,
+    }
+
+    assert importer.get_station_metadata(station_id, cache_path) == expected
+    assert json.loads(cache_path.read_text(encoding="utf-8")) == {station_id: expected}
+    assert len(requests) == 3
+    assert requests[2].get_method() == "POST"
+    body = json.loads(requests[2].data)
+    assert body["RequestFilter"]["AirQualityStationEoICode"] == {
+        "FieldName": "AirQualityStationEoICode",
+        "Values": [station_id],
+    }
+    assert importer.get_station_metadata(station_id, cache_path) == expected
+    assert len(requests) == 3
+
+
+def test_arcgis_station_remains_primary_when_it_has_one_feature(
+    tmp_path, monkeypatch
+) -> None:
+    station_id = "RO0080A"
+    feature = {
+        "properties": {"AirQualityStationEoICode": station_id, "AQStationName": "DJ-3"},
+        "geometry": {"type": "Point", "coordinates": [23.7787, 44.3268]},
+    }
+    requests = _mock_station_metadata_endpoints(monkeypatch, [], features=[feature])
+
+    result = importer.get_station_metadata(station_id, tmp_path / "cache.json")
+
+    assert result == {
+        "stationId": station_id,
+        "stationName": "DJ-3",
+        "longitude": 23.7787,
+        "latitude": 44.3268,
+    }
+    assert len(requests) == 1
+
+
+@pytest.mark.parametrize(
+    ("case", "error_type", "message"),
+    [
+        ("conflict", ValueError, "Conflicting Dataflow D station metadata"),
+        ("incomplete", ValueError, "Incomplete Dataflow D results"),
+        ("empty", ValueError, "No Dataflow D rows"),
+        ("invalid_total", TypeError, "missing TotalRows integer"),
+        ("wrong_id", ValueError, "station ID does not match"),
+        ("wrong_country", ValueError, "not from Romania"),
+        ("boolean_coordinate", TypeError, "expected a number"),
+    ],
+)
+def test_dataflow_fallback_rejects_untrusted_results_without_caching(
+    tmp_path, monkeypatch, case, error_type, message
+) -> None:
+    station_id = "RO0240A"
+    row = {
+        "Country": "Romania",
+        "AirQualityStationEoICode": station_id,
+        "AQStationName": "B-19",
+        "Longitude": 26.07075,
+        "Latitude": 44.42268,
+    }
+    rows = [row]
+    total_rows = None
+    if case == "conflict":
+        rows = [row, dict(row, Longitude=26.08)]
+    elif case == "incomplete":
+        total_rows = 2
+    elif case == "empty":
+        rows = []
+    elif case == "invalid_total":
+        total_rows = True
+    elif case == "wrong_id":
+        rows = [dict(row, AirQualityStationEoICode="RO9999A")]
+    elif case == "wrong_country":
+        rows = [dict(row, Country="Hungary")]
+    elif case == "boolean_coordinate":
+        rows = [dict(row, Longitude=True)]
+    _mock_station_metadata_endpoints(monkeypatch, rows, total_rows=total_rows)
+    cache_path = tmp_path / "cache.json"
+
+    with pytest.raises(error_type, match=message):
+        importer.get_station_metadata(station_id, cache_path)
+
+    assert not cache_path.exists()
+
+
+@pytest.mark.parametrize(
+    "arcgis_error",
+    [
+        HTTPError("https://example.com", 500, "Internal Server Error", None, None),
+        URLError("ArcGIS unavailable"),
+        TimeoutError("ArcGIS timed out"),
+    ],
+)
+def test_arcgis_temporary_failure_uses_dataflow_and_caches(
+    tmp_path, monkeypatch, arcgis_error
+) -> None:
+    station_id = "RO0240A"
+    row = {
+        "Country": "Romania",
+        "AirQualityStationEoICode": station_id,
+        "AQStationName": "B-19",
+        "Longitude": 26.07075,
+        "Latitude": 44.42268,
+    }
+    requests = _mock_station_metadata_endpoints(
+        monkeypatch, [row], arcgis_error=arcgis_error
+    )
+    cache_path = tmp_path / "cache.json"
+
+    metadata = importer.get_station_metadata(station_id, cache_path)
+
+    assert metadata["stationId"] == station_id
+    assert len(requests) == 3
+    assert json.loads(cache_path.read_text(encoding="utf-8"))[station_id] == metadata
+
+
+def test_arcgis_client_error_does_not_use_dataflow_or_write_cache(
+    tmp_path, monkeypatch
+) -> None:
+    error = HTTPError("https://example.com", 404, "Not Found", None, None)
+    requests = _mock_station_metadata_endpoints(monkeypatch, [], arcgis_error=error)
+    cache_path = tmp_path / "cache.json"
+
+    with pytest.raises(HTTPError) as caught:
+        importer.get_station_metadata("RO0240A", cache_path)
+
+    assert caught.value.code == 404
+    assert len(requests) == 1
+    assert not cache_path.exists()
+
+
+def test_both_metadata_services_failing_does_not_write_cache(
+    tmp_path, monkeypatch
+) -> None:
+    requests = []
+
+    def fail_both(request, timeout: int):
+        requests.append(request.full_url)
+        raise HTTPError(request.full_url, 503, "Unavailable", None, None)
+
+    monkeypatch.setattr(importer.urllib.request, "urlopen", fail_both)
+    cache_path = tmp_path / "cache.json"
+
+    with pytest.raises(HTTPError) as error:
+        importer.get_station_metadata("RO0240A", cache_path)
+
+    assert error.value.code == 503
+    assert len(requests) == 2
+    assert not cache_path.exists()
+
+
+def test_multiple_arcgis_features_do_not_use_dataflow_or_write_cache(
+    tmp_path, monkeypatch
+) -> None:
+    station_id = "RO0080A"
+    feature = {
+        "properties": {"AirQualityStationEoICode": station_id, "AQStationName": "DJ-3"},
+        "geometry": {"type": "Point", "coordinates": [23.7787, 44.3268]},
+    }
+    requests = _mock_station_metadata_endpoints(
+        monkeypatch, [], features=[feature, feature]
+    )
+    cache_path = tmp_path / "cache.json"
+
+    with pytest.raises(ValueError, match="Expected one metadata feature"):
+        importer.get_station_metadata(station_id, cache_path)
+
+    assert len(requests) == 1
+    assert not cache_path.exists()
+
+
+def _snapshot(*pairs: tuple[str, str]) -> dict:
+    observations = [
+        {"stationId": station_id, "pollutant": pollutant}
+        for station_id, pollutant in pairs
+    ]
+    return {
+        "observations": observations,
+        "importSummary": {
+            "attempted": len(observations),
+            "imported": len(observations),
+            "skipped": 0,
+            "failed": 0,
+        },
+    }
+
+
+@pytest.mark.parametrize(
+    "candidate",
+    [
+        _snapshot(),
+        _snapshot(("RO0080A", "NO2")),
+    ],
+)
+def test_incomplete_import_preserves_existing_snapshot(tmp_path, candidate) -> None:
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+    path.write_text(json.dumps(previous), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="keeping the previous snapshot"):
+        importer.write_observation_snapshot(candidate, path)
+
+    assert json.loads(path.read_text(encoding="utf-8")) == previous
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_complete_import_replaces_snapshot(tmp_path) -> None:
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps(_snapshot(("RO0080A", "NO2"))), encoding="utf-8")
+    candidate = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+
+    importer.write_observation_snapshot(candidate, path)
+
+    assert json.loads(path.read_text(encoding="utf-8")) == candidate
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_failed_atomic_replace_preserves_snapshot_and_removes_temp(
+    tmp_path, monkeypatch
+) -> None:
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"))
+    path.write_text(json.dumps(previous), encoding="utf-8")
+    candidate = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+
+    def fail_replace(self: Path, target: Path) -> None:
+        assert target == path
+        raise OSError("replace failed")
+
+    monkeypatch.setattr(Path, "replace", fail_replace)
+    with pytest.raises(OSError, match="replace failed"):
+        importer.write_observation_snapshot(candidate, path)
+
+    assert json.loads(path.read_text(encoding="utf-8")) == previous
+    assert list(tmp_path.glob("*.tmp")) == []
