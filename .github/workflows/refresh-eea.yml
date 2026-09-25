@@ -1,0 +1,62 @@
+name: Refresh EEA observations
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: refresh-eea
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.2.0
+        with:
+          python-version: '3.13'
+      - name: Choose metadata cache key
+        id: cache-date
+        run: echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: .cache/eea_station_metadata.json
+          key: eea-metadata-${{ steps.cache-date.outputs.date }}
+          restore-keys: eea-metadata-
+      - name: Import EEA observations
+        run: uv run --locked python scripts/import_eea.py
+      - name: Require recent observations
+        run: |
+          python3 - <<'PY'
+          import json
+          from datetime import UTC, datetime, timedelta
+          from pathlib import Path
+
+          document = json.loads(Path('src/data/observations.json').read_text())
+          now = datetime.now(UTC)
+          fresh = sum(
+              timedelta() <= now - datetime.fromisoformat(row['observedTo']) < timedelta(hours=6)
+              for row in document['observations']
+          )
+          print(f"Fresh observations: {fresh}; imported: {document['importSummary']['imported']}")
+          if fresh == 0:
+              raise SystemExit('EEA import has no observations for the six-hour map window')
+          PY
+      - name: Publish snapshot
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- src/data/observations.json
+          if git diff --cached --quiet; then
+            echo 'Snapshot unchanged'
+            exit 0
+          fi
+          git commit -m 'data: refresh EEA observations'
+          git push origin HEAD:main
