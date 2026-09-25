@@ -2,6 +2,7 @@ import './App.css'
 import { useEffect, useState } from 'react'
 import { divIcon } from 'leaflet'
 import { observations, observationsByStation, importSummary, type AirQualityObservation } from './airQualityObservation'
+import { isRecentObservation } from './observationFreshness'
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
 
 function formatDateTime(value: string) {
@@ -14,7 +15,6 @@ const statusLabels = {
   modelled: 'Date modelate'
 }
 
-const recentWindowMilliseconds = 6 * 60 * 60 * 1000
 const initialNow = Date.now()
 const lastImport = observations.reduce(
   (latest, reading) => reading.ingestedAt > latest ? reading.ingestedAt : latest,
@@ -22,7 +22,7 @@ const lastImport = observations.reduce(
 )
 const stationIcon = divIcon({ className: 'station-marker', iconSize: [12, 12], iconAnchor: [6, 6] })
 
-function StationMarkers({ stations }: { stations: AirQualityObservation[][] }) {
+function StationMarkers({ stations, now }: { stations: AirQualityObservation[][], now: number }) {
   const [zoom, setZoom] = useState(7)
   const map = useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
   const groups = new Map<string, AirQualityObservation[][]>()
@@ -74,7 +74,9 @@ function StationMarkers({ stations }: { stations: AirQualityObservation[][] }) {
             <div key={reading.samplingPointId}>
               {reading.pollutant}: {reading.value} {reading.unit}
               <br />
-              Interval: {formatDateTime(reading.observedFrom)}{' – '}{formatDateTime(reading.observedTo)}
+              Interval: {formatDateTime(reading.observedFrom)}{' – '}{formatDateTime(reading.observedTo)}{Date.parse(reading.observedTo) > now && ' (în curs)'}
+              <br />
+              Raportat: {formatDateTime(reading.reportedAt)}
               <br />
               Statut: {statusLabels[reading.status]}
               <br />
@@ -99,10 +101,7 @@ function App() {
   }, [])
 
   const recentStations = Array.from(observationsByStation.values())
-    .map((stationObservations) => stationObservations.filter((reading) => {
-      const age = now - new Date(reading.observedTo).getTime()
-      return age >= 0 && age < recentWindowMilliseconds
-    }))
+    .map((stationObservations) => stationObservations.filter((reading) => isRecentObservation(reading, now)))
     .filter((stationObservations) => stationObservations.length > 0)
 
   return (
@@ -130,7 +129,7 @@ function App() {
           attribution="&copy; OpenStreetMap contributors"
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
-        <StationMarkers stations={recentStations} />
+        <StationMarkers stations={recentStations} now={now} />
       </MapContainer>
     </main>
   )

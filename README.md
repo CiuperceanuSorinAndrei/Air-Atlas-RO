@@ -20,8 +20,9 @@ an interactive map.
   HTTP 5xx/network failure, an EEA Dataflow D fallback validates the Romanian station name and
   coordinates before caching
 - verification code `1` maps to `validated`; codes `2` and `3` map to `preliminary`
-- the map shows only observations whose `observedTo` is within the last six hours, recalculates
-  freshness every minute and explains when no recent measurements are available
+- the map shows reported observations from intervals that have started and ended within the
+  last six hours or are still in progress; it recalculates freshness every minute and explains
+  when no recent measurements are available
 - recoverable per-series download, Parquet, metadata and normalization errors do not stop the
   remaining selected series from being attempted
 - `src/data/observations.json` contains the normalized observations plus an import summary with
