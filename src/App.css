@@ -11,3 +11,23 @@
     gap: 18px;
   }
 }
+
+.station-marker {
+  box-sizing: border-box;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #6d28d9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+}
+
+.station-cluster {
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #6d28d9;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font: 600 11px/1 system-ui, sans-serif;
+}

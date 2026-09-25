@@ -18,6 +18,26 @@ from scripts.import_eea import (
 )
 
 
+def test_discovery_retries_transient_timeout(monkeypatch) -> None:
+    attempts = 0
+
+    def fake_urlopen(request, timeout):
+        nonlocal attempts
+        attempts += 1
+        assert timeout == 30
+        if attempts < 3:
+            raise TimeoutError("EEA timed out")
+        return BytesIO(b"ParquetFileUrl\nhttps://example.com/series.parquet\n")
+
+    monkeypatch.setattr(importer.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(importer.time, "sleep", lambda seconds: None)
+
+    assert importer.fetch_parquet_urls("RO", ["NO2"]) == [
+        "https://example.com/series.parquet"
+    ]
+    assert attempts == 3
+
+
 def test_selects_latest_valid_observation_when_newest_is_invalid() -> None:
     table = pyarrow.table(
         {

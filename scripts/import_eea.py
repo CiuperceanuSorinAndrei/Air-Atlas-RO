@@ -1,6 +1,7 @@
 import json
 import sys
 import tempfile
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -44,8 +45,17 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
         method="POST",
     )
 
-    with urllib.request.urlopen(request, timeout=30) as response:
-        response_body = response.read()
+    for attempt in range(3):
+        try:
+            with urllib.request.urlopen(request, timeout=30) as response:
+                response_body = response.read()
+            break
+        except (TimeoutError, urllib.error.URLError) as error:
+            if attempt == 2 or (
+                isinstance(error, urllib.error.HTTPError) and error.code < 500
+            ):
+                raise
+            time.sleep(2**attempt)
 
     response_text = response_body.decode("utf-8-sig")
     lines = response_text.splitlines()
