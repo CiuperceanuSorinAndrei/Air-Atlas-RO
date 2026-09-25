@@ -42,7 +42,10 @@ jobs:
           document = json.loads(Path('src/data/observations.json').read_text())
           now = datetime.now(UTC)
           fresh = sum(
-              timedelta() <= now - datetime.fromisoformat(row['observedTo']) < timedelta(hours=6)
+              datetime.fromisoformat(row['observedFrom']) <= now
+              and datetime.fromisoformat(row['reportedAt']) <= now
+              and datetime.fromisoformat(row['observedTo']) >= datetime.fromisoformat(row['observedFrom'])
+              and now - datetime.fromisoformat(row['observedTo']) < timedelta(hours=6)
               for row in document['observations']
           )
           print(f"Fresh observations: {fresh}; imported: {document['importSummary']['imported']}")
