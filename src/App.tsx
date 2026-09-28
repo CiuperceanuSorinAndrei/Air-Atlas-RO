@@ -112,12 +112,12 @@ function App() {
           Eșantion EEA: {importSummary.imported} din {importSummary.attempted}{' '}
           serii importate · {importSummary.skipped} fără observații valide ·{' '}
           {importSummary.failed} eșuate
+          {lastImport && ` · Ultimul import: ${formatDateTime(lastImport)}.`}
         </p>
       </div>
       {recentStations.length === 0 && (
         <p>
-          Nu sunt disponibile măsurători recente (din ultimele 6 ore).{' '}
-          {lastImport && `Ultimul import: ${formatDateTime(lastImport)}.`}
+          Nu sunt disponibile măsurători recente (din ultimele 6 ore).
         </p>
       )}
       <MapContainer
