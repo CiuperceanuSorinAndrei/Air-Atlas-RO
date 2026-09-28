@@ -15,6 +15,7 @@ from scripts.import_eea import (
     normalize_observation,
     parse_series_url,
     select_latest_valid_observation,
+    select_valid_history,
 )
 
 
@@ -51,6 +52,24 @@ def test_selects_latest_valid_observation_when_newest_is_invalid() -> None:
     )
     selected_observation = select_latest_valid_observation(table)
     assert selected_observation["Value"] == 20
+
+
+def test_valid_history_keeps_old_valid_rows() -> None:
+    table = pyarrow.table(
+        {
+            "End": [
+                datetime(2020, 1, 1, 10, 0, 0, tzinfo=UTC),
+                datetime(2026, 3, 28, 11, 0, 0, tzinfo=UTC),
+                datetime(2026, 8, 15, 9, 0, 0, tzinfo=UTC),
+            ],
+            "Validity": [1, 2, -1],
+            "Value": [20, 21, 99],
+        }
+    )
+    selected_history = select_valid_history(table)
+    assert len(selected_history) == 2
+    assert selected_history[0]["Value"] == 20
+    assert selected_history[1]["Value"] == 21
 
 
 def test_raises_when_no_valid_observations_exist() -> None:

@@ -93,6 +93,15 @@ def select_latest_valid_observation(table: pa.Table) -> dict:
     return latest_observation
 
 
+def select_valid_history(table: pa.Table) -> list[dict]:
+    validity_mask = pc.is_in(table["Validity"], value_set=pa.array([1, 2, 3, 4]))
+    valid_rows = table.filter(validity_mask)
+    if valid_rows.num_rows == 0:
+        raise NoValidObservationsError("No valid observations found.")
+    rows = valid_rows.to_pylist()
+    return rows
+
+
 def fetch_latest_observation(parquet_url: str) -> dict:
     sample_request = urllib.request.Request(parquet_url, method="GET")
 
