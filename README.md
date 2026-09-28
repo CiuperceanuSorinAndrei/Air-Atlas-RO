@@ -62,7 +62,17 @@ regression. The hourly workflow runs at minute 17 UTC and commits only
 `src/data/observations.json` when at least one observation is less than six hours old. A failed
 run leaves the remote snapshot unchanged and is visible in GitHub Actions; failure notifications
 require the repository owner to enable them in GitHub settings. GitHub schedules are best effort,
-so this is not an uptime guarantee. The workflow updates the repository, not a hosted website.
+so this is not an uptime guarantee. When GitHub Pages is configured to use GitHub Actions,
+`.github/workflows/deploy-pages.yml` rebuilds and publishes the static site after a normal push
+to `main` or a successful EEA refresh. It checks out the latest `main` because the refresh
+workflow's `GITHUB_TOKEN` commit does not trigger another workflow through `push`. The site still
+hides readings outside its six-hour window when an import or deployment is delayed.
+
+## GitHub Pages demo
+
+In repository Settings → Pages, select GitHub Actions as the build and deployment source.
+The Vite build uses `/Air-Atlas-RO/` as its base path, and the deploy workflow publishes `dist`.
+This is a static demo; it does not provide a production refresh guarantee.
 
 ## Run locally
 
@@ -95,12 +105,12 @@ uv run ruff check scripts/import_eea.py tests
 
 ## Next milestone
 
-Confirm the first scheduled EEA refresh and failure notification setup. Then expand the EEA
+Verify the Pages deployment and failure notification setup. Then expand the EEA
 importer from NO2 and PM10 to SO2, O3 and PM2.5 and review coverage, freshness and failed-series
 counts.
 
 Later milestones include additional Romanian data providers, provider-aware deduplication,
-pollution scoring, a backend, persistence, scheduled refreshes and public hosting. Each source must
+pollution scoring, a backend, persistence and a production refresh scheduler. Each source must
 pass access, licence, attribution, quality and overlap checks before publication.
 
 ## Data attribution
