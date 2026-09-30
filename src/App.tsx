@@ -1,9 +1,10 @@
 import './App.css'
 import { useEffect, useState } from 'react'
 import { divIcon } from 'leaflet'
-import { observations, observationsByStation, importSummary, type AirQualityObservation } from './airQualityObservation'
+import { acceptSnapshot, groupByStation, latestImport, type ObservationDocument, type AirQualityObservation } from './airQualityObservation'
+import { readSnapshot } from './fetchSnapshot'
 import { isRecentObservation } from './observationFreshness'
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet'
 
 function formatDateTime(value: string) {
   return new Date(value).toLocaleString('ro-RO', { timeZone: 'Europe/Bucharest' })
@@ -16,15 +17,12 @@ const statusLabels = {
 }
 
 const initialNow = Date.now()
-const lastImport = observations.reduce(
-  (latest, reading) => reading.ingestedAt > latest ? reading.ingestedAt : latest,
-  ''
-)
 const stationIcon = divIcon({ className: 'station-marker', iconSize: [12, 12], iconAnchor: [6, 6] })
 
 function StationMarkers({ stations, now }: { stations: AirQualityObservation[][], now: number }) {
-  const [zoom, setZoom] = useState(7)
-  const map = useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
+  const map = useMap()
+  const [zoom, setZoom] = useState(() => map.getZoom())
+  useMapEvents({ zoomend: () => setZoom(map.getZoom()) })
   const groups = new Map<string, AirQualityObservation[][]>()
 
   for (const readings of stations) {
@@ -44,7 +42,7 @@ function StationMarkers({ stations, now }: { stations: AirQualityObservation[][]
       const longitude = group.reduce((total, readings) => total + readings[0].longitude, 0) / group.length
       const clusterIcon = divIcon({
         className: 'station-cluster',
-        html: String(group.length),
+        html: `<span role="img" aria-label="${group.length} stații. Mărește harta.">${group.length}</span>`,
         iconSize: [24, 24],
         iconAnchor: [12, 12]
       })
@@ -53,6 +51,7 @@ function StationMarkers({ stations, now }: { stations: AirQualityObservation[][]
         <Marker
           key={group.map((readings) => readings[0].stationId).join(',')}
           position={[latitude, longitude]}
+          title={`${group.length} stații. Activați pentru a mări harta.`}
           icon={clusterIcon}
           eventHandlers={{ click: () => map.flyTo([latitude, longitude], Math.min(zoom + 2, 12)) }}
         />
@@ -65,6 +64,7 @@ function StationMarkers({ stations, now }: { stations: AirQualityObservation[][]
       <Marker
         key={station.stationId}
         position={[station.latitude, station.longitude]}
+        title={`${station.stationName} (${station.stationId})`}
         icon={stationIcon}
       >
         <Popup>
@@ -74,7 +74,7 @@ function StationMarkers({ stations, now }: { stations: AirQualityObservation[][]
             <div key={reading.samplingPointId}>
               {reading.pollutant}: {reading.value} {reading.unit}
               <br />
-              Interval: {formatDateTime(reading.observedFrom)}{' – '}{formatDateTime(reading.observedTo)}{Date.parse(reading.observedTo) > now && ' (în curs)'}
+              Interval {Date.parse(reading.observedTo) - Date.parse(reading.observedFrom) === 86_400_000 ? 'zilnic' : 'orar'}: {formatDateTime(reading.observedFrom)}{' – '}{formatDateTime(reading.observedTo)}{Date.parse(reading.observedTo) > now && ' (în curs)'}
               <br />
               Raportat: {formatDateTime(reading.reportedAt)}
               <br />
@@ -94,6 +94,41 @@ function StationMarkers({ stations, now }: { stations: AirQualityObservation[][]
 
 function App() {
   const [now, setNow] = useState(initialNow)
+  const [document, setDocument] = useState<ObservationDocument | null>(null)
+  const [dataError, setDataError] = useState(false)
+  const [tilesFailed, setTilesFailed] = useState(false)
+  useEffect(() => {
+    let stopped = false
+    let pending = false
+    let current: ObservationDocument | null = null
+    let controller: AbortController | null = null
+    async function refresh() {
+      if (pending) return
+      pending = true
+      controller = new AbortController()
+      const timeout = window.setTimeout(() => controller?.abort(), 15_000)
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}observations.json`, { cache: 'no-store', signal: controller.signal })
+        const next = acceptSnapshot(current, await readSnapshot(response))
+        if (!stopped) {
+          current = next
+          setDocument(next)
+          setDataError(false)
+        }
+      } catch {
+        if (!stopped) setDataError(true)
+      } finally {
+        window.clearTimeout(timeout)
+        pending = false
+      }
+    }
+    void refresh()
+    const timer = window.setInterval(() => { void refresh() }, 60_000)
+    return () => { stopped = true; controller?.abort(); window.clearInterval(timer) }
+  }, [])
+  const observationsByStation = groupByStation(document?.observations ?? [])
+  const importSummary = document?.importSummary
+  const lastImport = document ? new Date(latestImport(document)).toISOString() : ''
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(Date.now()), 60_000)
@@ -108,29 +143,44 @@ function App() {
     <main id="center">
       <div>
         <h1>Atlasul Aerului</h1>
-        <p>
+        {importSummary && <p>
           Eșantion EEA: {importSummary.imported} din {importSummary.attempted}{' '}
           serii importate · {importSummary.skipped} fără observații valide ·{' '}
           {importSummary.failed} eșuate
           {lastImport && ` · Ultimul import: ${formatDateTime(lastImport)}.`}
-        </p>
+        </p>}
       </div>
-      {recentStations.length === 0 && (
+      {!document && !dataError && <p role="status">Se încarcă măsurătorile…</p>}
+      {dataError && <p role="status">Actualizarea datelor nu a reușit. Se reîncearcă automat într-un minut; măsurătorile vechi expiră în continuare.</p>}
+      {tilesFailed && <p role="status">Fundalul hărții nu este disponibil. Măsurătorile rămân accesibile în lista de mai jos.</p>}
+      {document && recentStations.length === 0 && (
         <p>
           Nu sunt disponibile măsurători recente (din ultimele 6 ore).
         </p>
       )}
       <MapContainer
-        center={[45.9432, 24.9668]}
-        zoom={7}
+        bounds={[[43.5, 20], [48.4, 30.2]]}
+        boundsOptions={{ padding: [12, 12] }}
         style={{ height: '60vh', width: '100%' }}
       >
         <TileLayer
-          attribution="&copy; OpenStreetMap contributors"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+          eventHandlers={{ tileerror: () => setTilesFailed(true), tileload: () => setTilesFailed(false) }}
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
         <StationMarkers stations={recentStations} now={now} />
       </MapContainer>
+      {recentStations.length > 0 && <details className="station-list">
+        <summary>Lista măsurătorilor recente ({recentStations.length} stații)</summary>
+        <ul>{recentStations.map(readings => <li key={readings[0].stationId}>
+          <strong>{readings[0].stationName} ({readings[0].stationId})</strong>
+          <ul>{readings.map(reading => <li key={reading.samplingPointId}>{reading.pollutant}: {reading.value} {reading.unit} · {formatDateTime(reading.observedFrom)} – {formatDateTime(reading.observedTo)} · {statusLabels[reading.status]}</li>)}</ul>
+        </li>)}</ul>
+      </details>}
+      <footer>
+        <p>Date: <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/778ef9f5-6293-4846-badd-56a29c70880d">European Environment Agency</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Atlasul Aerului selectează, normalizează și filtrează datele; EEA nu aprobă această aplicație.</p>
+        <p>Acoperire parțială NO2/PM10, date preliminare și validate. Actualizarea programată poate întârzia. Fereastra de 6 ore indică recența, nu un indice de sănătate.</p>
+      </footer>
     </main>
   )
 }

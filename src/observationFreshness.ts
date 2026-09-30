@@ -8,5 +8,5 @@ export function isRecentObservation(reading: ObservationTimes, now: number): boo
   const started = Date.parse(reading.observedFrom)
   const ended = Date.parse(reading.observedTo)
   const reported = Date.parse(reading.reportedAt)
-  return started <= now && reported <= now && ended >= started && now - ended < recentWindowMilliseconds
+  return started <= now && reported <= now && (ended - started === 3_600_000 || ended - started === 86_400_000) && now - ended < recentWindowMilliseconds
 }

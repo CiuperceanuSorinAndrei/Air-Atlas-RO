@@ -1,4 +1,8 @@
+import argparse
 import json
+import math
+import os
+import re
 import sys
 import tempfile
 import time
@@ -6,6 +10,7 @@ import urllib.error
 import urllib.parse
 import urllib.request
 from datetime import UTC, datetime, timedelta, timezone
+from decimal import Decimal
 from pathlib import Path
 
 import pyarrow as pa
@@ -19,11 +24,232 @@ STATION_METADATA_CACHE_PATH = (
 )
 
 
+# Limits cover >20 years of hourly rows in one series; larger inputs fail visibly.
+MAX_PARQUET_BYTES = 32 * 1024 * 1024
+MAX_PARQUET_ROWS = 200_000
+MAX_DECODED_BYTES = 128 * 1024 * 1024
+METADATA_TTL = timedelta(days=1)
+PARQUET_HOST = "eeadmz1batchservice02.blob.core.windows.net"
+HTTP_HOSTS = {
+    PARQUET_HOST,
+    "eeadmz1-downloads-api-appservice.azurewebsites.net",
+    "air.discomap.eea.europa.eu",
+    "discomap.eea.europa.eu",
+}
+STATION_PATTERN = re.compile(r"RO[A-Z0-9]{1,6}\Z")
+SERIES_PATTERN = re.compile(r"SPO-(RO[A-Z0-9]{1,6})_([0-9]{5})_([0-9]+)\.parquet\Z")
+
+
+def validate_https_url(url: str, hosts: set[str] = HTTP_HOSTS) -> None:
+    if not isinstance(url, str) or len(url) > 2048 or any(ord(c) < 33 for c in url):
+        raise ValueError("Source URL must be text.")
+    parsed = urllib.parse.urlsplit(url)
+    if (
+        parsed.scheme != "https"
+        or parsed.hostname not in hosts
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.port not in (None, 443)
+        or parsed.fragment
+    ):
+        raise ValueError("Source URL is outside the permitted HTTPS endpoints.")
+
+
+class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        validate_https_url(newurl, {urllib.parse.urlsplit(req.full_url).hostname})
+        return super().redirect_request(req, fp, code, msg, headers, newurl)
+
+
+def read_response(request: urllib.request.Request, max_bytes: int) -> bytes:
+    validate_https_url(request.full_url)
+    deadline = time.monotonic() + 60
+    opener = urllib.request.build_opener(SafeRedirectHandler())
+    with opener.open(request, timeout=30) as response:
+        validate_https_url(
+            response.geturl(), {urllib.parse.urlsplit(request.full_url).hostname}
+        )
+        length = response.headers.get("Content-Length")
+        if length is not None and int(length) > max_bytes:
+            raise ValueError("EEA response exceeds the download limit.")
+        data = bytearray()
+        while True:
+            if time.monotonic() >= deadline:
+                raise TimeoutError("EEA download deadline exceeded.")
+            chunk = response.read1(min(64 * 1024, max_bytes + 1 - len(data)))
+            if not chunk:
+                break
+            data.extend(chunk)
+            if len(data) > max_bytes:
+                raise ValueError("EEA response exceeds the download limit.")
+        return bytes(data)
+
+
+def finite_number(value, label: str) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float, Decimal)):
+        raise TypeError(f"{label} must be a finite number.")
+    number = float(value)
+    if not math.isfinite(number):
+        raise ValueError(f"{label} must be a finite number.")
+    return number
+
+
+def require_text(value, label: str) -> str:
+    if not isinstance(value, str) or not value.strip() or len(value) > 512:
+        raise ValueError(f"{label} must be nonempty bounded text.")
+    return value
+
+
+def validate_station_metadata(metadata: dict, station_id: str) -> None:
+    if not isinstance(metadata, dict) or metadata.get("stationId") != station_id:
+        raise ValueError("Station metadata identity mismatch.")
+    if not STATION_PATTERN.fullmatch(station_id):
+        raise ValueError("Invalid station ID.")
+    require_text(metadata.get("stationName"), "Station name")
+    longitude = finite_number(metadata.get("longitude"), "Longitude")
+    latitude = finite_number(metadata.get("latitude"), "Latitude")
+    if not -180 <= longitude <= 180 or not -90 <= latitude <= 90:
+        raise ValueError("Station coordinates are outside the geographic range.")
+
+
+def parse_timestamp(value: str) -> datetime:
+    if not isinstance(value, str):
+        raise TypeError("Timestamp must be ISO text.")
+    try:
+        result = datetime.fromisoformat(value)
+    except ValueError as error:
+        raise ValueError("Invalid ISO timestamp.") from error
+    if result.utcoffset() is None:
+        raise ValueError("Timestamp must include its UTC offset.")
+    return result
+
+
+def validate_observation(row: dict) -> None:
+    if not isinstance(row, dict):
+        raise TypeError("Observation must be an object.")
+    station_id = extract_station_id(row.get("samplingPointId", ""))
+    validate_station_metadata(row, station_id)
+    station, pollutant, sequence = parse_series_url(row.get("sourceUrl", ""))
+    parts = row["samplingPointId"].split("_")
+    if station != station_id or parts[1] != pollutant or int(parts[2]) != sequence:
+        raise ValueError("Observation and source series identities differ.")
+    if row.get("source") != "EEA" or row.get("pollutant") != POLLUTANT_NAMES.get(
+        int(pollutant)
+    ):
+        raise ValueError("Observation pollutant/source mismatch.")
+    finite_number(row.get("value"), "Observation value")
+    if row.get("unit") != "ug.m-3":
+        raise ValueError("Unsupported EEA concentration unit.")
+    if type(row.get("validity")) is not int or row["validity"] not in (1, 2, 3, 4):
+        raise ValueError("Invalid EEA validity.")
+    verification = row.get("verification")
+    if type(verification) is not int or verification not in (1, 2, 3):
+        raise ValueError("Invalid EEA verification.")
+    if row.get("status") != ("validated" if verification == 1 else "preliminary"):
+        raise ValueError("Observation status does not match verification.")
+    start, end, reported, ingested = [
+        parse_timestamp(row.get(key))
+        for key in ("observedFrom", "observedTo", "reportedAt", "ingestedAt")
+    ]
+    # Existing snapshots predate aggregationType; infer only known exact intervals.
+    duration = end - start
+    inferred = "hour" if duration == timedelta(hours=1) else "day"
+    aggregation = row.get("aggregationType", inferred)
+    if aggregation not in ("hour", "day") or duration != timedelta(
+        hours=1 if aggregation == "hour" else 24
+    ):
+        raise ValueError("EEA aggregation does not match its hour/day interval.")
+    if reported > ingested or start > ingested:
+        raise ValueError("Observation was reported or started after ingestion.")
+    if row.get("sourceRecordId") is not None:
+        require_text(row["sourceRecordId"], "Source record ID")
+    if row.get("dataCapture") is not None:
+        capture = finite_number(row["dataCapture"], "Data capture")
+        if not 0 <= capture <= 100:
+            raise ValueError("Data capture is outside 0–100 percent.")
+
+
+def validate_document(document: dict) -> None:
+    if not isinstance(document, dict) or not isinstance(
+        document.get("observations"), list
+    ):
+        raise TypeError("Snapshot must contain an observations array.")
+    observations = document["observations"]
+    if not observations:
+        raise ValueError(
+            "Import produced no observations; keeping the previous snapshot."
+        )
+    summary = document.get("importSummary")
+    if not isinstance(summary, dict):
+        raise TypeError("Missing import summary.")
+    for key in ("attempted", "imported", "skipped", "failed"):
+        if type(summary.get(key)) is not int or summary[key] < 0:
+            raise ValueError("Import summary counts must be nonnegative integers.")
+    if summary["imported"] != len(observations) or summary["attempted"] != sum(
+        summary[k] for k in ("imported", "skipped", "failed")
+    ):
+        raise ValueError("Import summary does not match observations.")
+    pairs = set()
+    station_metadata = {}
+    for row in observations:
+        validate_observation(row)
+        metadata = (row["stationName"], row["latitude"], row["longitude"])
+        if (
+            row["stationId"] in station_metadata
+            and station_metadata[row["stationId"]] != metadata
+        ):
+            raise ValueError("Conflicting metadata for one physical station.")
+        station_metadata[row["stationId"]] = metadata
+        pair = row["stationId"], row["pollutant"]
+        if pair in pairs:
+            raise ValueError("Import contains duplicate station/pollutant pairs.")
+        pairs.add(pair)
+
+
+def atomic_write_json(document: dict, path: Path) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    temporary_path = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            dir=path.parent,
+            prefix=f".{path.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as temporary:
+            temporary_path = Path(temporary.name)
+            json.dump(
+                document, temporary, ensure_ascii=False, indent=2, allow_nan=False
+            )
+            temporary.write("\n")
+            temporary.flush()
+            os.fsync(temporary.fileno())
+        temporary_path.replace(path)
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
+
+
+def validate_raw_identity(row: dict, parquet_url: str) -> str:
+    station, pollutant, sequence = parse_series_url(parquet_url)
+    sampling_point = row.get("Samplingpoint")
+    if sampling_point != f"RO/SPO-{station}_{pollutant}_{sequence}":
+        raise ValueError("Raw sampling point does not match the source series.")
+    if type(row.get("Pollutant")) is not int or row["Pollutant"] != int(pollutant):
+        raise ValueError("Raw pollutant does not match the source series.")
+    return station
+
+
 class NoValidObservationsError(ValueError):
     pass
 
 
 def to_eea_iso(value):
+    if not isinstance(value, datetime):
+        raise TypeError("EEA timestamp must be a datetime.")
+    if value.tzinfo is not None:
+        raise ValueError("Expected the EEA provider's timezone-naive UTC+1 timestamp.")
     return value.replace(tzinfo=EEA_TIMEZONE).isoformat()
 
 
@@ -47,8 +273,7 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
 
     for attempt in range(3):
         try:
-            with urllib.request.urlopen(request, timeout=30) as response:
-                response_body = response.read()
+            response_body = read_response(request, 2 * 1024 * 1024)
             break
         except (TimeoutError, urllib.error.URLError) as error:
             if attempt == 2 or (
@@ -67,6 +292,7 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
     for line in lines[1:]:
         line = line.strip()
         if line:
+            parse_series_url(line)
             urls.append(line)
 
     if not urls:
@@ -103,11 +329,46 @@ def select_valid_history(table: pa.Table) -> list[dict]:
 
 
 def fetch_parquet_table(parquet_url: str) -> pa.Table:
-    sample_request = urllib.request.Request(parquet_url, method="GET")
-    with urllib.request.urlopen(sample_request, timeout=30) as response:
-        parquet_bytes = response.read()
-    reader = pa.BufferReader(parquet_bytes)
-    table = pq.read_table(reader)
+    parse_series_url(parquet_url)
+    request = urllib.request.Request(parquet_url, method="GET")
+    for attempt in range(3):
+        try:
+            parquet_bytes = read_response(request, MAX_PARQUET_BYTES)
+            break
+        except urllib.error.HTTPError as error:
+            # Retry only transient failures of this idempotent public GET.
+            # Persistent denial remains visible and cannot replace the snapshot.
+            if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
+                raise
+            retry_after = error.headers.get("Retry-After", "") if error.headers else ""
+            delay = min(int(retry_after), 30) if retry_after.isdigit() else 2**attempt
+            time.sleep(delay)
+        except (urllib.error.URLError, TimeoutError):
+            if attempt == 2:
+                raise
+            time.sleep(2**attempt)
+    parquet = pq.ParquetFile(
+        pa.BufferReader(parquet_bytes),
+        thrift_string_size_limit=1024 * 1024,
+        thrift_container_size_limit=10_000,
+    )
+    if parquet.metadata.num_columns > 32 or parquet.metadata.num_row_groups > 1024:
+        raise ValueError("Parquet schema/group limit exceeded.")
+    if parquet.metadata.num_rows > MAX_PARQUET_ROWS:
+        raise ValueError("Parquet row limit exceeded.")
+    if (
+        sum(
+            parquet.metadata.row_group(i).total_byte_size
+            for i in range(parquet.metadata.num_row_groups)
+        )
+        > MAX_DECODED_BYTES
+    ):
+        raise ValueError("Parquet decoded-size limit exceeded.")
+    if any(pa.types.is_nested(field.type) for field in parquet.schema_arrow):
+        raise ValueError("Nested Parquet fields are not supported.")
+    table = parquet.read()
+    if table.nbytes > MAX_DECODED_BYTES:
+        raise ValueError("Parquet decoded-size limit exceeded.")
     return table
 
 
@@ -124,6 +385,8 @@ def fetch_valid_history(parquet_url: str) -> list[dict]:
 
 
 def extract_station_id(sampling_point_id: str) -> str:
+    if not isinstance(sampling_point_id, str):
+        raise TypeError("Sampling point must be text.")
     sampling_point_parts = sampling_point_id.split("_")
 
     if len(sampling_point_parts) != 3:
@@ -135,20 +398,29 @@ def extract_station_id(sampling_point_id: str) -> str:
 
     station_id = station_part.removeprefix("RO/SPO-")
 
-    if not (
-        len(station_id) <= 8 and station_id.startswith("RO") and station_id.isalnum()
-    ):
+    if not STATION_PATTERN.fullmatch(station_id):
         raise ValueError("Station Id not valid.")
 
+    if (
+        not re.fullmatch(r"[0-9]{5}", sampling_point_parts[1])
+        or not sampling_point_parts[2].isdigit()
+    ):
+        raise ValueError("Invalid sampling point pollutant or sequence.")
     return station_id
 
 
 def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
     init_url = "https://discomap.eea.europa.eu/App/AQViewer/init?fqn=Airquality_Dissem.b2g.Measurements"
-    init_request = urllib.request.Request(init_url, method="GET")
+    init_request = urllib.request.Request(
+        init_url,
+        headers={
+            "User-Agent": "Mozilla/5.0",
+            "Referer": "https://discomap.eea.europa.eu/App/AQViewer/index.html?fqn=Airquality_Dissem.b2g.Measurements",
+        },
+        method="GET",
+    )
 
-    with urllib.request.urlopen(init_request, timeout=30) as response:
-        init_body = response.read()
+    init_body = read_response(init_request, 8 * 1024 * 1024)
     init_payload = json.loads(init_body.decode("utf-8"))
     if not isinstance(init_payload, dict):
         raise TypeError(
@@ -180,8 +452,7 @@ def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
         },
         method="POST",
     )
-    with urllib.request.urlopen(filter_request, timeout=30) as response:
-        filter_response_body = response.read()
+    filter_response_body = read_response(filter_request, 8 * 1024 * 1024)
     filter_payload = json.loads(filter_response_body.decode("utf-8"))
     if not isinstance(filter_payload, dict):
         raise TypeError(
@@ -273,8 +544,7 @@ def fetch_station_metadata(station_id: str) -> dict:
     metadata_request = urllib.request.Request(metadata_url, method="GET")
 
     try:
-        with urllib.request.urlopen(metadata_request, timeout=30) as response:
-            metadata_body = response.read()
+        metadata_body = read_response(metadata_request, 8 * 1024 * 1024)
     except urllib.error.HTTPError as error:
         if 500 <= error.code < 600:
             return fetch_dataflow_d_station_metadata(station_id)
@@ -284,7 +554,7 @@ def fetch_station_metadata(station_id: str) -> dict:
 
     metadata = json.loads(metadata_body.decode("utf-8"))
 
-    if metadata.get("type") != "FeatureCollection":
+    if not isinstance(metadata, dict) or metadata.get("type") != "FeatureCollection":
         raise ValueError
 
     features = metadata.get("features")
@@ -298,6 +568,8 @@ def fetch_station_metadata(station_id: str) -> dict:
         )
 
     station_feature = features[0]
+    if not isinstance(station_feature, dict):
+        raise TypeError("Invalid ArcGIS station feature.")
     properties = station_feature.get("properties")
     geometry = station_feature.get("geometry")
     if not (isinstance(properties, dict)) or not (isinstance(geometry, dict)):
@@ -323,27 +595,24 @@ def fetch_station_metadata(station_id: str) -> dict:
     longitude = coordinates[0]
     latitude = coordinates[1]
 
-    if not (isinstance(latitude, int)) and not (isinstance(latitude, float)):
-        raise TypeError
-    if not (isinstance(longitude, int)) and not (isinstance(longitude, float)):
-        raise TypeError
-
-    if longitude > 180 or longitude < -180:
-        raise ValueError
-    if latitude > 90 or latitude < -90:
-        raise ValueError
-    return {
+    result = {
         "stationId": station_id,
         "stationName": station_name,
         "longitude": longitude,
         "latitude": latitude,
     }
+    validate_station_metadata(result, station_id)
+    return result
 
 
 def normalize_observation(
     raw_observation: dict, station_metadata: dict, source_url: str
 ) -> dict:
-    normalized_value = float(raw_observation["Value"])
+    validate_raw_identity(raw_observation, source_url)
+    validate_station_metadata(
+        station_metadata, extract_station_id(raw_observation["Samplingpoint"])
+    )
+    normalized_value = finite_number(raw_observation["Value"], "Observation value")
     normalized_start = to_eea_iso(raw_observation["Start"])
     normalized_end = to_eea_iso(raw_observation["End"])
     normalized_result_time = to_eea_iso(raw_observation["ResultTime"])
@@ -364,6 +633,13 @@ def normalize_observation(
 
     normalized_measurement = {
         "source": "EEA",
+        "aggregationType": raw_observation["AggType"],
+        "sourceRecordId": raw_observation.get("FkObservationLog"),
+        "dataCapture": (
+            finite_number(raw_observation["DataCapture"], "Data capture")
+            if raw_observation.get("DataCapture") is not None
+            else None
+        ),
         "samplingPointId": raw_observation["Samplingpoint"],
         "pollutant": normalized_pollutant,
         "value": normalized_value,
@@ -382,35 +658,54 @@ def normalize_observation(
         "latitude": station_metadata["latitude"],
     }
 
+    validate_observation(normalized_measurement)
     return normalized_measurement
 
 
 def load_station_metadata_cache(cache_path: Path) -> dict:
-    if not cache_path.exists():
+    try:
+        cache = json.loads(cache_path.read_text(encoding="utf-8"))
+        if not isinstance(cache, dict):
+            raise TypeError("Cache is not an object.")
+        return cache
+    except FileNotFoundError:
         return {}
-    cache = cache_path.read_text(encoding="utf-8")
-    cache_dict = json.loads(cache)
-    return cache_dict
+    except (OSError, ValueError, TypeError) as error:
+        print(f"Metadata cache discarded: {type(error).__name__}", file=sys.stderr)
+        return {}
 
 
 def get_station_metadata(station_id: str, cache_path: Path) -> dict:
-    cache_dict = load_station_metadata_cache(cache_path)
-    if station_id in cache_dict:
-        return cache_dict[station_id]
-    station_metadata = fetch_station_metadata(station_id)
-    cache_dict[station_id] = station_metadata
-    cache_path.parent.mkdir(parents=True, exist_ok=True)
-    cache_json = json.dumps(cache_dict, ensure_ascii=False, indent=2)
-    cache_path.write_text(cache_json + "\n", encoding="utf-8")
-    return station_metadata
+    cache = load_station_metadata_cache(cache_path)
+    entry = cache.get(station_id)
+    if isinstance(entry, dict):
+        try:
+            metadata = entry["metadata"]
+            validate_station_metadata(metadata, station_id)
+            cached_at = parse_timestamp(entry["fetchedAt"])
+            if timedelta(0) <= datetime.now(UTC) - cached_at < METADATA_TTL:
+                return metadata
+        except (ValueError, TypeError, KeyError):
+            pass
+    metadata = fetch_station_metadata(station_id)
+    validate_station_metadata(metadata, station_id)
+    cache[station_id] = {
+        "metadata": metadata,
+        "fetchedAt": datetime.now(UTC).isoformat(),
+    }
+    try:
+        atomic_write_json(cache, cache_path)
+    except (OSError, ValueError, TypeError) as error:
+        # Metadata remains valid when the optional local cache cannot be written.
+        print(f"Metadata cache write skipped: {type(error).__name__}", file=sys.stderr)
+    return metadata
 
 
 def import_observation(
     parquet_url: str, cache_path: Path = STATION_METADATA_CACHE_PATH
 ) -> dict:
     raw_observation = fetch_latest_observation(parquet_url)
-    sampling_point_id = raw_observation["Samplingpoint"]
-    station_id = extract_station_id(sampling_point_id)
+    station_id = validate_raw_identity(raw_observation, parquet_url)
     station_metadata = get_station_metadata(station_id, cache_path)
     normalized_observation = normalize_observation(
         raw_observation, station_metadata, parquet_url
@@ -422,7 +717,11 @@ def import_history(
     parquet_url: str, cache_path: Path = STATION_METADATA_CACHE_PATH
 ) -> list[dict]:
     raw_history = fetch_valid_history(parquet_url)
-    station_id = extract_station_id(raw_history[0]["Samplingpoint"])
+    if not raw_history:
+        raise NoValidObservationsError("No valid observations found.")
+    station_id = validate_raw_identity(raw_history[0], parquet_url)
+    for row in raw_history:
+        validate_raw_identity(row, parquet_url)
     station_metadata = get_station_metadata(station_id, cache_path)
     return [
         normalize_observation(row, station_metadata, parquet_url) for row in raw_history
@@ -454,6 +753,7 @@ def collect_observations(parquet_urls: list[str]) -> dict:
                 ValueError,
                 TypeError,
                 KeyError,
+                OSError,
             ) as error:
                 failed_counter += 1
                 print(f"Error importing {parquet_url}: {error}", file=sys.stderr)
@@ -474,18 +774,17 @@ def collect_observations(parquet_urls: list[str]) -> dict:
 
 
 def parse_series_url(parquet_url: str):
-    parsed_url = urllib.parse.urlparse(parquet_url)
-    path = Path(parsed_url.path)
-    splitted = path.stem.split("_")
-    if len(splitted) != 3:
-        raise ValueError("Invalid EEA series filename.")
-    if not (splitted[0].startswith("SPO-")):
-        raise ValueError("Invalid EEA series filename.")
-    station_id = splitted[0].removeprefix("SPO-")
-    pollutant_code = splitted[1]
-    raw_sequence = splitted[2]
-    sequence = int(raw_sequence)
-    return station_id, pollutant_code, sequence
+    validate_https_url(parquet_url, {PARQUET_HOST})
+    parsed = urllib.parse.urlsplit(parquet_url)
+    if parsed.query:
+        raise ValueError("Parquet URL query parameters are not permitted.")
+    match = SERIES_PATTERN.fullmatch(Path(parsed.path).name)
+    if not match or parsed.path != f"/airquality-p/RO/{Path(parsed.path).name}":
+        raise ValueError("Invalid EEA series filename or path.")
+    station_id, pollutant_code, sequence = match.groups()
+    if int(pollutant_code) not in POLLUTANT_NAMES:
+        raise ValueError("Unsupported EEA pollutant.")
+    return station_id, pollutant_code, int(sequence)
 
 
 def group_series_urls(url_list: list[str]) -> dict:
@@ -502,55 +801,46 @@ def group_series_urls(url_list: list[str]) -> dict:
 
 
 def write_observation_snapshot(import_result: dict, path: Path) -> None:
-    observations = import_result["observations"]
-    if not observations:
-        raise ValueError(
-            "Import produced no observations; keeping the previous snapshot."
-        )
-
-    current_pairs = {
-        (observation["stationId"], observation["pollutant"])
-        for observation in observations
+    validate_document(import_result)
+    current = {
+        (r["stationId"], r["pollutant"]): r for r in import_result["observations"]
     }
-    if len(current_pairs) != len(observations):
-        raise ValueError("Import contains duplicate station/pollutant pairs.")
-    if import_result["importSummary"]["imported"] != len(observations):
-        raise ValueError("Import summary does not match observations.")
-
     if path.exists():
         previous = json.loads(path.read_text(encoding="utf-8"))
-        previous_pairs = {
-            (observation["stationId"], observation["pollutant"])
-            for observation in previous["observations"]
+        validate_document(previous)
+        previous_rows = {
+            (r["stationId"], r["pollutant"]): r for r in previous["observations"]
         }
-        missing_pairs = previous_pairs - current_pairs
-        if missing_pairs:
+        missing = previous_rows.keys() - current.keys()
+        if missing:
             raise ValueError(
-                f"Import lost {len(missing_pairs)} existing station/pollutant pairs; "
-                "keeping the previous snapshot."
+                f"Import lost {len(missing)} existing station/pollutant pairs; keeping the previous snapshot."
             )
-
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary_path = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            encoding="utf-8",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            suffix=".tmp",
-            delete=False,
-        ) as temporary:
-            temporary_path = Path(temporary.name)
-            json.dump(import_result, temporary, ensure_ascii=False, indent=2)
-            temporary.write("\n")
-        temporary_path.replace(path)
-    finally:
-        if temporary_path is not None:
-            temporary_path.unlink(missing_ok=True)
+        regressed = [
+            key
+            for key in previous_rows
+            if parse_timestamp(current[key]["observedTo"])
+            < parse_timestamp(previous_rows[key]["observedTo"])
+        ]
+        if regressed:
+            raise ValueError(
+                f"Import regressed {len(regressed)} observation intervals; keeping the previous snapshot. Review source corrections before resetting the baseline."
+            )
+    atomic_write_json(import_result, path)
 
 
 def main() -> None:
+    parser = argparse.ArgumentParser(description="Import or validate the EEA snapshot.")
+    parser.add_argument(
+        "--check",
+        type=Path,
+        help="Validate a snapshot without network access or mutation",
+    )
+    args = parser.parse_args()
+    if args.check is not None:
+        validate_document(json.loads(args.check.read_text(encoding="utf-8")))
+        print("Snapshot contract valid")
+        return
     urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
     urls = sorted(urls)
     import_result = collect_observations(urls)

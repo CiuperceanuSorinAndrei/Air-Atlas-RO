@@ -15,3 +15,9 @@ test('includes a reported current hour and excludes future or expired readings',
   assert.equal(isRecentObservation({ ...craiova, reportedAt: '2026-09-25T08:01:00+01:00' }, now), false)
   assert.equal(isRecentObservation(craiova, Date.parse('2026-09-25T13:00:01Z')), false)
 })
+
+test('rejects reversed, unbounded future and malformed intervals', () => {
+  assert.equal(isRecentObservation({...craiova, observedTo:'2030-01-01T00:00:00Z'}, now), false)
+  assert.equal(isRecentObservation({...craiova, observedTo:craiova.observedFrom}, now), false)
+  assert.equal(isRecentObservation({...craiova, observedFrom:'invalid'}, now), false)
+})

@@ -31,3 +31,11 @@
   color: #fff;
   font: 600 11px/1 system-ui, sans-serif;
 }
+
+.leaflet-popup-content { color: #222; text-align: left; }
+.station-list { width: 100%; text-align: left; }
+summary, a, button { cursor: pointer; }
+a { color: #6d28d9; }
+@media (prefers-color-scheme: dark) { a { color: #d8b4fe; } .leaflet-popup-content a { color: #6d28d9; } }
+:focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
+footer { font-size: .875rem; padding: 16px; }

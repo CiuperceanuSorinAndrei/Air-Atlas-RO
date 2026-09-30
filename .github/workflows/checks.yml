@@ -1,25 +1,15 @@
-name: Deploy Atlasul Aerului to Pages
-
+name: Production checks
 on:
   push:
-    branches: [main]
-  workflow_run:
-    workflows: [Refresh EEA observations]
-    types: [completed]
+  pull_request:
   workflow_dispatch:
-
 permissions:
   contents: read
-
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
-
 jobs:
-  build:
-    if: github.event_name != 'workflow_run' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+  verify:
+    name: production-checks
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     services:
       postgres:
         image: postgis/postgis:17-3.5@sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6
@@ -37,7 +27,6 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
-          ref: main
           persist-credentials: false
       - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
@@ -48,21 +37,3 @@ jobs:
           python-version: '3.13'
       - run: bash scripts/check_database.sh
       - run: bash scripts/check.sh
-      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6
-      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5
-        with:
-          path: dist
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5

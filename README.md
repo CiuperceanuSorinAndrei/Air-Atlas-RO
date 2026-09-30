@@ -1,132 +1,85 @@
 # Atlasul Aerului
 
-Atlasul Aerului is a public web project for exploring air-quality observations across Romania on
-an interactive map.
+A public map of attributable air-quality observations in Romania. The current release is a
+partial NO2/PM10 EEA demo, with a private database foundation for future history storage.
+It does not yet provide national live coverage, pollution scores, an API or a production freshness SLA.
 
-## Current checkpoint
+## Current behavior
 
-- React, TypeScript, Vite and Leaflet frontend
-- one compact marker per physical monitoring station at high zoom, with count markers for
-  nearby stations at low zoom
-- observation interval, preliminary status and source provenance shown per reading
-- Python importer that discovers Romanian NO2 and PM10 EEA Parquet series; a GitHub Actions
-  workflow refreshes the snapshot hourly after it is published on `main`
-- series grouped by physical station and pollutant, with higher sequence indices attempted first
-  and older sequences used as fallbacks when needed
-- each attempted series keeps its latest observation with EEA validity code `1`, `2`, `3` or `4`
-  and skips series without a valid observation
-- official station metadata fetched on demand and persisted in the ignored local
-  `.cache/eea_station_metadata.json` cache; when ArcGIS returns zero features or has a temporary
-  HTTP 5xx/network failure, an EEA Dataflow D fallback validates the Romanian station name and
-  coordinates before caching
-- verification code `1` maps to `validated`; codes `2` and `3` map to `preliminary`
-- the map shows reported observations from intervals that have started and ended within the
-  last six hours or are still in progress; it recalculates freshness every minute and explains
-  when no recent measurements are available
-- recoverable per-series download, Parquet, metadata and normalization errors do not stop the
-  remaining selected series from being attempted
-- `src/data/observations.json` contains the normalized observations plus an import summary with
-  attempted, imported, skipped and failed series counts
-- the frontend displays the import summary, groups readings by station and clusters nearby
-  stations at low zoom
-- 39 Python tests, Ruff, production build and ESLint checks passing
-- owner visual review on 2026-09-21 confirmed the earlier map and popups; the new marker
-  design has not yet had a visual review
+- The Python importer discovers EEA Parquet series, groups station/pollutant sequences and tries
+  newer sequences first. It selects the latest row with validity 1–4; verification 1 is validated,
+  2–3 preliminary. Hourly and daily intervals remain distinct.
+- Every normalized row binds its sampling point, pollutant and station to the official HTTPS
+  series URL. Values/coordinates must be finite, units are `ug.m-3`, timestamps use explicit offsets,
+  and metadata for one physical station must agree. EEA's timezone-naive timestamps mean fixed
+  UTC+1, not Romanian local time. Display uses Europe/Bucharest.
+- Official ArcGIS metadata has an exact-ID Dataflow D fallback for no features or transient errors.
+  Conflicting records fail visibly. Validated metadata expires after 24 hours; optional cache I/O
+  failures do not discard a valid observation. Cache writes are atomic.
+- Downloads allow only specific official HTTPS hosts and same-host redirects. Compressed Parquet
+  is capped at 32 MiB, 200,000 rows, 128 MiB declared/decoded size and a bounded primitive schema.
+- Publication rejects empty batches, inconsistent counts, duplicate station/pollutant pairs,
+  missing previously published pairs and older observation intervals. Same-interval value
+  corrections are allowed. Atomic, strict JSON writes preserve the old snapshot on failure.
+- The map groups physical stations, clusters nearby markers and shows only reported intervals
+  that have started, last at most one day and end less than six hours ago. In-progress intervals
+  are labelled. This window describes freshness, not scientific quality or a health index.
+- The frontend validates bounded JSON at runtime, polls the public snapshot once a minute and
+  retains the last valid document after errors. Readings continue to expire. Keyboard-accessible
+  markers and a text list provide access when map tiles fail. Source/licence links are visible.
+- `fetch_valid_history` and `import_history` are tested manual helpers. Scheduled collection still
+  selects latest observations; history persistence and ETag synchronization are not implemented.
+- Six empty private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
+  no public policies are installed and application roles have no schema/table/sequence grants.
+  Cross-source foreign keys, finite values, positive intervals and public-rights gates are tested.
+  The frontend and importer do not connect to this database.
 
-The 2026-09-25 manual run discovered 503 series across 355 station/pollutant groups. It attempted
-357 candidates and wrote 350 observations from 196 stations. Seven candidates had no valid reading;
-none failed. At import review, 126 observations from 67 stations were within the six-hour map
-window. `RO0150A` was imported after ArcGIS returned one station location; its latest valid NO2
-reading was from 2025-11-15, so it does not appear on the current map. The Dataflow D fallback
-still rejects its conflicting records when ArcGIS is unavailable.
+## Development and checks
 
-This result improves useful Romanian coverage but must not be described as complete or live national
-coverage. The six-hour map window is a provisional freshness rule, not a scientific quality classification.
-A scheduled run can be delayed or fail, so the site can temporarily have no recent measurements.
-The page shows the time of its last import when this happens. A completed batch exposes per-series
-skips and failures; a discovery or process failure before the JSON is written cannot update this
-static report.
-
-The Dataflow D fallback is used after an ArcGIS response with zero features, HTTP 5xx or a network
-timeout/failure. It requires an exact Romanian station ID, nonempty name, valid coordinates, a
-complete result page and one unique station name/coordinate combination. Malformed data and
-non-transient HTTP errors remain visible. The AQViewer filter endpoint is an internal web-application
-interface and may change. The discovery request retries temporary network or server failures twice.
-A full live importer run succeeded on 2026-09-25.
-
-Before replacing the JSON, the importer rejects an empty batch, duplicate station/pollutant pairs,
-a count mismatch or a batch missing any previously published pair. The accepted JSON is written to
-a temporary file and atomically replaces the old snapshot. A real station's retirement therefore
-requires a reviewed change to the publication baseline. These guards prevent an accidental coverage
-regression. The hourly workflow runs at minute 17 UTC and commits only
-`src/data/observations.json` when at least one observation is less than six hours old. A failed
-run leaves the remote snapshot unchanged and is visible in GitHub Actions; failure notifications
-require the repository owner to enable them in GitHub settings. GitHub schedules are best effort,
-so this is not an uptime guarantee. When GitHub Pages is configured to use GitHub Actions,
-`.github/workflows/deploy-pages.yml` rebuilds and publishes the static site after a normal push
-to `main` or a successful EEA refresh. It checks out the latest `main` because the refresh
-workflow's `GITHUB_TOKEN` commit does not trigger another workflow through `push`. The site still
-hides readings outside its six-hour window when an import or deployment is delayed.
-
-## GitHub Pages demo
-
-In repository Settings → Pages, select GitHub Actions as the build and deployment source.
-The Vite build uses `/Air-Atlas-RO/` as its base path, and the deploy workflow publishes `dist`.
-This is a static demo; it does not provide a production refresh guarantee.
-
-## Run locally
-
-Requirements: a current Node.js release and npm.
+Use Node.js 24+ and Python 3.13 with [uv](https://docs.astral.sh/uv/).
 
 ```bash
-npm install
+npm ci --ignore-scripts
 npm run dev
+uv sync --locked
+uv run --locked python scripts/import_eea.py
 ```
 
-Vite prints the local URL in the terminal.
-
-To run the manual EEA importer, install Python 3.13 and
-[uv](https://docs.astral.sh/uv/), then run:
+Run the exact code/data/build gate used by CI:
 
 ```bash
-uv sync
-uv run python scripts/import_eea.py
+bash scripts/check.sh
 ```
 
-## Checks
+It checks locked dependencies, Ruff lint/format, Python tests, the snapshot contract, ESLint,
+frontend tests, npm advisories and the production build. Database CI additionally builds a fresh
+PostGIS database from every migration and executes rollback-only fixtures; see
+[scripts/check_database.sh](scripts/check_database.sh). Its disposable-database commands must
+never be run against the live project.
 
-```bash
-npm run build
-npm run lint
-uv run pytest
-uv run ruff format --check scripts/import_eea.py tests
-uv run ruff check scripts/import_eea.py tests
-```
+The Vite base is `/Air-Atlas-RO/`. Production emits `dist/observations.json` separately from JS;
+`npm run preview` serves the actual production output. See [operations](docs/operations.md) for
+publication, failures and rollback, [roadmap](docs/roadmap.md) for remaining milestones and
+[hardening review](docs/production-review-2026-09-30.md) for evidence and limits.
 
-## Next milestone
+## Automation and hosting
 
-Verify the Pages deployment and failure notification setup. Then expand the EEA
-importer from NO2 and PM10 to SO2, O3 and PM2.5 and review coverage, freshness and failed-series
-counts.
+CI runs on pushes and pull requests. Pages and refresh run the same gates, including SQL fixtures.
+Actions and the PostGIS image are pinned to immutable revisions; Dependabot proposes updates.
+Collection/build jobs have read access. Separate publication/deployment jobs receive the minimum
+write permissions needed. Refresh stages only the snapshot and refuses a racing non-fast-forward push.
 
-Later milestones include additional Romanian data providers, provider-aware deduplication,
-pollution scoring, a backend, persistence and a production refresh scheduler. Each source must
-pass access, licence, attribution, quality and overlap checks before publication.
+GitHub cron requests a run at minute 17 each hour, but actual execution can be delayed. Successful
+refreshes trigger Pages through `workflow_run` because `GITHUB_TOKEN` pushes do not trigger normal
+push workflows. Pages checks one checkout and deploys that checked artifact. The site and tile
+provider have no availability guarantee. Failure-email delivery still requires independent evidence.
 
-## Data attribution
+## Data attribution and licence
 
-The current example observations originate from the
-[European Environment Agency Air Quality Download Service](https://www.eea.europa.eu/en/datahub/datahubitem-view/778ef9f5-6293-4846-badd-56a29c70880d).
-EEA is identified as the source in the application. Fallback station metadata comes from the
-[EEA Dataflow D catalogue](https://sdi.eea.europa.eu/catalogue/datahub/api/records/83eb503b-d132-4bf4-8f63-df56b7a80370/formatters/xsl-view?approved=true&language=eng&output=pdf),
-which identifies CC BY 4.0 terms. Source data remains subject to its own terms; the repository's
-MIT licence applies only to the project code.
-
-Map tiles and map data are provided by
-[OpenStreetMap contributors](https://www.openstreetmap.org/copyright) and are attributed in the
-map interface.
-
-## Licence
-
-Project code is available under the [MIT License](LICENSE). Third-party data, map tiles, libraries
-and trademarks retain their respective terms.
+Observations: [European Environment Agency Air Quality Download Service](https://www.eea.europa.eu/en/datahub/datahubitem-view/778ef9f5-6293-4846-badd-56a29c70880d).
+Station metadata: [EEA Dataflow D](https://sdi.eea.europa.eu/catalogue/datahub/api/records/83eb503b-d132-4bf4-8f63-df56b7a80370/formatters/xsl-view?approved=true&language=eng&output=pdf).
+EEA data is attributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); Atlasul Aerului
+selects, normalizes and filters it. No EEA endorsement is implied. Map data and tiles:
+[OpenStreetMap contributors](https://www.openstreetmap.org/copyright), subject to their
+[tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
+The [MIT licence](LICENSE) covers project code, not third-party data or trademarks.
