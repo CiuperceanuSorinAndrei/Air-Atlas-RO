@@ -72,6 +72,53 @@ def test_valid_history_keeps_old_valid_rows() -> None:
     assert selected_history[1]["Value"] == 21
 
 
+def test_import_history_normalizes_rows_with_one_metadata_lookup(
+    monkeypatch, tmp_path: Path
+) -> None:
+    raw_row = {
+        "Value": 20,
+        "Start": datetime(2020, 1, 1, 9, 0, tzinfo=UTC),
+        "End": datetime(2020, 1, 1, 10, 0, tzinfo=UTC),
+        "ResultTime": datetime(2020, 1, 1, 10, 0, tzinfo=UTC),
+        "Pollutant": 8,
+        "Samplingpoint": "RO/SPO-RO0080A_00008_100",
+        "Unit": "ug.m-3",
+        "Validity": 1,
+        "Verification": 1,
+    }
+    newer_row = {
+        **raw_row,
+        "Value": 21,
+        "Start": datetime(2026, 3, 28, 10, 0, tzinfo=UTC),
+        "End": datetime(2026, 3, 28, 11, 0, tzinfo=UTC),
+        "ResultTime": datetime(2026, 3, 28, 11, 0, tzinfo=UTC),
+        "Verification": 2,
+    }
+    monkeypatch.setattr(
+        importer, "fetch_valid_history", lambda url: [raw_row, newer_row]
+    )
+    metadata_calls = []
+
+    def fake_metadata(station_id, cache_path):
+        metadata_calls.append(station_id)
+        return {
+            "stationId": station_id,
+            "stationName": "DJ-3",
+            "longitude": 23.7787,
+            "latitude": 44.3268,
+        }
+
+    monkeypatch.setattr(importer, "get_station_metadata", fake_metadata)
+    history = importer.import_history(
+        "https://example.com/series.parquet", tmp_path / "cache.json"
+    )
+
+    assert [row["value"] for row in history] == [20.0, 21.0]
+    assert [row["status"] for row in history] == ["validated", "preliminary"]
+    assert [row["stationId"] for row in history] == ["RO0080A", "RO0080A"]
+    assert metadata_calls == ["RO0080A"]
+
+
 def test_raises_when_no_valid_observations_exist() -> None:
     table = pyarrow.table(
         {

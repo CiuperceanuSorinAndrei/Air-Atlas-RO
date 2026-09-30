@@ -102,16 +102,25 @@ def select_valid_history(table: pa.Table) -> list[dict]:
     return rows
 
 
-def fetch_latest_observation(parquet_url: str) -> dict:
+def fetch_parquet_table(parquet_url: str) -> pa.Table:
     sample_request = urllib.request.Request(parquet_url, method="GET")
-
     with urllib.request.urlopen(sample_request, timeout=30) as response:
         parquet_bytes = response.read()
-
     reader = pa.BufferReader(parquet_bytes)
     table = pq.read_table(reader)
+    return table
+
+
+def fetch_latest_observation(parquet_url: str) -> dict:
+    table = fetch_parquet_table(parquet_url)
     latest_observation = select_latest_valid_observation(table)
     return latest_observation
+
+
+def fetch_valid_history(parquet_url: str) -> list[dict]:
+    table = fetch_parquet_table(parquet_url)
+    valid_history = select_valid_history(table)
+    return valid_history
 
 
 def extract_station_id(sampling_point_id: str) -> str:
@@ -407,6 +416,17 @@ def import_observation(
         raw_observation, station_metadata, parquet_url
     )
     return normalized_observation
+
+
+def import_history(
+    parquet_url: str, cache_path: Path = STATION_METADATA_CACHE_PATH
+) -> list[dict]:
+    raw_history = fetch_valid_history(parquet_url)
+    station_id = extract_station_id(raw_history[0]["Samplingpoint"])
+    station_metadata = get_station_metadata(station_id, cache_path)
+    return [
+        normalize_observation(row, station_metadata, parquet_url) for row in raw_history
+    ]
 
 
 def collect_observations(parquet_urls: list[str]) -> dict:
