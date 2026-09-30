@@ -79,8 +79,8 @@ mode. This does not replace the owner's product review or constitute a complete 
 The final live import succeeded: 359 attempted, 351 imported, 8 without valid observations,
 0 failed; 197 physical stations preserved. Latest ingestion: `2026-09-30T20:13:30.225306Z`.
 At review 306 readings were within the six-hour window. The new snapshot preserves hour/day
-aggregation, source record IDs and data capture. GitHub code/SQL checks, protected-main publication
-and final Pages evidence are recorded below after completion; pending entries are not successes.
+aggregation, source record IDs and data capture. The independent GitHub refresh repeated the
+351-observation result with zero failed series; publication evidence follows below.
 
 ## Remaining boundaries
 
@@ -92,9 +92,28 @@ and final Pages evidence are recorded below after completion; pending entries ar
 - Database writer, durable ETag sync, complete history, API/auth flows, scoring, new providers,
   satellite/model integration and backup restore drills after persistence are not implemented.
   Their requirements are explicit gates in the roadmap, not claims of completed functionality.
-- Changed UI is independently reviewed above; a 390 × 844 responsive viewport was independently checked. The latest public deployment must
-  also be checked before closing publication. The hourly snapshot can legitimately contain daily PM10.
+- Changed UI and a 390 × 844 responsive viewport were independently checked. The latest public
+  deployment was also verified. This remains assisted review, not owner acceptance or a complete
+  accessibility certification. The hourly snapshot can legitimately contain daily PM10.
 
 ## Publication evidence
 
-Pending final verification. Do not claim a new release or protected-main status from this paragraph.
+- Source repair commit [`923c76d`](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/commit/923c76da1ebc0d7a806197d63eb650936bd2dbca) has the identical tested local tree.
+- [Review CI 36771567868](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/runs/36771567868) and [main CI 36771763270](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/runs/36771763270) succeed, including a fresh PostGIS rebuild and rollback-only SQL fixtures.
+- Main requires `production-checks` from GitHub Actions (app 15368), a current base, linear history
+  and resolved conversations, including for admins. Force push and deletion are disabled.
+- [Protected refresh 36771899595](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/runs/36771899595) succeeds in both collection and publication jobs. It publishes only the validated JSON as
+  [`e3becbd`](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/commit/e3becbd92fa4e7a19ccbd79124f8bc24602e5236), with an actual successful GitHub Actions check on that exact SHA.
+- [Automatic Pages 36773204129](https://github.com/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/runs/36773204129) succeeds for that data commit. Public HTML, JS/CSS and JSON return HTTP 200; public JSON
+  is byte-identical to the checked repository snapshot, with ingestion `2026-09-30T20:30:33.866480+00:00`.
+- Public Chrome review without profile extensions shows zero console messages and no CSP issue.
+  Profile-only MetaMask content-script warnings and an eval-block notice disappear in this session;
+  CSP remains restrictive. No unsafe-eval exception was introduced.
+- The original local main is fast-forward synchronized. Repository README, roadmap and operations
+  describe the implemented phase and subsequent gates. Vault controls are updated locally; unrelated
+  vault work is preserved and not included in a repository commit.
+
+All discovered defects in the implemented checkpoint are closed with the evidence above. The
+remaining boundaries are future capabilities or explicitly documented operational limitations,
+not unreported implemented-feature defects. Dependency-update proposals remain separate reviewed
+changes; this checkpoint does not automatically adopt new major versions.
