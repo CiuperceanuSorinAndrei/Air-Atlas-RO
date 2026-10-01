@@ -39,8 +39,7 @@ Do not reset/force-push main. For a bad data snapshot, restore the last accepted
 commit, documenting why intentionally older data is being used. Deploy that checked commit and
 verify the public JSON/assets. Old data may correctly disappear from the recent map.
 
-Database migrations are applied separately from code deployment. Current tables are empty and
-private. The repository migrations reproduce the foundation; CI tests rebuild it from zero.
+Database migrations are applied separately from code deployment. Tables are private; the October 1 EEA pilot stores history. The repository migrations reproduce the foundation; CI tests rebuild it from zero.
 Before storing real history, establish backup retention and restore drills, then use additive,
 reviewed migrations. Never point the disposable CI database script at production. Any future
 writer must update rows and its ETag/cursor in one transaction and leave both unchanged on failure.
@@ -58,7 +57,7 @@ Review each dependency/action/image update through the same checks; pinned versi
 substitute for security updates. Review the Supabase database patch level after provider upgrades.
 
 
-## Prepared manual history synchronization
+## Manual history synchronization
 
 `scripts/sync_eea_history.py` uses direct PostgreSQL transactions rather than separate REST writes.
 The `atlas_ingestor` migration creates a NOLOGIN role with RLS and grants only EEA source reads,
@@ -92,3 +91,25 @@ Integration tests run only against a disposable local `atlas_audit` PostgreSQL d
 `ATLAS_TEST_DATABASE_DSN`. CI creates that database and exports its DSN before the Python gate.
 Without that variable, database integration tests are explicitly skipped; HTTP/unit tests still run.
 Never set this test variable to a live database.
+
+### Activated pilot and private local configuration
+
+The October 1 pilot uses the Session pooler (port 5432), with a dedicated `atlas_ingestor` login,
+connection limit 2, no administrator privileges and no RLS bypass. Its CA and credentials are in
+`~/Library/Application Support/Atlasul Aerului/`, outside Git; the directory is mode 0700 and
+credential/backup files are mode 0600. Never paste the credential JSON or DSN into an issue/log.
+The deployment migration deliberately retains NOLOGIN until separately provisioned.
+
+On this configured machine, run the selected pilot using the private configuration:
+
+```bash
+.venv/bin/python -c 'import json, os; from pathlib import Path; from psycopg.conninfo import make_conninfo; config = json.loads((Path.home() / "Library/Application Support/Atlasul Aerului/ingestion.json").read_text()); os.environ["ATLAS_INGESTION_DSN"] = make_conninfo(**config); os.execv(".venv/bin/python", [".venv/bin/python", "scripts/sync_eea_history.py", "--stream-id", "3"])'
+```
+
+Verified live result: 2,080 accepted rows, followed by 304 preserving IDs and ingestion times.
+The private populated JSON backup restored all six table payloads exactly into local PostgreSQL
+after normalizing the session time zone to UTC, including decimal values and PostGIS coordinates;
+identity sequences were advanced after restore. A fresh schema comes from repository migrations.
+The two other private tables were independently verified empty when this pilot backup was taken.
+This local backup/drill is not automated off-site retention; establish that before recurring
+production history. Recheck recovery after schema or data-volume changes.

@@ -1,7 +1,7 @@
 # Atlasul Aerului
 
 A public map of attributable air-quality observations in Romania. The current release is a
-partial NO2/PM10 EEA demo, with a private database foundation and a prepared manual history writer.
+partial NO2/PM10 EEA demo, with a private database foundation and an activated manual history pilot.
 It does not yet provide national live coverage, pollution scores, an API or a production freshness SLA.
 
 ## Current behavior
@@ -32,12 +32,12 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   skips history download; a changed full series replaces its accepted observations and ETag in
   one transaction. Source corrections and invalidations are retained; failures roll back.
   The writer reports new/missing series without automatically deleting or licensing them.
-  Scheduled collection still selects latest observations; live database ingestion is not activated.
-- Six empty private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
+  Scheduled collection still selects latest observations; live history ingestion is manual.
+- Six private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
   no public policies are installed and application roles have no schema/table/sequence grants.
   Cross-source foreign keys, finite values, positive intervals and public-rights gates are tested.
-  The prepared `atlas_ingestor` migration has no login and grants only scoped EEA ingestion
-  rights. The frontend and latest-map importer do not connect to this database.
+  The `atlas_ingestor` migration starts without a login and grants only scoped EEA ingestion
+  rights; a separate private login is activated for the pilot. The frontend and latest-map importer do not connect to this database.
 
 ## Development and checks
 
@@ -88,3 +88,12 @@ selects, normalizes and filters it. No EEA endorsement is implied. Map data and 
 [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), subject to their
 [tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
 The [MIT licence](LICENSE) covers project code, not third-party data or trademarks.
+
+## Verified history pilot — October 1
+
+PR #10 passed PostgreSQL 17/Linux CI and was integrated as `1b6bdf8`. The private Supabase writer
+uses a dedicated role through the session pooler with `sslmode=verify-full`. The licensed
+EEA series `RO/SPO-RO0008R_00008_100` stored 2,080 accepted observations; a second sync returned
+304 and preserved row IDs and ingestion timestamps. A populated private backup was restored
+locally with matching values, geography and timestamps. This activates one manual history series;
+scheduled national history and metadata-only refresh remain future work.
