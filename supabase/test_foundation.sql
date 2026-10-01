@@ -1,4 +1,3 @@
--- Run against a newly migrated database; every fixture is rolled back.
 BEGIN;
 DO $$
 DECLARE a bigint; b bigint; stream_a bigint; stream_b bigint; device_a bigint;
