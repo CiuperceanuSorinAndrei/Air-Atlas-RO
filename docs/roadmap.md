@@ -7,13 +7,13 @@ work are deliberately separated. Last reviewed: 2026-10-01.
 
 The public product is an EEA NO2/PM10 static map with source provenance, interval/status display,
 partial coverage, a six-hour freshness filter and scheduled snapshot-to-Pages automation.
-Manual history selectors/normalization exist. A private, empty multi-source Supabase/PostGIS
+Manual history selectors/normalization exist. A private multi-source Supabase/PostGIS
 foundation exists, with reproducible migrations and integrity/security tests.
 
 The September 30 hardening work adds strict data contracts, download limits, expiring metadata,
 regression-safe atomic publication, frontend snapshot validation/polling, accessible information,
-licence attribution, dependency repair and publication checks. It does not implement history
-collection/persistence or national pollution scoring.
+licence attribution, dependency repair and publication checks. The October 1 work separately adds history
+collection and a manual persistence pilot; national pollution scoring remains unimplemented.
 
 ## History collection and next bounded implementation
 
@@ -41,13 +41,18 @@ Local verification on 2026-10-01: 104 Python tests including real PostgreSQL 18.
 transactions, rights denial, rollback, corrections, invalidation and concurrency pass. A bounded
 real EEA probe stored 2,078 accepted rows locally; the second sync returned 304 and preserved row
 IDs and ingestion timestamps. Azure's observed unquoted `0x...` ETag is preserved exactly.
-The production target and Linux CI remain PostgreSQL 17; those CI checks have not run for this
-unpublished checkpoint. No live Supabase rows, credentials or scheduled history ingestion changed.
+PostgreSQL 17/Linux CI passed; PR #10 merged as `1b6bdf8` and Pages deployment succeeded.
 
-Next activation gates: review/apply the role migration, register EEA streams with independently
-verified licence/storage rights, provision the private login and TLS trust, then demonstrate
-backup/restore before real history storage. Publish through required CI before deployment.
-The writer is prepared and tested locally; none of these live activation gates is completed.
+Live pilot activation is verified in Air-Atlas-RO: scoped role/RLS applied, EEA dataset licence and
+attribution registered, private credentials stored outside Git, session-pooler TLS verified with
+the downloaded Supabase CA. The pilot stored 2,080 observations and its second sync returned 304
+without replacing IDs or ingestion timestamps. Empty baseline and populated backups were restored
+in separate local test storage; all six populated-table payloads matched after UTC normalization.
+Backups currently remain private on the owner's machine, without automated off-site retention.
+
+Today's review/publication and manual pilot activation are complete. Future history rollout must
+review inventory, bounded source failures, metadata-only refresh and durable backup ownership
+before scheduled national ingestion. The snapshot cron is unchanged.
 
 ## Subsequent milestones and gates
 
