@@ -1,7 +1,7 @@
 # Atlasul Aerului
 
 A public map of attributable air-quality observations in Romania. The current release is a
-partial NO2/PM10 EEA demo, with a private database foundation for future history storage.
+partial NO2/PM10 EEA demo, with a private database foundation and a prepared manual history writer.
 It does not yet provide national live coverage, pollution scores, an API or a production freshness SLA.
 
 ## Current behavior
@@ -27,12 +27,17 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
 - The frontend validates bounded JSON at runtime, polls the public snapshot once a minute and
   retains the last valid document after errors. Readings continue to expire. Keyboard-accessible
   markers and a text list provide access when map tiles fail. Source/licence links are visible.
-- `fetch_valid_history` and `import_history` are tested manual helpers. Scheduled collection still
-  selects latest observations; history persistence and ETag synchronization are not implemented.
+- `collect_history` combines selected normalized series with duplicate/conflict and series-count
+  checks. `scripts/sync_eea_history.py` is a manual, private PostgreSQL writer: a matching ETag
+  skips history download; a changed full series replaces its accepted observations and ETag in
+  one transaction. Source corrections and invalidations are retained; failures roll back.
+  The writer reports new/missing series without automatically deleting or licensing them.
+  Scheduled collection still selects latest observations; live database ingestion is not activated.
 - Six empty private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
   no public policies are installed and application roles have no schema/table/sequence grants.
   Cross-source foreign keys, finite values, positive intervals and public-rights gates are tested.
-  The frontend and importer do not connect to this database.
+  The prepared `atlas_ingestor` migration has no login and grants only scoped EEA ingestion
+  rights. The frontend and latest-map importer do not connect to this database.
 
 ## Development and checks
 

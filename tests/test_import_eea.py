@@ -837,6 +837,7 @@ def test_unsafe_source_rejected_before_network(monkeypatch, url):
 
 def test_bounded_http_response(monkeypatch):
     class Response(BytesIO):
+        status = 200
         headers = None
 
         def __init__(self, data):
@@ -1012,3 +1013,109 @@ def test_fallback_init_uses_viewer_client_headers(monkeypatch):
         .get_header("Referer")
         .startswith("https://discomap.eea.europa.eu/App/AQViewer/index.html")
     )
+
+
+def test_collect_history_preserves_series_intervals_and_quality(monkeypatch, tmp_path):
+    first = _snapshot(("RO0080A", "NO2"))["observations"][0]
+    first["aggregationType"] = "hour"
+    second = {
+        **first,
+        "samplingPointId": "RO/SPO-RO0080A_00008_101",
+        "sourceUrl": first["sourceUrl"].replace("_100", "_101"),
+    }
+    older = {
+        **first,
+        "observedFrom": "2020-01-01T09:00:00+01:00",
+        "observedTo": "2020-01-01T10:00:00+01:00",
+    }
+    duplicate = {**first, "ingestedAt": "2026-03-28T13:00:00Z"}
+    calls = []
+
+    def fetch(url, cache_path):
+        calls.append((url, cache_path))
+        return [first, duplicate, older] if url == first["sourceUrl"] else [second]
+
+    monkeypatch.setattr(importer, "import_history", fetch)
+    cache_path = tmp_path / "metadata.json"
+    result = importer.collect_history(
+        [first["sourceUrl"], second["sourceUrl"], first["sourceUrl"]], cache_path
+    )
+    assert result["observations"] == [first, older, second]
+    assert result["importSummary"] == {
+        "attempted": 2,
+        "imported": 2,
+        "skipped": 0,
+        "failed": 0,
+        "duplicateCount": 1,
+        "observationCount": 3,
+    }
+    assert calls == [
+        (first["sourceUrl"], cache_path),
+        (second["sourceUrl"], cache_path),
+    ]
+
+
+@pytest.mark.parametrize("changed", ["value", "verification", "reportedAt"])
+def test_collect_history_discards_entire_conflicting_series(monkeypatch, changed):
+    first = _snapshot(("RO0080A", "NO2"))["observations"][0]
+    first["aggregationType"] = "hour"
+    other = _snapshot(("RO0009R", "PM10"))["observations"][0]
+    other["aggregationType"] = "hour"
+    conflict = {**first}
+    if changed == "value":
+        conflict[changed] = 99.0
+    elif changed == "verification":
+        conflict.update(verification=2, status="preliminary")
+    else:
+        conflict[changed] = "2026-03-28T11:30:00+01:00"
+    monkeypatch.setattr(
+        importer,
+        "import_history",
+        lambda url, cache: [first, conflict] if url == first["sourceUrl"] else [other],
+    )
+    result = importer.collect_history([first["sourceUrl"], other["sourceUrl"]])
+    assert result["observations"] == [other]
+    assert result["importSummary"] == {
+        "attempted": 2,
+        "imported": 1,
+        "skipped": 0,
+        "failed": 1,
+        "duplicateCount": 0,
+        "observationCount": 1,
+    }
+
+
+def test_collect_history_counts_empty_network_and_invalid_series(monkeypatch):
+    row = _snapshot(("RO0080A", "NO2"))["observations"][0]
+    url = row["sourceUrl"]
+    calls = []
+
+    def fetch(candidate, cache):
+        calls.append(candidate)
+        if candidate == url:
+            raise importer.NoValidObservationsError("empty")
+        raise URLError("unavailable")
+
+    monkeypatch.setattr(importer, "import_history", fetch)
+    result = importer.collect_history([url, url.replace("_100", "_101"), "invalid"])
+    assert result["observations"] == []
+    assert result["importSummary"] == {
+        "attempted": 3,
+        "imported": 0,
+        "skipped": 1,
+        "failed": 2,
+        "duplicateCount": 0,
+        "observationCount": 0,
+    }
+    assert len(calls) == 2
+    assert importer.collect_history([])["importSummary"]["attempted"] == 0
+
+
+def test_collect_history_rejects_wrong_source_and_empty_result(monkeypatch):
+    row = _snapshot(("RO0080A", "NO2"))["observations"][0]
+    row["aggregationType"] = "hour"
+    url = row["sourceUrl"].replace("_100", "_101")
+    monkeypatch.setattr(importer, "import_history", lambda *args: [row])
+    assert importer.collect_history([url])["importSummary"]["failed"] == 1
+    monkeypatch.setattr(importer, "import_history", lambda *args: [])
+    assert importer.collect_history([url])["importSummary"]["skipped"] == 1

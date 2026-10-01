@@ -3,6 +3,7 @@ name = "atlasul-aerului"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
+    "psycopg[binary]>=3.3,<4",
     "pyarrow>=25.0.1",
 ]
 
@@ -21,3 +22,4 @@ select = ["E4", "E7", "E9", "F", "I", "B", "UP", "DTZ", "TRY004", "RUF012"]
 [tool.ruff.lint.per-file-ignores]
 # Provider Parquet fixtures deliberately contain timezone-naive UTC+1 timestamps.
 "tests/test_import_eea.py" = ["DTZ001"]
+"tests/test_sync_eea_history.py" = ["DTZ001"]

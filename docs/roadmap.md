@@ -1,7 +1,7 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-09-30.
+work are deliberately separated. Last reviewed: 2026-10-01.
 
 ## Existing stage
 
@@ -15,18 +15,39 @@ regression-safe atomic publication, frontend snapshot validation/polling, access
 licence attribution, dependency repair and publication checks. It does not implement history
 collection/persistence or national pollution scoring.
 
-## Next bounded implementation
+## History collection and next bounded implementation
 
-Owner-written `collect_history`: combine valid normalized rows from selected series while preserving
-series/source IDs, aggregation and quality metadata. First specify deduplication, malformed-series
-handling and failure/count contracts. Use one bounded real EEA fixture; no scheduled full-history
-refresh and no browser-bundled historical dataset.
+`collect_history` now combines manually selected series without station/pollutant fallback.
+It retains source/series IDs, intervals, aggregation and quality. Duplicate URLs are fetched once;
+identical interval rows are collapsed ignoring only `ingestedAt`. Conflicting rows reject the
+entire affected series; successful other series remain available for diagnostics. Empty valid
+history is skipped; malformed series and download/validation failures are failed.
+`attempted`, `imported`, `skipped`, `failed` count unique requested URLs/series;
+`observationCount` and `duplicateCount` count retained rows and collapsed duplicates in successful
+series. An empty input returns an empty report. This report is not a latest-map snapshot and must
+not be passed to `validate_document` or `write_observation_snapshot`. Partial reports are not
+permission to replace durable history. No scheduled full-history refresh or browser history bundle.
 
-Then add a private ETag-aware writer: transactionally replace one source series and its cursor/ETag,
-retain the last accepted series on any failure and handle `304` without rewriting data. Test source
-corrections, revocations, duplicate intervals, retries, rollback and concurrent writers. A failure
-must never advance the cursor or publish incomplete history. Verify storage rights before writing;
-use a dedicated least-privilege ingestion role, not a browser service-role key.
+`scripts/sync_eea_history.py` now prepares manual PostgreSQL ingestion using a dedicated
+`atlas_ingestor` role. A locked stream row serializes concurrent writers; verified storage rights,
+source/series identity, bounded full HTTP 200/Parquet decoding, quality and duplicate checks precede
+replacement. Rows and ETag commit together. A matching conditional GET updates only the successful
+check time; failures leave the accepted checkpoint intact. A complete valid-schema series with all
+rows invalidated can replace accepted history with an empty set. Missing series in discovery are
+reported for review and are not automatically deleted. Inventory reporting compares the currently
+implemented Romanian NO2/PM10 feed against registered EEA streams.
+
+Local verification on 2026-10-01: 104 Python tests including real PostgreSQL 18.6/PostGIS 3.6.4
+transactions, rights denial, rollback, corrections, invalidation and concurrency pass. A bounded
+real EEA probe stored 2,078 accepted rows locally; the second sync returned 304 and preserved row
+IDs and ingestion timestamps. Azure's observed unquoted `0x...` ETag is preserved exactly.
+The production target and Linux CI remain PostgreSQL 17; those CI checks have not run for this
+unpublished checkpoint. No live Supabase rows, credentials or scheduled history ingestion changed.
+
+Next activation gates: review/apply the role migration, register EEA streams with independently
+verified licence/storage rights, provision the private login and TLS trust, then demonstrate
+backup/restore before real history storage. Publish through required CI before deployment.
+The writer is prepared and tested locally; none of these live activation gates is completed.
 
 ## Subsequent milestones and gates
 

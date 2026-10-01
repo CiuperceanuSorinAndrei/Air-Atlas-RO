@@ -56,3 +56,39 @@ objects/base injection. Inline styles are allowed for Leaflet positioning. GitHu
 HTTP headers; custom `X-Content-Type-Options` and CSP response headers require another host.
 Review each dependency/action/image update through the same checks; pinned versions are not a
 substitute for security updates. Review the Supabase database patch level after provider upgrades.
+
+
+## Prepared manual history synchronization
+
+`scripts/sync_eea_history.py` uses direct PostgreSQL transactions rather than separate REST writes.
+The `atlas_ingestor` migration creates a NOLOGIN role with RLS and grants only EEA source reads,
+approved stream sync-field updates, source-device inserts and approved observation replacement.
+It cannot change licensing, register sources/streams or access canonical sites/gridded assets.
+Provision a private login separately only after the activation gates in the roadmap are reviewed.
+Keep its DSN in `ATLAS_INGESTION_DSN` outside version control and frontend configuration; supply
+the appropriate server CA via libpq TLS configuration. The CLI enforces `sslmode=verify-full`.
+
+Run selected approved streams manually:
+
+```bash
+uv run --locked python scripts/sync_eea_history.py --stream-id 123 --stream-id 456
+```
+
+Each stream has its own transaction. A failure leaves that stream's observations, ETag and
+successful-check time intact; other completed streams can remain committed and the process exits
+nonzero. HTTP 304 preserves observation IDs and ingestion times but advances `last_synced_at`.
+HTTP 200 replaces the complete accepted series, including old corrections and revocations.
+HTTP 206, missing/malformed ETags, malformed identity/schema and conflicting duplicate intervals
+are rejected. An empty valid-schema source version is accepted as empty history; failed fetches
+are never interpreted as revocations. Database lock waits and SQL execution are bounded.
+
+New/missing series are reported from discovery. Review missing series against the source before
+removing any stored data. Review and register newly discovered series with verified rights before
+including their IDs in a run. History sync is not wired into the snapshot workflow or browser.
+Station metadata is validated on changed-series import; metadata-only changes require their own
+refresh plan before treating the stored station context as continuously synchronized.
+
+Integration tests run only against a disposable local `atlas_audit` PostgreSQL database via
+`ATLAS_TEST_DATABASE_DSN`. CI creates that database and exports its DSN before the Python gate.
+Without that variable, database integration tests are explicitly skipped; HTTP/unit tests still run.
+Never set this test variable to a live database.

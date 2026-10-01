@@ -77,7 +77,6 @@ export function validateObservationDocument(value: unknown): ObservationDocument
     if (pairs.has(pair)) throw Error('Duplicate station/pollutant')
     pairs.add(pair)
   }
-  // The assertion is reached only after the public document's fields have been checked.
   return document as unknown as ObservationDocument
 }
 export function groupByStation(observations: AirQualityObservation[]): Map<string, AirQualityObservation[]> {

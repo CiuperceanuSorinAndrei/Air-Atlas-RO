@@ -24,23 +24,24 @@ STATION_METADATA_CACHE_PATH = (
 )
 
 
-# Limits cover >20 years of hourly rows in one series; larger inputs fail visibly.
 MAX_PARQUET_BYTES = 32 * 1024 * 1024
 MAX_PARQUET_ROWS = 200_000
 MAX_DECODED_BYTES = 128 * 1024 * 1024
 METADATA_TTL = timedelta(days=1)
 PARQUET_HOST = "eeadmz1batchservice02.blob.core.windows.net"
-HTTP_HOSTS = {
-    PARQUET_HOST,
-    "eeadmz1-downloads-api-appservice.azurewebsites.net",
-    "air.discomap.eea.europa.eu",
-    "discomap.eea.europa.eu",
-}
+HTTP_HOSTS = frozenset(
+    {
+        PARQUET_HOST,
+        "eeadmz1-downloads-api-appservice.azurewebsites.net",
+        "air.discomap.eea.europa.eu",
+        "discomap.eea.europa.eu",
+    }
+)
 STATION_PATTERN = re.compile(r"RO[A-Z0-9]{1,6}\Z")
 SERIES_PATTERN = re.compile(r"SPO-(RO[A-Z0-9]{1,6})_([0-9]{5})_([0-9]+)\.parquet\Z")
 
 
-def validate_https_url(url: str, hosts: set[str] = HTTP_HOSTS) -> None:
+def validate_https_url(url: str, hosts: set[str] | frozenset[str] = HTTP_HOSTS) -> None:
     if not isinstance(url, str) or len(url) > 2048 or any(ord(c) < 33 for c in url):
         raise ValueError("Source URL must be text.")
     parsed = urllib.parse.urlsplit(url)
@@ -57,18 +58,26 @@ def validate_https_url(url: str, hosts: set[str] = HTTP_HOSTS) -> None:
 
 class SafeRedirectHandler(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
-        validate_https_url(newurl, {urllib.parse.urlsplit(req.full_url).hostname})
+        host = urllib.parse.urlsplit(req.full_url).hostname
+        if host is None:
+            raise ValueError("Source URL has no host.")
+        validate_https_url(newurl, {host})
         return super().redirect_request(req, fp, code, msg, headers, newurl)
 
 
-def read_response(request: urllib.request.Request, max_bytes: int) -> bytes:
+def read_http_response(
+    request: urllib.request.Request, max_bytes: int
+) -> tuple[bytes, str | None]:
     validate_https_url(request.full_url)
+    host = urllib.parse.urlsplit(request.full_url).hostname
+    if host is None:
+        raise ValueError("Source URL has no host.")
     deadline = time.monotonic() + 60
     opener = urllib.request.build_opener(SafeRedirectHandler())
     with opener.open(request, timeout=30) as response:
-        validate_https_url(
-            response.geturl(), {urllib.parse.urlsplit(request.full_url).hostname}
-        )
+        if response.status != 200:
+            raise ValueError("Expected a complete HTTP 200 response.")
+        validate_https_url(response.geturl(), {host})
         length = response.headers.get("Content-Length")
         if length is not None and int(length) > max_bytes:
             raise ValueError("EEA response exceeds the download limit.")
@@ -82,7 +91,11 @@ def read_response(request: urllib.request.Request, max_bytes: int) -> bytes:
             data.extend(chunk)
             if len(data) > max_bytes:
                 raise ValueError("EEA response exceeds the download limit.")
-        return bytes(data)
+        return bytes(data), response.headers.get("ETag")
+
+
+def read_response(request: urllib.request.Request, max_bytes: int) -> bytes:
+    return read_http_response(request, max_bytes)[0]
 
 
 def finite_number(value, label: str) -> float:
@@ -94,7 +107,7 @@ def finite_number(value, label: str) -> float:
     return number
 
 
-def require_text(value, label: str) -> str:
+def require_text(value: object, label: str) -> str:
     if not isinstance(value, str) or not value.strip() or len(value) > 512:
         raise ValueError(f"{label} must be nonempty bounded text.")
     return value
@@ -112,7 +125,7 @@ def validate_station_metadata(metadata: dict, station_id: str) -> None:
         raise ValueError("Station coordinates are outside the geographic range.")
 
 
-def parse_timestamp(value: str) -> datetime:
+def parse_timestamp(value: object) -> datetime:
     if not isinstance(value, str):
         raise TypeError("Timestamp must be ISO text.")
     try:
@@ -151,7 +164,6 @@ def validate_observation(row: dict) -> None:
         parse_timestamp(row.get(key))
         for key in ("observedFrom", "observedTo", "reportedAt", "ingestedAt")
     ]
-    # Existing snapshots predate aggregationType; infer only known exact intervals.
     duration = end - start
     inferred = "hour" if duration == timedelta(hours=1) else "day"
     aggregation = row.get("aggregationType", inferred)
@@ -282,6 +294,9 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
                 raise
             time.sleep(2**attempt)
 
+    else:
+        raise RuntimeError("Discovery retry limit exhausted.")
+
     response_text = response_body.decode("utf-8-sig")
     lines = response_text.splitlines()
     urls = []
@@ -302,12 +317,16 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
 
 
 def select_latest_valid_observation(table: pa.Table) -> dict:
-    validity_mask = pc.is_in(table["Validity"], value_set=pa.array([1, 2, 3, 4]))
+    validity_mask = pc.call_function(
+        "is_in",
+        [table["Validity"]],
+        options=pc.SetLookupOptions(value_set=pa.array([1, 2, 3, 4])),
+    )
     valid_rows = table.filter(validity_mask)
     if valid_rows.num_rows == 0:
         raise NoValidObservationsError("No valid observations found.")
-    latest_end = pc.max(valid_rows["End"])
-    latest_mask = pc.equal(valid_rows["End"], latest_end)
+    latest_end = pc.call_function("max", [valid_rows["End"]])
+    latest_mask = pc.call_function("equal", [valid_rows["End"], latest_end])
     latest_rows = valid_rows.filter(latest_mask)
 
     if latest_rows.num_rows != 1:
@@ -320,7 +339,11 @@ def select_latest_valid_observation(table: pa.Table) -> dict:
 
 
 def select_valid_history(table: pa.Table) -> list[dict]:
-    validity_mask = pc.is_in(table["Validity"], value_set=pa.array([1, 2, 3, 4]))
+    validity_mask = pc.call_function(
+        "is_in",
+        [table["Validity"]],
+        options=pc.SetLookupOptions(value_set=pa.array([1, 2, 3, 4])),
+    )
     valid_rows = table.filter(validity_mask)
     if valid_rows.num_rows == 0:
         raise NoValidObservationsError("No valid observations found.")
@@ -336,8 +359,6 @@ def fetch_parquet_table(parquet_url: str) -> pa.Table:
             parquet_bytes = read_response(request, MAX_PARQUET_BYTES)
             break
         except urllib.error.HTTPError as error:
-            # Retry only transient failures of this idempotent public GET.
-            # Persistent denial remains visible and cannot replace the snapshot.
             if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
                 raise
             retry_after = error.headers.get("Retry-After", "") if error.headers else ""
@@ -347,6 +368,12 @@ def fetch_parquet_table(parquet_url: str) -> pa.Table:
             if attempt == 2:
                 raise
             time.sleep(2**attempt)
+    else:
+        raise RuntimeError("Download retry limit exhausted.")
+    return decode_parquet_table(parquet_bytes)
+
+
+def decode_parquet_table(parquet_bytes: bytes) -> pa.Table:
     parquet = pq.ParquetFile(
         pa.BufferReader(parquet_bytes),
         thrift_string_size_limit=1024 * 1024,
@@ -696,7 +723,6 @@ def get_station_metadata(station_id: str, cache_path: Path) -> dict:
     try:
         atomic_write_json(cache, cache_path)
     except (OSError, ValueError, TypeError) as error:
-        # Metadata remains valid when the optional local cache cannot be written.
         print(f"Metadata cache write skipped: {type(error).__name__}", file=sys.stderr)
     return metadata
 
@@ -726,6 +752,65 @@ def import_history(
     return [
         normalize_observation(row, station_metadata, parquet_url) for row in raw_history
     ]
+
+
+def collect_history(
+    parquet_urls: list[str], cache_path: Path = STATION_METADATA_CACHE_PATH
+) -> dict:
+    observations = []
+    summary = dict.fromkeys(
+        ("attempted", "imported", "skipped", "failed", "duplicateCount"), 0
+    )
+    for url in dict.fromkeys(parquet_urls):
+        summary["attempted"] += 1
+        try:
+            parse_series_url(url)
+            rows = import_history(url, cache_path)
+            if not rows:
+                raise NoValidObservationsError("No valid observations found.")
+            unique_rows = {}
+            duplicates = 0
+            for row in rows:
+                validate_observation(row)
+                if row["sourceUrl"] != url:
+                    raise ValueError("History row belongs to another source series.")
+                key = (
+                    row["source"],
+                    row["samplingPointId"],
+                    row["aggregationType"],
+                    parse_timestamp(row["observedFrom"]),
+                    parse_timestamp(row["observedTo"]),
+                )
+                if key in unique_rows:
+                    previous = unique_rows[key]
+                    if {k: v for k, v in previous.items() if k != "ingestedAt"} != {
+                        k: v for k, v in row.items() if k != "ingestedAt"
+                    }:
+                        raise ValueError("Conflicting observations for one interval.")
+                    duplicates += 1
+                else:
+                    unique_rows[key] = row
+        except NoValidObservationsError:
+            summary["skipped"] += 1
+            print(f"No valid history found for {url}", file=sys.stderr)
+            continue
+        except (
+            urllib.error.URLError,
+            TimeoutError,
+            pa.ArrowException,
+            ValueError,
+            TypeError,
+            KeyError,
+            OSError,
+        ) as error:
+            summary["failed"] += 1
+            print(f"Error importing history {url}: {error}", file=sys.stderr)
+            continue
+        observations.extend(unique_rows.values())
+        summary["imported"] += 1
+        summary["duplicateCount"] += duplicates
+    summary["observationCount"] = len(observations)
+    return {"observations": observations, "importSummary": summary}
 
 
 def collect_observations(parquet_urls: list[str]) -> dict:
