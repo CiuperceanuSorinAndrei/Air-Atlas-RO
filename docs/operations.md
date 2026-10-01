@@ -113,3 +113,7 @@ identity sequences were advanced after restore. A fresh schema comes from reposi
 The two other private tables were independently verified empty when this pilot backup was taken.
 This local backup/drill is not automated off-site retention; establish that before recurring
 production history. Recheck recovery after schema or data-volume changes.
+
+The configured CA is `~/Library/Application Support/Atlasul Aerului/supabase-ca.crt`.
+It is a verified copy of the downloaded certificate; the redundant Downloads copy was removed.
+The writer reads the private path, so cleaning Downloads does not affect TLS verification.
