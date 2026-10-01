@@ -69,6 +69,28 @@ before scheduled national ingestion. The snapshot cron is unchanged.
    independently tested alert delivery, backup/restore drills after data is stored, operational
    ownership and a supported tile-hosting plan. GitHub cron and public OSM tiles remain demo choices.
 
+## Operational work already planned
+
+| Work | When it is required | Completion evidence |
+| --- | --- | --- |
+| Metadata-only refresh | Before treating stored station context as continuously synchronized | Changed station metadata is reconciled even when measurement ETag is unchanged; stale/conflicting metadata is handled visibly |
+| History inventory rollout | Before recurring multi-series ingestion | Reviewed series/rights inventory, representative correction/withdrawal/timeout/conflict cases, measured resource limits and partial-failure behavior |
+| Automated off-site backups | Before recurring production history | Defined retention and owner; automatic backups outside this machine; isolated restore verifies observations, decimals, geography, timestamps and identity sequences |
+| Scheduler and freshness/availability targets | Before claiming a national production service | Agreed targets, measured runs, bounded retries and explicit stale-data behavior; external tile service has a supported hosting plan |
+| Monitoring and alert delivery | Before unattended production operation | Deliberately failed import, stale snapshot and failed backup trigger independently verified notifications and a usable recovery runbook |
+| Dependency maintenance | At each update and before release | Reviewed compatibility, locked packages/pinned actions, passing full CI and deployed-workflow checks |
+
+Do not promise universal correctness: release evidence applies to the implemented scope and tested
+failure cases. Reopen relevant checks when code, schema, provider contract or deployment changes.
+
+October 1 dependency review accepts Ruff 0.16.9, ESLint 10.11.0, React Refresh plugin 0.5.7,
+Vite 8.3.1 and the pinned cache/upload/download actions. TypeScript 7 is deferred until
+typescript-eslint officially supports it and full CI passes; current supported range excludes 7.
+Node 26 types are deferred until the runtime itself is intentionally upgraded from Node 24.
+Dependabot major updates for these two packages are ignored meanwhile; reconsider the ignore
+entries when their gates are met. Minor/security updates remain eligible for review.
+Source: [typescript-eslint dependency support](https://typescript-eslint.io/users/dependency-versions/).
+
 ## Continuation gate
 
 Before new work, use the recorded release evidence in the hardening review: clean repository,
