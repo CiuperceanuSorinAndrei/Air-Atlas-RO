@@ -179,7 +179,7 @@ function App() {
       </details>}
       <footer>
         <p>Date: <a href="https://www.eea.europa.eu/en/datahub/datahubitem-view/778ef9f5-6293-4846-badd-56a29c70880d">European Environment Agency</a> · <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>. Atlasul Aerului selectează, normalizează și filtrează datele; EEA nu aprobă această aplicație.</p>
-        <p>Acoperire parțială NO2/PM10, date preliminare și validate. Actualizarea programată poate întârzia. Fereastra de 6 ore indică recența, nu un indice de sănătate.</p>
+        <p>Acoperire parțială NO2, PM10, PM2.5, SO2, O3 și CO, date preliminare și validate. Actualizarea programată poate întârzia. Fereastra de 6 ore indică recența, nu un indice de sănătate.</p>
       </footer>
     </main>
   )

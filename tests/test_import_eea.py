@@ -669,7 +669,7 @@ def test_multiple_arcgis_features_do_not_use_dataflow_or_write_cache(
 def _snapshot(*pairs: tuple[str, str]) -> dict:
     observations = []
     for station_id, pollutant in pairs:
-        code = "00008" if pollutant == "NO2" else "00005"
+        code = f"{next(code for code, name in importer.POLLUTANT_NAMES.items() if name == pollutant):05d}"
         observations.append(
             {
                 "stationId": station_id,
@@ -679,7 +679,7 @@ def _snapshot(*pairs: tuple[str, str]) -> dict:
                 "samplingPointId": f"RO/SPO-{station_id}_{code}_100",
                 "sourceUrl": f"https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-{station_id}_{code}_100.parquet",
                 "value": 20.0,
-                "unit": "ug.m-3",
+                "unit": "mg.m-3" if pollutant == "CO" else "ug.m-3",
                 "latitude": 44.3,
                 "longitude": 23.7,
                 "observedFrom": "2026-03-28T10:00:00+01:00",
@@ -1119,3 +1119,52 @@ def test_collect_history_rejects_wrong_source_and_empty_result(monkeypatch):
     assert importer.collect_history([url])["importSummary"]["failed"] == 1
     monkeypatch.setattr(importer, "import_history", lambda *args: [])
     assert importer.collect_history([url])["importSummary"]["skipped"] == 1
+
+
+@pytest.mark.parametrize("pollutant", ["NO2", "PM10", "PM2.5", "SO2", "O3", "CO"])
+def test_pollutant_specific_units_are_preserved(pollutant) -> None:
+    row = _snapshot(("RO0080A", pollutant))["observations"][0]
+    raw = {
+        "Value": 0.19521 if pollutant == "CO" else 13.108,
+        "AggType": "hour",
+        "Start": datetime(2026, 10, 2, 6),
+        "End": datetime(2026, 10, 2, 7),
+        "ResultTime": datetime(2026, 10, 2, 7, 2, 34),
+        "Pollutant": int(row["samplingPointId"].split("_")[1]),
+        "Samplingpoint": row["samplingPointId"],
+        "Unit": row["unit"],
+        "Validity": 1,
+        "Verification": 3,
+    }
+    metadata = {
+        key: row[key] for key in ("stationId", "stationName", "longitude", "latitude")
+    }
+    normalized = normalize_observation(raw, metadata, row["sourceUrl"])
+    assert normalized["value"] == raw["Value"]
+    assert normalized["unit"] == raw["Unit"]
+    assert normalized["pollutant"] == pollutant
+    assert normalized["status"] == "preliminary"
+    assert normalized["observedTo"] == "2026-10-02T07:00:00+01:00"
+    for wrong_unit in ("ug.m-3" if pollutant == "CO" else "mg.m-3", "ppm"):
+        with pytest.raises(ValueError, match="Unsupported EEA concentration unit"):
+            normalize_observation(
+                {**raw, "Unit": wrong_unit}, metadata, row["sourceUrl"]
+            )
+
+
+def test_main_requests_all_supported_pollutants(monkeypatch) -> None:
+    requested = []
+    document = _snapshot(("RO0080A", "CO"))
+    monkeypatch.setattr(importer.sys, "argv", ["import_eea.py"])
+    monkeypatch.setattr(
+        importer,
+        "fetch_parquet_urls",
+        lambda country, pollutants: requested.append((country, pollutants)) or [],
+    )
+    monkeypatch.setattr(importer, "collect_observations", lambda urls: document)
+    monkeypatch.setattr(
+        importer, "write_observation_snapshot", lambda result, path: None
+    )
+    importer.main()
+    assert requested[0][0] == "RO"
+    assert set(requested[0][1]) == {"NO2", "PM10", "PM2.5", "SO2", "O3", "CO"}
