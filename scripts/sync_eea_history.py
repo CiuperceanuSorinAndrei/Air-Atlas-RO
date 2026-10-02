@@ -234,7 +234,9 @@ def main() -> None:
     with psycopg.connect(
         dsn, autocommit=True, connect_timeout=15, sslmode="verify-full"
     ) as connection:
-        available = set(importer.fetch_parquet_urls("RO", ["NO2", "PM10"]))
+        available = set(
+            importer.fetch_parquet_urls("RO", list(importer.POLLUTANT_NAMES.values()))
+        )
         configured = {
             row[0]
             for row in connection.execute(

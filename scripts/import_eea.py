@@ -17,7 +17,7 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
-POLLUTANT_NAMES = {1: "SO2", 5: "PM10", 7: "O3", 8: "NO2", 6001: "PM2.5"}
+POLLUTANT_NAMES = {1: "SO2", 5: "PM10", 7: "O3", 8: "NO2", 10: "CO", 6001: "PM2.5"}
 EEA_TIMEZONE = timezone(timedelta(hours=1))
 STATION_METADATA_CACHE_PATH = (
     Path(__file__).resolve().parent.parent / ".cache" / "eea_station_metadata.json"
@@ -151,7 +151,7 @@ def validate_observation(row: dict) -> None:
     ):
         raise ValueError("Observation pollutant/source mismatch.")
     finite_number(row.get("value"), "Observation value")
-    if row.get("unit") != "ug.m-3":
+    if row.get("unit") != ("mg.m-3" if row["pollutant"] == "CO" else "ug.m-3"):
         raise ValueError("Unsupported EEA concentration unit.")
     if type(row.get("validity")) is not int or row["validity"] not in (1, 2, 3, 4):
         raise ValueError("Invalid EEA validity.")
@@ -926,7 +926,7 @@ def main() -> None:
         validate_document(json.loads(args.check.read_text(encoding="utf-8")))
         print("Snapshot contract valid")
         return
-    urls = fetch_parquet_urls("RO", ["NO2", "PM10"])
+    urls = fetch_parquet_urls("RO", list(POLLUTANT_NAMES.values()))
     urls = sorted(urls)
     import_result = collect_observations(urls)
     path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"

@@ -5,7 +5,7 @@ export type AirQualityObservation = {
   samplingPointId: string
   pollutant: string
   value: number
-  unit: 'ug.m-3'
+  unit: 'ug.m-3' | 'mg.m-3'
   latitude: number
   longitude: number
   observedFrom: string
@@ -24,7 +24,7 @@ export type ObservationDocument = {
   observations: AirQualityObservation[]
   importSummary: { attempted: number; imported: number; skipped: number; failed: number }
 }
-const names: Record<string, string> = { '00001': 'SO2', '00005': 'PM10', '00007': 'O3', '00008': 'NO2', '06001': 'PM2.5' }
+const names: Record<string, string> = { '00001': 'SO2', '00005': 'PM10', '00007': 'O3', '00008': 'NO2', '00010': 'CO', '06001': 'PM2.5' }
 function object(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw Error('Expected an object')
   return value as Record<string, unknown>
@@ -67,7 +67,7 @@ export function validateObservationDocument(value: unknown): ObservationDocument
     metadata.set(station, location)
     if (Math.abs(numeric(row.latitude)) > 90 || Math.abs(numeric(row.longitude)) > 180) throw Error('Invalid coordinates')
     numeric(row.value)
-    if (row.unit !== 'ug.m-3' || ![1, 2, 3, 4].includes(numeric(row.validity)) || ![1, 2, 3].includes(numeric(row.verification)) || row.status !== (row.verification === 1 ? 'validated' : 'preliminary')) throw Error('Invalid quality metadata')
+    if (row.unit !== (row.pollutant === 'CO' ? 'mg.m-3' : 'ug.m-3') || ![1, 2, 3, 4].includes(numeric(row.validity)) || ![1, 2, 3].includes(numeric(row.verification)) || row.status !== (row.verification === 1 ? 'validated' : 'preliminary')) throw Error('Invalid quality metadata')
     const start = timestamp(row.observedFrom), end = timestamp(row.observedTo), reported = timestamp(row.reportedAt), ingested = timestamp(row.ingestedAt)
     const aggregation = row.aggregationType ?? (end - start === 3_600_000 ? 'hour' : 'day')
     if (!['hour', 'day'].includes(String(aggregation)) || end - start !== (aggregation === 'hour' ? 3_600_000 : 86_400_000) || start > ingested || reported > ingested) throw Error('Invalid interval')

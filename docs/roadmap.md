@@ -1,12 +1,12 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-01.
+work are deliberately separated. Last reviewed: 2026-10-02.
 
 ## Existing stage
 
-The public product is an EEA NO2/PM10 static map with source provenance, interval/status display,
-partial coverage, a six-hour freshness filter and scheduled snapshot-to-Pages automation.
+The snapshot pipeline supports EEA NO2, PM10, PM2.5, SO2, O3 and CO with source provenance,
+interval/status display, partial coverage, a six-hour freshness filter and snapshot-to-Pages automation.
 Manual history selectors/normalization exist. A private multi-source Supabase/PostGIS
 foundation exists, with reproducible migrations and integrity/security tests.
 
@@ -35,7 +35,7 @@ replacement. Rows and ETag commit together. A matching conditional GET updates o
 check time; failures leave the accepted checkpoint intact. A complete valid-schema series with all
 rows invalidated can replace accepted history with an empty set. Missing series in discovery are
 reported for review and are not automatically deleted. Inventory reporting compares the currently
-implemented Romanian NO2/PM10 feed against registered EEA streams.
+implemented Romanian six-pollutant feed against registered EEA streams.
 
 Local verification on 2026-10-01: 104 Python tests including real PostgreSQL 18.6/PostGIS 3.6.4
 transactions, rights denial, rollback, corrections, invalidation and concurrency pass. A bounded
@@ -54,10 +54,17 @@ Today's review/publication and manual pilot activation are complete. Future hist
 review inventory, bounded source failures, metadata-only refresh and durable backup ownership
 before scheduled national ingestion. The snapshot cron is unchanged.
 
+Local six-pollutant verification on 2026-10-02: 755 readings at 200 stations, zero failed imports;
+all 351 previous NO2/PM10 pairs preserved without interval regression. CO source values retain
+`mg.m-3`; the other five retain `ug.m-3`. 111 Python tests (including actual disposable PostgreSQL
+integration), 22 frontend tests, lint, snapshot validation and build pass. The full collection took
+about 13.5 minutes within the existing 30-minute import budget; this timing is not a provider SLA.
+
 ## Subsequent milestones and gates
 
-1. Add SO2, O3 and PM2.5 only after interval/unit/quality/freshness and coverage review. CO requires
-   its own unit contract; current concentration validation must not be copied blindly.
+1. SO2, O3, PM2.5 and CO are supported by the snapshot importer and frontend. Preserve source
+   units: CO in `mg.m-3`, all other supported pollutants in `ug.m-3`. Interval, quality and six-hour
+   freshness rules apply independently to each reading; no national completeness is implied.
 2. Preserve station classification and scoring windows. Implement European AQI from its official
    method only after temporal completeness and QA rules are tested. US AQI is a separate method.
    Do not derive a national score from one latest NO2/PM10 reading.

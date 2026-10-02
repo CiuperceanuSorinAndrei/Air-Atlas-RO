@@ -1,7 +1,8 @@
 # Atlasul Aerului
 
-A public map of attributable air-quality observations in Romania. The current release is a
-partial NO2/PM10 EEA demo, with a private database foundation and an activated manual history pilot.
+A public map of attributable air-quality observations in Romania. The snapshot pipeline supports
+NO2, PM10, PM2.5, SO2, O3 and CO, with a private database foundation and an activated manual
+history pilot.
 It does not yet provide national live coverage, pollution scores, an API or a production freshness SLA.
 
 ## Current behavior
@@ -10,7 +11,8 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   newer sequences first. It selects the latest row with validity 1–4; verification 1 is validated,
   2–3 preliminary. Hourly and daily intervals remain distinct.
 - Every normalized row binds its sampling point, pollutant and station to the official HTTPS
-  series URL. Values/coordinates must be finite, units are `ug.m-3`, timestamps use explicit offsets,
+  series URL. Values/coordinates must be finite; CO uses `mg.m-3`, the other five pollutants
+  use `ug.m-3`. Values and units are preserved without conversion. Timestamps use explicit offsets,
   and metadata for one physical station must agree. EEA's timezone-naive timestamps mean fixed
   UTC+1, not Romanian local time. Display uses Europe/Bucharest.
 - Official ArcGIS metadata has an exact-ID Dataflow D fallback for no features or transient errors.

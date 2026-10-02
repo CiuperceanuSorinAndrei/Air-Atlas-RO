@@ -7,7 +7,7 @@ test('published hourly and daily data satisfy runtime contract', () => {
   assert.equal(validateObservationDocument(baseline), baseline)
   assert.ok(groupByStation(baseline.observations).size > 0)
 })
-for (const [key, value] of [['value',NaN], ['value',true], ['latitude',91], ['unit','mg.m-3'], ['verification',true], ['sourceUrl','javascript:alert(1)'], ['stationId','RO9999A'], ['observedTo','2030-01-01T00:00:00Z'], ['ingestedAt','2026-09-30T10:00:00']]) {
+for (const [key, value] of [['value',NaN], ['value',true], ['latitude',91], ['unit','ppm'], ['verification',true], ['sourceUrl','javascript:alert(1)'], ['stationId','RO9999A'], ['observedTo','2030-01-01T00:00:00Z'], ['ingestedAt','2026-09-30T10:00:00']]) {
   test(`rejects invalid ${key}: ${String(value)}`, () => {
     const copy = structuredClone(baseline)
     copy.observations[0][key] = value
@@ -45,3 +45,18 @@ test('conflicting physical station metadata is rejected', () => {
   same.latitude += 1
   assert.throws(() => validateObservationDocument(copy))
 })
+
+for (const [code, pollutant] of [['00001','SO2'], ['00005','PM10'], ['00007','O3'], ['00008','NO2'], ['00010','CO'], ['06001','PM2.5']]) {
+  test(`preserves ${pollutant} in its source unit and rejects crossed units`, () => {
+    const row = { ...baseline.observations[0], pollutant, unit: pollutant === 'CO' ? 'mg.m-3' : 'ug.m-3', value: pollutant === 'CO' ? 0.19521 : 13.108 }
+    row.samplingPointId = `RO/SPO-${row.stationId}_${code}_100`
+    row.sourceUrl = `https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-${row.stationId}_${code}_100.parquet`
+    const document = { observations: [row], importSummary: { attempted: 1, imported: 1, skipped: 0, failed: 0 } }
+    assert.equal(validateObservationDocument(document), document)
+    assert.equal(document.observations[0].value, pollutant === 'CO' ? 0.19521 : 13.108)
+    row.unit = pollutant === 'CO' ? 'ug.m-3' : 'mg.m-3'
+    assert.throws(() => validateObservationDocument(document))
+    row.unit = 'ppm'
+    assert.throws(() => validateObservationDocument(document))
+  })
+}
