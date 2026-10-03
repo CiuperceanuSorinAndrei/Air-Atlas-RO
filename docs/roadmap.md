@@ -1,7 +1,7 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-02.
+work are deliberately separated. Last reviewed: 2026-10-03.
 
 ## Existing stage
 
@@ -59,6 +59,25 @@ all 351 previous NO2/PM10 pairs preserved without interval regression. CO source
 `mg.m-3`; the other five retain `ug.m-3`. 111 Python tests (including actual disposable PostgreSQL
 integration), 22 frontend tests, lint, snapshot validation and build pass. The full collection took
 about 13.5 minutes within the existing 30-minute import budget; this timing is not a provider SLA.
+
+## October 3 snapshot refresh repair
+
+The six-pollutant baseline contained 115 historical pairs absent from the current E2a import:
+93 absent from discovery and 22 series without valid rows. Those prior intervals ended no later
+than January 1, 2026. Requiring every historical pair blocked otherwise fresh snapshot updates.
+The owner wrote the age-based missing-pair classification and common-pair regression selection
+with assistant guidance. The assistant wrote the delegated tests and failed-attempt publication guard.
+
+Missing pairs now block only while the previous observation is less than six hours old; common
+pairs still cannot regress. Any failed import attempt blocks publication, while successfully read
+series without valid observations remain skipped. This is current-map snapshot retention, not
+database history deletion or proof of provider revocation. The publication guard does not establish
+discovery completeness, national coverage or a provider SLA.
+
+Bounded live verification: 717 attempts, 640 readings at 180 stations, 77 skipped, zero failures;
+629 readings were recent at collection verification. The same 115 historical pairs were omitted,
+with no recent missing pair or common-pair interval regression. Freshness is evaluated again at
+release; historical counts are evidence, not a promise of ongoing availability.
 
 ## Subsequent milestones and gates
 

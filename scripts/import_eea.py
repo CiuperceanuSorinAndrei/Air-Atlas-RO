@@ -887,6 +887,11 @@ def group_series_urls(url_list: list[str]) -> dict:
 
 def write_observation_snapshot(import_result: dict, path: Path) -> None:
     validate_document(import_result)
+    failed_count = import_result["importSummary"]["failed"]
+    if failed_count > 0:
+        raise ValueError(
+            f"Import has {failed_count} failed attempts; keeping the previous snapshot."
+        )
     current = {
         (r["stationId"], r["pollutant"]): r for r in import_result["observations"]
     }
@@ -897,13 +902,22 @@ def write_observation_snapshot(import_result: dict, path: Path) -> None:
             (r["stationId"], r["pollutant"]): r for r in previous["observations"]
         }
         missing = previous_rows.keys() - current.keys()
-        if missing:
+        now = datetime.now(UTC)
+        recent_missing = []
+        for missed in missing:
+            previous_observation = previous_rows[missed]
+            previous_end = parse_timestamp(previous_observation["observedTo"])
+            observation_age = now - previous_end
+            is_recent = observation_age < timedelta(hours=6)
+            if is_recent:
+                recent_missing.append(missed)
+        if recent_missing:
             raise ValueError(
-                f"Import lost {len(missing)} existing station/pollutant pairs; keeping the previous snapshot."
+                f"Import lost {len(recent_missing)} station/pollutant pairs with observations less than 6 hours old; keeping the previous snapshot."
             )
         regressed = [
             key
-            for key in previous_rows
+            for key in previous_rows & current.keys()
             if parse_timestamp(current[key]["observedTo"])
             < parse_timestamp(previous_rows[key]["observedTo"])
         ]
