@@ -22,11 +22,23 @@ publication and deployment are distinct outcomes. Check public `observations.jso
 `ingestedAt`, failed/skipped counts and measurement freshness. A successful build alone does not
 prove fresh data. The frontend expires old readings even when updates fail.
 
+Snapshot publication rejects any nonzero `importSummary.failed`, including when only expired
+previous readings are absent or no baseline file exists. The collector still returns partial reports
+for diagnostics; document validation checks their structure, not publication eligibility. Failures
+count attempts, so even a recovered fallback after a failed attempt conservatively blocks publication.
+`skipped` means a successfully read series has no valid observations and does not alone block writing.
+
+Missing previous station/pollutant pairs block publication while their last interval end is less than
+six hours old. Expired missing pairs may leave the current-map snapshot; this does not delete stored
+database history or establish that a provider revoked the series. Common pairs retain the interval
+regression guard, and same-interval corrections remain allowed. The workflow separately requires
+recent observations before publication.
+
 Transient network/provider failures may recover on the next run. Schema, identity, unit, coordinate
-conflict, lost pair or regressed interval errors require source review. Never relax a guard simply
-to turn a workflow green. For a genuine retired/revoked series, save the previous snapshot, record
-the official evidence and affected station/pollutant pairs, make a reviewed baseline change and
-rerun every gate. Same-interval corrections need no baseline reset.
+conflict, recent lost pair or regressed interval errors require source review. Never relax a guard
+simply to turn a workflow green. For a genuine retired/revoked series, save the previous snapshot,
+record the official evidence and affected station/pollutant pairs, make a reviewed baseline change
+and rerun every gate. Same-interval corrections need no baseline reset.
 
 Workflow-failure emails are owner-reported enabled. Delivery is not independently demonstrated;
 verify a controlled failure reaches the chosen inbox before claiming alert coverage. Do not rely

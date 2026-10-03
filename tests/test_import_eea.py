@@ -1,5 +1,5 @@
 import json
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from io import BytesIO
 from pathlib import Path
 from urllib.error import HTTPError, URLError
@@ -702,6 +702,15 @@ def _snapshot(*pairs: tuple[str, str]) -> dict:
     }
 
 
+def _freeze_snapshot_time(monkeypatch, instant: datetime) -> None:
+    class FrozenDatetime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return instant.astimezone(tz)
+
+    monkeypatch.setattr(importer, "datetime", FrozenDatetime)
+
+
 @pytest.mark.parametrize(
     "candidate",
     [
@@ -709,7 +718,10 @@ def _snapshot(*pairs: tuple[str, str]) -> dict:
         _snapshot(("RO0080A", "NO2")),
     ],
 )
-def test_incomplete_import_preserves_existing_snapshot(tmp_path, candidate) -> None:
+def test_empty_or_recently_incomplete_import_preserves_existing_snapshot(
+    tmp_path, monkeypatch, candidate
+) -> None:
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 12, tzinfo=UTC))
     path = tmp_path / "observations.json"
     previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
     path.write_text(json.dumps(previous), encoding="utf-8")
@@ -718,6 +730,126 @@ def test_incomplete_import_preserves_existing_snapshot(tmp_path, candidate) -> N
         importer.write_observation_snapshot(candidate, path)
 
     assert json.loads(path.read_text(encoding="utf-8")) == previous
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+@pytest.mark.parametrize(
+    "age,blocked",
+    [
+        (timedelta(hours=2), True),
+        (timedelta(hours=6) - timedelta(microseconds=1), True),
+        (timedelta(hours=6), False),
+        (timedelta(hours=6, microseconds=1), False),
+        (timedelta(days=180), False),
+    ],
+)
+def test_missing_observation_six_hour_boundary(tmp_path, monkeypatch, age, blocked):
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 10, tzinfo=UTC) + age)
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+    path.write_text(json.dumps(previous), encoding="utf-8")
+    before = path.read_bytes()
+    candidate = _snapshot(("RO0080A", "NO2"))
+
+    if blocked:
+        with pytest.raises(ValueError, match="Import lost 1 .*less than 6 hours old"):
+            importer.write_observation_snapshot(candidate, path)
+        assert path.read_bytes() == before
+    else:
+        importer.write_observation_snapshot(candidate, path)
+        assert json.loads(path.read_text()) == candidate
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_missing_recent_and_expired_pairs_reports_only_recent(
+    tmp_path, monkeypatch
+) -> None:
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 12, tzinfo=UTC))
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"), ("RO0068A", "SO2"))
+    previous["observations"][2]["observedFrom"] = "2026-03-27T10:00:00+01:00"
+    previous["observations"][2]["observedTo"] = "2026-03-27T11:00:00+01:00"
+    path.write_text(json.dumps(previous), encoding="utf-8")
+    before = path.read_bytes()
+
+    with pytest.raises(ValueError, match="Import lost 1 .*less than 6 hours old"):
+        importer.write_observation_snapshot(_snapshot(("RO0080A", "NO2")), path)
+
+    assert path.read_bytes() == before
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+@pytest.mark.parametrize("end_hour,regressed", [(10, True), (11, False), (12, False)])
+def test_expired_missing_pair_keeps_common_pair_regression_guard(
+    tmp_path, monkeypatch, end_hour, regressed
+) -> None:
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 17, tzinfo=UTC))
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+    path.write_text(json.dumps(previous), encoding="utf-8")
+    before = path.read_bytes()
+    candidate = _snapshot(("RO0080A", "NO2"))
+    candidate["observations"][0]["observedFrom"] = (
+        f"2026-03-28T{end_hour - 1:02d}:00:00+01:00"
+    )
+    candidate["observations"][0]["observedTo"] = (
+        f"2026-03-28T{end_hour:02d}:00:00+01:00"
+    )
+    candidate["observations"][0]["value"] = 21.0
+
+    if regressed:
+        with pytest.raises(
+            ValueError, match="Import regressed 1 observation intervals"
+        ):
+            importer.write_observation_snapshot(candidate, path)
+        assert path.read_bytes() == before
+    else:
+        importer.write_observation_snapshot(candidate, path)
+        assert json.loads(path.read_text()) == candidate
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+@pytest.mark.parametrize("has_previous", [False, True])
+@pytest.mark.parametrize("failed_count", [1, 2])
+def test_failed_import_never_publishes_snapshot(
+    tmp_path, monkeypatch, has_previous, failed_count
+) -> None:
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 17, tzinfo=UTC))
+    path = tmp_path / "observations.json"
+    if has_previous:
+        previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+        path.write_text(json.dumps(previous), encoding="utf-8")
+        before = path.read_bytes()
+    candidate = _snapshot(("RO0080A", "NO2"))
+    candidate["importSummary"]["failed"] = failed_count
+    candidate["importSummary"]["attempted"] += failed_count
+    importer.validate_document(candidate)
+
+    with pytest.raises(
+        ValueError,
+        match=f"Import has {failed_count} failed attempts; keeping the previous snapshot",
+    ):
+        importer.write_observation_snapshot(candidate, path)
+
+    if has_previous:
+        assert path.read_bytes() == before
+    else:
+        assert not path.exists()
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_skipped_series_without_errors_can_publish_snapshot(tmp_path, monkeypatch):
+    _freeze_snapshot_time(monkeypatch, datetime(2026, 3, 28, 17, tzinfo=UTC))
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"), ("RO0240A", "PM10"))
+    path.write_text(json.dumps(previous), encoding="utf-8")
+    candidate = _snapshot(("RO0080A", "NO2"))
+    candidate["importSummary"]["skipped"] = 1
+    candidate["importSummary"]["attempted"] += 1
+
+    importer.write_observation_snapshot(candidate, path)
+
+    assert json.loads(path.read_text()) == candidate
     assert list(tmp_path.glob("*.tmp")) == []
 
 

@@ -20,9 +20,11 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   failures do not discard a valid observation. Cache writes are atomic.
 - Downloads allow only specific official HTTPS hosts and same-host redirects. Compressed Parquet
   is capped at 32 MiB, 200,000 rows, 128 MiB declared/decoded size and a bounded primitive schema.
-- Publication rejects empty batches, inconsistent counts, duplicate station/pollutant pairs,
-  missing previously published pairs and older observation intervals. Same-interval value
-  corrections are allowed. Atomic, strict JSON writes preserve the old snapshot on failure.
+- Publication rejects empty batches, failed import attempts, inconsistent counts, duplicate
+  station/pollutant pairs, missing pairs whose previous observations are less than six hours old,
+  and older intervals for common pairs. Expired missing pairs may leave the map snapshot without
+  deleting database history. Same-interval value corrections are allowed. Atomic, strict JSON
+  writes preserve the old snapshot on failure.
 - The map groups physical stations, clusters nearby markers and shows only reported intervals
   that have started, last at most one day and end less than six hours ago. In-progress intervals
   are labelled. This window describes freshness, not scientific quality or a health index.
