@@ -150,12 +150,15 @@ def sync_stream(connection: psycopg.Connection[tuple], stream_id: int) -> dict:
         if etag is not None and synced_at is None:
             raise ValueError("Stored ETag has no completed synchronization.")
         rows, new_etag = fetch_history_version(url, etag)
+        station_metadata = importer.get_station_metadata(
+            station_id, importer.STATION_METADATA_CACHE_PATH
+        )
+        device: tuple[int] | None = connection.execute(
+            """SELECT id FROM atlas.source_devices
+               WHERE source_id = %s AND external_device_id = %s""",
+            (source_id, external_id),
+        ).fetchone()
         if rows is not None:
-            device: tuple[int] | None = connection.execute(
-                """SELECT id FROM atlas.source_devices
-                   WHERE source_id = %s AND external_device_id = %s""",
-                (source_id, external_id),
-            ).fetchone()
             if device is None and rows:
                 device = connection.execute(
                     """INSERT INTO atlas.source_devices(source_id, external_device_id,
@@ -211,6 +214,24 @@ def sync_stream(connection: psycopg.Connection[tuple], stream_id: int) -> dict:
                             for row in rows
                         ],
                     )
+        if device is not None:
+            updated_device = connection.execute(
+                """UPDATE atlas.source_devices
+                   SET provider_location = extensions.ST_SetSRID(extensions.ST_MakePoint(%s, %s),4326)::extensions.geography,
+                       provider_station_name = %s, metadata_synced_at = %s
+                   WHERE id = %s AND source_id = %s AND external_device_id = %s""",
+                (
+                    station_metadata["longitude"],
+                    station_metadata["latitude"],
+                    station_metadata["stationName"],
+                    datetime.now(UTC),
+                    device[0],
+                    source_id,
+                    external_id,
+                ),
+            )
+            if updated_device.rowcount != 1:
+                raise ValueError("Source device metadata update was not accepted.")
         connection.execute(
             "UPDATE atlas.source_streams SET etag = %s, last_synced_at = %s WHERE id = %s",
             (new_etag, datetime.now(UTC), stream_id),

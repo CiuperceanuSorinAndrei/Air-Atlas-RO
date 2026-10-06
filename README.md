@@ -35,6 +35,9 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   checks. `scripts/sync_eea_history.py` is a manual, private PostgreSQL writer: a matching ETag
   skips history download; a changed full series replaces its accepted observations and ETag in
   one transaction. Source corrections and invalidations are retained; failures roll back.
+  Each approved sync also validates station metadata through the 24-hour cache and updates the
+  current source-device name/location, including after HTTP 304. Historical observation metadata
+  and locations remain unchanged on 304. Metadata failures roll back the stream checkpoint.
   The writer reports new/missing series without automatically deleting or licensing them.
   Scheduled collection still selects latest observations; live history ingestion is manual.
 - Six private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
@@ -100,4 +103,6 @@ uses a dedicated role through the session pooler with `sslmode=verify-full`. The
 EEA series `RO/SPO-RO0008R_00008_100` stored 2,080 accepted observations; a second sync returned
 304 and preserved row IDs and ingestion timestamps. A populated private backup was restored
 locally with matching values, geography and timestamps. This activates one manual history series;
-scheduled national history and metadata-only refresh remain future work.
+scheduled national history remains future work. The October 6 metadata path updates current
+source-device context independently of the measurement ETag; its new live synchronization
+has not yet been exercised.

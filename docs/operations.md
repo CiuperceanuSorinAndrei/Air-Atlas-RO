@@ -44,6 +44,66 @@ Workflow-failure emails are owner-reported enabled. Delivery is not independentl
 verify a controlled failure reaches the chosen inbox before claiming alert coverage. Do not rely
 on email or GitHub's hourly schedule as a production freshness SLA.
 
+## Production availability and freshness policy
+
+Decision recorded October 6. This is the target operating policy; workflow separation, independent
+monitoring, alert delivery and a degraded-service status are not implemented by this change.
+The current refresh and Pages workflows still run the complete release gate, including npm audit.
+
+A reachable page with expired observations is a degraded air-quality service. Measure page/data
+availability separately from measurement freshness and source coverage. Track three distinct
+signals: the last attempted run, the last verified snapshot actually served to users, and each
+reading's source interval end. Neither a recent download timestamp nor a successful workflow proves
+recent measurements. A valid unchanged snapshot remains a valid result; monitor successful checks
+and observation age separately rather than requiring a changed payload every hour.
+
+| Failure | Required production behavior |
+| --- | --- |
+| New release fails tests or dependency audit | Block that release; retain the accepted application version. A build-only advisory must not independently stop valid data refreshes on an approved execution environment. |
+| Provider timeout, invalid data or rejected snapshot | Preserve the last accepted snapshot and its actual timestamps; use bounded retries for transient errors, then alert. Never relabel old observations as fresh. |
+| Freshness or coverage falls below the accepted target | Keep the page available with explicit degraded status, last accepted update and affected coverage. Exclude expired readings from current measurements; show them only in a separately labelled historical view if one is implemented. |
+| Exploitable vulnerability affects the active serving or ingestion component | Assess exposure and isolate, roll back or stop the affected component as needed; document the mitigation. Do not bypass the audit with blanket continue-on-error. |
+
+The initial warning threshold is two missed expected hourly end-to-end update checks. Account for
+run duration and observed scheduling delay when implementing it. The existing six-hour display
+window remains a measurement cutoff, not an availability SLA. Choose and validate numerical SLOs
+from observed provider cadence, publication latency and covered station/pollutant pairs before
+making a national production promise. One recent reading must not hide widespread coverage loss.
+
+An independent monitor must check the served JSON, freshness and coverage even if the ingestion
+scheduler never starts. A successful fetch of the same old JSON does not mean the ingestion path
+recovered; the current frontend fetch-error message alone does not detect this incident. Verify
+alert delivery with controlled failures and send a recovery notice only after served data passes
+the same checks. GitHub workflow emails alone are not this monitor.
+
+### Planned separation of releases and data publication
+
+1. Release code and dependencies through full tests, SQL checks, security audit and build. Record
+   the accepted commit and immutable application/ingestion artifacts with provenance and hashes.
+2. Run periodic ingestion using the approved code and locked execution environment. Its gate checks
+   schema, identity, units, quality, intervals, freshness, failed attempts and coverage/regression.
+   Security monitoring remains active separately; new advisories require triage and a patched release.
+3. Publish only validated snapshots alongside the exact accepted application assets, atomically.
+   Pages must not rebuild or re-audit the application for each data-only update. Verify the code
+   revision and asset hashes as well as the snapshot. Keep protected-main rules: a data-specific
+   check cannot authorize unrelated code, dependency or schema changes.
+4. Measure the user-visible result from an independent scheduler/monitor. Before replacing the
+   demo schedule, evaluate a durable scheduler with recorded runs, bounded retry and replay,
+   operational ownership and measurable freshness targets. GitHub cron alone has no freshness SLA.
+5. Exercise release/audit failure, provider timeout, invalid snapshot, publication failure, missed
+   scheduling, stale/partial coverage and recovery. Assert the accepted site survives, bad data never
+   replaces valid data, alerts arrive, and approved fresh data can still publish during a blocked release.
+
+Until those gates are implemented and demonstrated, keep the current fail-closed publication
+checks. Do not remove npm audit from only the collector: Pages currently repeats the same gate.
+The immediate recovery for October 6 is the reviewed source-map-js patch and a verified refresh
+followed by Pages; that restores this incident but does not implement the planned separation.
+
+Sources: [Google SRE data-processing guidance](https://sre.google/workbook/data-processing/)
+for freshness/correctness and end-to-end measurement;
+[GitHub schedule limitations](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
+for delayed or dropped scheduled jobs.
+
 ## Rollback
 
 Revert the faulty code commit on a review branch, run checks, then merge/push the verified revert.
@@ -73,7 +133,9 @@ substitute for security updates. Review the Supabase database patch level after 
 
 `scripts/sync_eea_history.py` uses direct PostgreSQL transactions rather than separate REST writes.
 The `atlas_ingestor` migration creates a NOLOGIN role with RLS and grants only EEA source reads,
-approved stream sync-field updates, source-device inserts and approved observation replacement.
+approved stream sync-field updates, source-device inserts, current device metadata updates and
+approved observation replacement. Device updates are restricted to `provider_location`,
+`provider_station_name` and `metadata_synced_at`, for an approved EEA Parquet stream.
 It cannot change licensing, register sources/streams or access canonical sites/gridded assets.
 Provision a private login separately only after the activation gates in the roadmap are reviewed.
 Keep its DSN in `ATLAS_INGESTION_DSN` outside version control and frontend configuration; supply
@@ -96,8 +158,15 @@ are never interpreted as revocations. Database lock waits and SQL execution are 
 New/missing series are reported from discovery. Review missing series against the source before
 removing any stored data. Review and register newly discovered series with verified rights before
 including their IDs in a run. History sync is not wired into the snapshot workflow or browser.
-Station metadata is validated on changed-series import; metadata-only changes require their own
-refresh plan before treating the stored station context as continuously synchronized.
+Every approved sync resolves and validates station metadata independently of the Parquet ETag,
+using the existing 24-hour cache. Existing source devices receive the accepted name, coordinates
+and `metadata_synced_at` in the same transaction as the stream checkpoint. That timestamp records
+local synchronization, not a new source fetch or the observation time. HTTP 304 preserves every
+historical observation field, including its recorded location and station name. Empty accepted
+history does not create a device; an existing device can still receive metadata. Metadata failures
+or an update affecting anything other than one expected device reject the transaction. Apply
+`20261006152355_eea_station_metadata.sql` before running the updated writer. This remains manual
+per-stream synchronization, not scheduled station inventory reconciliation.
 
 Integration tests run only against a disposable local `atlas_audit` PostgreSQL database via
 `ATLAS_TEST_DATABASE_DSN`. CI creates that database and exports its DSN before the Python gate.

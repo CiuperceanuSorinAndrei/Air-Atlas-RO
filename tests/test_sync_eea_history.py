@@ -223,6 +223,99 @@ def test_database_replacement_304_correction_and_revocation(
     assert final[1] == []
 
 
+def stored_metadata_state(admin, stream_id):
+    return (
+        stored_state(admin, stream_id),
+        admin.execute(
+            "SELECT to_jsonb(o) FROM atlas.observations o WHERE stream_id=%s ORDER BY id",
+            (stream_id,),
+        ).fetchall(),
+        admin.execute(
+            """SELECT d.id, d.provider_station_name, d.metadata_synced_at,
+                      extensions.ST_X(d.provider_location::extensions.geometry),
+                      extensions.ST_Y(d.provider_location::extensions.geometry)
+               FROM atlas.source_devices d
+               JOIN atlas.source_streams s ON s.source_id=d.source_id
+                 AND s.external_stream_id=d.external_device_id
+               WHERE s.id=%s""",
+            (stream_id,),
+        ).fetchone(),
+    )
+
+
+def test_database_304_updates_current_metadata_without_changing_observations(
+    database, monkeypatch, metadata
+):
+    connection, admin, stream_id, source_id, dsn = database
+    monkeypatch.setattr(
+        importer, "read_http_response", lambda *args: (history_bytes(), '"one"')
+    )
+    sync.sync_stream(connection, stream_id)
+    before = stored_metadata_state(admin, stream_id)
+    assert before[2][1] == "DJ-3"
+    assert before[2][2] is not None
+
+    def unchanged(*_args):
+        raise HTTPError(URL, 304, "unchanged", Message(), None)
+
+    monkeypatch.setattr(importer, "read_http_response", unchanged)
+    monkeypatch.setattr(
+        importer,
+        "decode_parquet_table",
+        lambda *args: pytest.fail("decoded unchanged history"),
+    )
+    monkeypatch.setattr(
+        importer,
+        "get_station_metadata",
+        lambda *args: {
+            "stationId": "RO0080A",
+            "stationName": "DJ-3 corrected",
+            "longitude": 23.8,
+            "latitude": 44.4,
+        },
+    )
+    assert sync.sync_stream(connection, stream_id)["status"] == "unchanged"
+    after = stored_metadata_state(admin, stream_id)
+    assert after[0][0][0] == before[0][0][0]
+    assert after[0][0][1] > before[0][0][1]
+    assert after[1] == before[1]
+    assert after[2][0] == before[2][0]
+    assert after[2][1] == "DJ-3 corrected"
+    assert after[2][2] > before[2][2]
+    assert after[2][3:] == pytest.approx((23.8, 44.4))
+
+
+@pytest.mark.parametrize("failure", ["network", "blank-name"])
+def test_database_metadata_failure_preserves_all_stored_state(
+    database, monkeypatch, metadata, failure
+):
+    connection, admin, stream_id, source_id, dsn = database
+    monkeypatch.setattr(
+        importer, "read_http_response", lambda *args: (history_bytes(), '"one"')
+    )
+    sync.sync_stream(connection, stream_id)
+    before = stored_metadata_state(admin, stream_id)
+
+    def unchanged(*_args):
+        raise HTTPError(URL, 304, "unchanged", Message(), None)
+
+    def failed_metadata(*_args):
+        if failure == "network":
+            raise URLError("metadata unavailable")
+        return {
+            "stationId": "RO0080A",
+            "stationName": " ",
+            "longitude": 23.8,
+            "latitude": 44.4,
+        }
+
+    monkeypatch.setattr(importer, "read_http_response", unchanged)
+    monkeypatch.setattr(importer, "get_station_metadata", failed_metadata)
+    with pytest.raises((URLError, psycopg.errors.CheckViolation)):
+        sync.sync_stream(connection, stream_id)
+    assert stored_metadata_state(admin, stream_id) == before
+
+
 def test_database_rollback_after_delete_preserves_rows_and_etag(
     database, monkeypatch, metadata
 ):

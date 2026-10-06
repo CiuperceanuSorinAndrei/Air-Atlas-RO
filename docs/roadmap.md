@@ -1,7 +1,7 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-03.
+work are deliberately separated. Last reviewed: 2026-10-06.
 
 ## Existing stage
 
@@ -31,8 +31,9 @@ permission to replace durable history. No scheduled full-history refresh or brow
 `scripts/sync_eea_history.py` now prepares manual PostgreSQL ingestion using a dedicated
 `atlas_ingestor` role. A locked stream row serializes concurrent writers; verified storage rights,
 source/series identity, bounded full HTTP 200/Parquet decoding, quality and duplicate checks precede
-replacement. Rows and ETag commit together. A matching conditional GET updates only the successful
-check time; failures leave the accepted checkpoint intact. A complete valid-schema series with all
+replacement. Rows, current source-device metadata and ETag commit together. A matching conditional
+GET preserves observations while resolving station metadata through the 24-hour cache and updating
+the successful-check time; failures leave the accepted checkpoint intact. A complete valid-schema series with all
 rows invalidated can replace accepted history with an empty set. Missing series in discovery are
 reported for review and are not automatically deleted. Inventory reporting compares the currently
 implemented Romanian six-pollutant feed against registered EEA streams.
@@ -50,9 +51,12 @@ without replacing IDs or ingestion timestamps. Empty baseline and populated back
 in separate local test storage; all six populated-table payloads matched after UTC normalization.
 Backups currently remain private on the owner's machine, without automated off-site retention.
 
-Today's review/publication and manual pilot activation are complete. Future history rollout must
-review inventory, bounded source failures, metadata-only refresh and durable backup ownership
-before scheduled national ingestion. The snapshot cron is unchanged.
+The October 1 review/publication and manual pilot activation are complete. The October 6 change
+adds current device name/location synchronization independently of the measurement ETag, with
+scoped grants/RLS and complete-metadata constraints. Live schema/grants are verified; the updated
+live writer has not yet been exercised. Future history rollout must review inventory, bounded
+source failures, scheduled metadata reconciliation and durable backup ownership before recurring
+national ingestion. The snapshot cron is unchanged.
 
 Local six-pollutant verification on 2026-10-02: 755 readings at 200 stations, zero failed imports;
 all 351 previous NO2/PM10 pairs preserved without interval regression. CO source values retain
@@ -99,9 +103,10 @@ release; historical counts are evidence, not a promise of ongoing availability.
 
 | Work | When it is required | Completion evidence |
 | --- | --- | --- |
-| Metadata-only refresh | Before treating stored station context as continuously synchronized | Changed station metadata is reconciled even when measurement ETag is unchanged; stale/conflicting metadata is handled visibly |
+| Metadata-only refresh | Manual per-stream path implemented; verify live behavior and inventory-wide scheduling before continuous-sync claims | HTTP 304 preserves all historical observation fields while current device metadata updates; failures roll back; source fetch remains subject to the 24-hour cache |
 | History inventory rollout | Before recurring multi-series ingestion | Reviewed series/rights inventory, representative correction/withdrawal/timeout/conflict cases, measured resource limits and partial-failure behavior |
 | Automated off-site backups | Before recurring production history | Defined retention and owner; automatic backups outside this machine; isolated restore verifies observations, decimals, geography, timestamps and identity sequences |
+| Release/data publication separation | Before a release-only failure can be isolated from periodic data delivery | Approved immutable code/assets, a data-specific gate, atomic publication and tests proving blocked releases do not prevent safe data updates; see operations policy |
 | Scheduler and freshness/availability targets | Before claiming a national production service | Agreed targets, measured runs, bounded retries and explicit stale-data behavior; external tile service has a supported hosting plan |
 | Monitoring and alert delivery | Before unattended production operation | Deliberately failed import, stale snapshot and failed backup trigger independently verified notifications and a usable recovery runbook |
 | Dependency maintenance | At each update and before release | Reviewed compatibility, locked packages/pinned actions, passing full CI and deployed-workflow checks |
@@ -116,6 +121,20 @@ Node 26 types are deferred until the runtime itself is intentionally upgraded fr
 Dependabot major updates for these two packages are ignored meanwhile; reconsider the ignore
 entries when their gates are met. Minor/security updates remain eligible for review.
 Source: [typescript-eslint dependency support](https://typescript-eslint.io/users/dependency-versions/).
+
+## Production reliability decision — October 6
+
+The accepted target is separate page availability, measurement freshness and source coverage.
+A release failure retains the accepted version; an import failure retains the accepted snapshot;
+expired observations produce visibly degraded service. Independent monitoring must detect missed
+runs and stale served data. The initial warning proposal is two missed hourly update checks;
+measured provider/publication latency must determine final SLOs.
+
+Release/data publication separation and these monitoring/recovery drills remain unimplemented.
+Both current refresh and Pages workflows still run the full audit gate. The bounded October 6 PR
+repairs source-map-js and adds manual device metadata synchronization; it documents the reliability
+policy without changing the workflows. The implementation sequence and acceptance scenarios are
+in [operations](operations.md#production-availability-and-freshness-policy).
 
 ## Continuation gate
 
