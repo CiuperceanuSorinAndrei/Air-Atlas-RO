@@ -469,3 +469,80 @@ def test_azure_unquoted_etag_is_preserved(monkeypatch, metadata):
     monkeypatch.setattr(importer, "read_http_response", fetch)
     assert sync.fetch_history_version(URL, etag)[1] == etag
     assert calls == [etag]
+
+
+@pytest.mark.parametrize("revoked", [False, True])
+def test_database_200_refreshes_existing_device_metadata(
+    database, monkeypatch, metadata, revoked
+):
+    connection, admin, stream_id, source_id, dsn = database
+    monkeypatch.setattr(
+        importer, "read_http_response", lambda *args: (history_bytes(), '"one"')
+    )
+    sync.sync_stream(connection, stream_id)
+    before = stored_metadata_state(admin, stream_id)
+    monkeypatch.setattr(
+        importer,
+        "read_http_response",
+        lambda *args: (history_bytes(-1 if revoked else 1, value=21), '"two"'),
+    )
+    monkeypatch.setattr(
+        importer,
+        "get_station_metadata",
+        lambda *args: {
+            "stationId": "RO0080A",
+            "stationName": "DJ-3 corrected on 200",
+            "longitude": 23.8,
+            "latitude": 44.4,
+        },
+    )
+    assert sync.sync_stream(connection, stream_id)["status"] == "replaced"
+    after = stored_metadata_state(admin, stream_id)
+    assert after[0][0][0] == '"two"'
+    assert after[0][0][1] > before[0][0][1]
+    assert after[2][0] == before[2][0]
+    assert after[2][1] == "DJ-3 corrected on 200"
+    assert after[2][2] > before[2][2]
+    assert after[2][3:] == pytest.approx((23.8, 44.4))
+    if revoked:
+        assert after[1] == []
+    else:
+        assert len(after[1]) == 1
+        assert after[1][0][0]["value"] == 21
+        assert (
+            after[1][0][0]["quality_details"]["stationName"] == "DJ-3 corrected on 200"
+        )
+
+
+@pytest.mark.parametrize("failure", ["network", "blank-name"])
+def test_database_200_metadata_failure_rolls_back_replacement(
+    database, monkeypatch, metadata, failure
+):
+    connection, admin, stream_id, source_id, dsn = database
+    monkeypatch.setattr(
+        importer, "read_http_response", lambda *args: (history_bytes(), '"one"')
+    )
+    sync.sync_stream(connection, stream_id)
+    before = stored_metadata_state(admin, stream_id)
+    metadata_calls = 0
+    monkeypatch.setattr(
+        importer, "read_http_response", lambda *args: (history_bytes(value=21), '"two"')
+    )
+
+    def current_metadata(*args):
+        nonlocal metadata_calls
+        metadata_calls += 1
+        if metadata_calls == 2 and failure == "network":
+            raise URLError("metadata unavailable on changed history")
+        return {
+            "stationId": "RO0080A",
+            "stationName": " " if metadata_calls == 2 else "DJ-3 corrected",
+            "longitude": 23.8,
+            "latitude": 44.4,
+        }
+
+    monkeypatch.setattr(importer, "get_station_metadata", current_metadata)
+    with pytest.raises((URLError, psycopg.errors.CheckViolation)):
+        sync.sync_stream(connection, stream_id)
+    assert metadata_calls == 2
+    assert stored_metadata_state(admin, stream_id) == before

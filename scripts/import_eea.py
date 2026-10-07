@@ -885,6 +885,46 @@ def group_series_urls(url_list: list[str]) -> dict:
     return grouped_urls
 
 
+def is_previous_observation_invalidated(
+    table: pa.Table, previous_observation: dict
+) -> bool:
+    previous_start = parse_timestamp(previous_observation["observedFrom"])
+    previous_end = parse_timestamp(previous_observation["observedTo"])
+    aggregation = previous_observation.get(
+        "aggregationType",
+        "hour" if previous_end - previous_start == timedelta(hours=1) else "day",
+    )
+    matches = []
+    for row in table.to_pylist():
+        if row["Samplingpoint"] != previous_observation["samplingPointId"]:
+            continue
+        validate_raw_identity(row, previous_observation["sourceUrl"])
+        if (
+            parse_timestamp(to_eea_iso(row["Start"])) == previous_start
+            and parse_timestamp(to_eea_iso(row["End"])) == previous_end
+        ):
+            if (
+                row["AggType"] != aggregation
+                or row["Unit"] != previous_observation["unit"]
+            ):
+                raise ValueError("Previous observation aggregation or unit changed.")
+            if type(row["Validity"]) is not int or row["Validity"] not in (
+                -99,
+                -1,
+                1,
+                2,
+                3,
+                4,
+            ):
+                raise ValueError("Unknown source validity code.")
+            matches.append(row)
+    if len(matches) > 1:
+        raise ValueError("Previous observation interval is not unique in the source.")
+    if not matches:
+        return False
+    return matches[0]["Validity"] == -1
+
+
 def write_observation_snapshot(import_result: dict, path: Path) -> None:
     validate_document(import_result)
     failed_count = import_result["importSummary"]["failed"]
@@ -921,9 +961,49 @@ def write_observation_snapshot(import_result: dict, path: Path) -> None:
             if parse_timestamp(current[key]["observedTo"])
             < parse_timestamp(previous_rows[key]["observedTo"])
         ]
-        if regressed:
+        unconfirmed = []
+        for key in regressed:
+            previous_observation = previous_rows[key]
+            candidate = current[key]
+            if candidate["sourceUrl"] != previous_observation["sourceUrl"]:
+                unconfirmed.append(key)
+                continue
+            table = fetch_parquet_table(previous_observation["sourceUrl"])
+            for row in table.to_pylist():
+                validate_raw_identity(row, previous_observation["sourceUrl"])
+            if not is_previous_observation_invalidated(table, previous_observation):
+                unconfirmed.append(key)
+                continue
+            latest = select_latest_valid_observation(table)
+            metadata = {
+                field: candidate[field]
+                for field in ("stationId", "stationName", "longitude", "latitude")
+            }
+            verified = normalize_observation(latest, metadata, candidate["sourceUrl"])
+            candidate_fields = dict(candidate)
+            candidate_fields.setdefault("aggregationType", verified["aggregationType"])
+            candidate_fields.setdefault("sourceRecordId", None)
+            candidate_fields.setdefault("dataCapture", None)
+            times = ("observedFrom", "observedTo", "reportedAt")
+            if any(
+                (
+                    parse_timestamp(verified[field])
+                    != parse_timestamp(candidate_fields[field])
+                    if field in times
+                    else verified[field] != candidate_fields[field]
+                )
+                for field in verified
+                if field != "ingestedAt"
+            ):
+                unconfirmed.append(key)
+                continue
+            print(
+                f"Confirmed source invalidation for {key[0]}/{key[1]} "
+                f"at {previous_observation['observedFrom']} to {previous_observation['observedTo']}"
+            )
+        if unconfirmed:
             raise ValueError(
-                f"Import regressed {len(regressed)} observation intervals; keeping the previous snapshot. Review source corrections before resetting the baseline."
+                f"Import regressed {len(unconfirmed)} observation intervals without confirmed source invalidation; keeping the previous snapshot. Affected pairs: {unconfirmed}"
             )
     atomic_write_json(import_result, path)
 

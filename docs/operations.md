@@ -31,12 +31,21 @@ count attempts, so even a recovered fallback after a failed attempt conservative
 Missing previous station/pollutant pairs block publication while their last interval end is less than
 six hours old. Expired missing pairs may leave the current-map snapshot; this does not delete stored
 database history or establish that a provider revoked the series. Common pairs retain the interval
-regression guard, and same-interval corrections remain allowed. The workflow separately requires
-recent observations before publication.
+regression guard, and same-interval corrections remain allowed. A regressed pair may publish only
+when a fresh read of the same source series explicitly marks the exact previous sampling-point,
+interval, aggregation and unit invalid with integer `Validity=-1`. Missing rows, `-99`, ambiguous
+matches, changed series and failed verification do not establish invalidation. The candidate must
+also match the latest valid source row, including its value, interval, quality and provenance;
+only its ingestion timestamp may differ. Every regressed pair must pass, or the entire previous
+snapshot remains intact. The collect and publish jobs independently recheck this boundary.
+The workflow separately requires recent observations before publication.
 
 Transient network/provider failures may recover on the next run. Schema, identity, unit, coordinate
-conflict, recent lost pair or regressed interval errors require source review. Never relax a guard
-simply to turn a workflow green. For a genuine retired/revoked series, save the previous snapshot,
+conflict, recent lost pair or unconfirmed regressed interval errors require source review. Confirmed
+source invalidations are logged with the affected pair and previous interval. If EEA changes again
+between collection and publication, the candidate is rejected; collect again rather than reusing
+an outdated artifact. Never relax a guard simply to turn a workflow green. For a genuine retired
+series that does not meet the automatic invalidation contract, save the previous snapshot,
 record the official evidence and affected station/pollutant pairs, make a reviewed baseline change
 and rerun every gate. Same-interval corrections need no baseline reset.
 
