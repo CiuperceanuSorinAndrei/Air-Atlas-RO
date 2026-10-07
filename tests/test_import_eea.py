@@ -797,6 +797,13 @@ def test_expired_missing_pair_keeps_common_pair_regression_guard(
     )
     candidate["observations"][0]["value"] = 21.0
 
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return pyarrow.table({})
+
+    monkeypatch.setattr(importer, "fetch_parquet_table", fetch)
     if regressed:
         with pytest.raises(
             ValueError, match="Import regressed 1 observation intervals"
@@ -933,7 +940,16 @@ def test_daily_and_legacy_daily_are_valid():
         importer.validate_document(document)
 
 
-def test_regression_rejected_but_same_interval_correction_accepted(tmp_path):
+def test_regression_rejected_but_same_interval_correction_accepted(
+    tmp_path, monkeypatch
+):
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return pyarrow.table({})
+
+    monkeypatch.setattr(importer, "fetch_parquet_table", fetch)
     path = tmp_path / "observations.json"
     document = _snapshot(("RO0080A", "NO2"))
     importer.write_observation_snapshot(document, path)
@@ -944,9 +960,11 @@ def test_regression_rejected_but_same_interval_correction_accepted(tmp_path):
     with pytest.raises(ValueError, match="regressed"):
         importer.write_observation_snapshot(regressed, path)
     assert path.read_bytes() == before
+    assert calls == [document["observations"][0]["sourceUrl"]]
     document["observations"][0]["value"] = 21
     importer.write_observation_snapshot(document, path)
     assert json.loads(path.read_text())["observations"][0]["value"] == 21
+    assert calls == [document["observations"][0]["sourceUrl"]]
 
 
 @pytest.mark.parametrize(
@@ -1300,3 +1318,265 @@ def test_main_requests_all_supported_pollutants(monkeypatch) -> None:
     importer.main()
     assert requested[0][0] == "RO"
     assert set(requested[0][1]) == {"NO2", "PM10", "PM2.5", "SO2", "O3", "CO"}
+
+
+@pytest.mark.parametrize(
+    "validity, expected", [(-1, True), (1, False), (2, False), (3, False), (4, False)]
+)
+def test_previous_observation_invalidation_requires_exact_unique_interval(
+    validity, expected
+):
+    previous = {
+        "samplingPointId": "RO/SPO-RO0174A_00010_100",
+        "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0174A_00010_100.parquet",
+        "aggregationType": "hour",
+        "unit": "mg.m-3",
+        "observedFrom": "2026-10-05T06:00:00+00:00",
+        "observedTo": "2026-10-05T07:00:00+00:00",
+    }
+    match = {
+        "Samplingpoint": previous["samplingPointId"],
+        "Pollutant": 10,
+        "AggType": "hour",
+        "Unit": "mg.m-3",
+        "Start": datetime(2026, 10, 5, 7),
+        "End": datetime(2026, 10, 5, 8),
+        "Validity": validity,
+    }
+    unrelated = [
+        dict(match, Samplingpoint="RO/SPO-RO0213A_00010_100", Validity=-1),
+        dict(match, Start=datetime(2026, 10, 5, 6), Validity=-1),
+        dict(match, End=datetime(2026, 10, 5, 9), Validity=-1),
+    ]
+    assert (
+        importer.is_previous_observation_invalidated(
+            pyarrow.Table.from_pylist(unrelated + [match]), previous
+        )
+        is expected
+    )
+    assert (
+        importer.is_previous_observation_invalidated(
+            pyarrow.Table.from_pylist(unrelated), previous
+        )
+        is False
+    )
+    with pytest.raises(ValueError, match="not unique"):
+        importer.is_previous_observation_invalidated(
+            pyarrow.Table.from_pylist([match, dict(match, Validity=-1)]), previous
+        )
+
+
+@pytest.mark.parametrize(
+    "failure",
+    [URLError("offline"), TimeoutError("timeout"), ValueError("invalid source")],
+)
+def test_regression_source_check_failure_preserves_snapshot(
+    tmp_path, monkeypatch, failure
+):
+    path = tmp_path / "observations.json"
+    previous = _snapshot(("RO0080A", "NO2"))
+    path.write_text(json.dumps(previous))
+    before = path.read_bytes()
+    candidate = _snapshot(("RO0080A", "NO2"))
+    candidate["observations"][0]["observedFrom"] = "2026-03-28T09:00:00+01:00"
+    candidate["observations"][0]["observedTo"] = "2026-03-28T10:00:00+01:00"
+
+    def fetch(url):
+        assert url == previous["observations"][0]["sourceUrl"]
+        raise failure
+
+    monkeypatch.setattr(importer, "fetch_parquet_table", fetch)
+    with pytest.raises(type(failure)):
+        importer.write_observation_snapshot(candidate, path)
+    assert path.read_bytes() == before
+    assert not list(tmp_path.glob(".*.tmp"))
+
+
+def _raw_snapshot_observation(row, validity=None):
+    return {
+        "Samplingpoint": row["samplingPointId"],
+        "Pollutant": int(row["samplingPointId"].split("_")[1]),
+        "Start": importer.parse_timestamp(row["observedFrom"])
+        .astimezone(importer.EEA_TIMEZONE)
+        .replace(tzinfo=None),
+        "End": importer.parse_timestamp(row["observedTo"])
+        .astimezone(importer.EEA_TIMEZONE)
+        .replace(tzinfo=None),
+        "ResultTime": importer.parse_timestamp(row["reportedAt"])
+        .astimezone(importer.EEA_TIMEZONE)
+        .replace(tzinfo=None),
+        "Value": row["value"],
+        "Unit": row["unit"],
+        "AggType": row.get("aggregationType", "hour"),
+        "Validity": row["validity"] if validity is None else validity,
+        "Verification": row["verification"],
+        "FkObservationLog": row.get("sourceRecordId"),
+        "DataCapture": row.get("dataCapture"),
+    }
+
+
+def _invalidation_scenario(*pairs):
+    previous = _snapshot(*pairs)
+    candidate = _snapshot(*pairs)
+    tables = {}
+    for old, new in zip(
+        previous["observations"], candidate["observations"], strict=True
+    ):
+        new["observedFrom"] = "2026-03-28T09:00:00+01:00"
+        new["observedTo"] = "2026-03-28T10:00:00+01:00"
+        tables[old["sourceUrl"]] = pyarrow.Table.from_pylist(
+            [_raw_snapshot_observation(old, -1), _raw_snapshot_observation(new)]
+        )
+    return previous, candidate, tables
+
+
+def test_confirmed_invalidations_publish_all_pairs_atomically(tmp_path, monkeypatch):
+    previous, candidate, tables = _invalidation_scenario(
+        ("RO0174A", "CO"), ("RO0213A", "PM10")
+    )
+    previous["observations"].append(_snapshot(("RO0080A", "NO2"))["observations"][0])
+    candidate["observations"].append(_snapshot(("RO0080A", "NO2"))["observations"][0])
+    candidate["observations"][-1]["value"] = 25
+    for document in (previous, candidate):
+        document["importSummary"]["attempted"] = 3
+        document["importSummary"]["imported"] = 3
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps(previous))
+    calls = []
+
+    def fetch(url):
+        calls.append(url)
+        return tables[url]
+
+    monkeypatch.setattr(importer, "fetch_parquet_table", fetch)
+    importer.write_observation_snapshot(candidate, path)
+    assert json.loads(path.read_text()) == candidate
+    assert set(calls) == set(tables)
+    assert len(calls) == 2
+    assert not list(tmp_path.glob(".*.tmp"))
+
+
+@pytest.mark.parametrize(
+    "case",
+    [
+        "still-valid",
+        "missing",
+        "unknown-status",
+        "malformed-status",
+        "duplicate",
+        "foreign-pollutant",
+        "foreign-series",
+        "changed-unit",
+        "changed-aggregation",
+        "missing-field",
+        "no-valid-replacement",
+        "candidate-value",
+        "candidate-interval",
+        "candidate-reported",
+        "candidate-quality",
+        "changed-series",
+    ],
+)
+def test_unproven_or_inconsistent_invalidation_preserves_snapshot(
+    tmp_path, monkeypatch, case
+):
+    previous, candidate, tables = _invalidation_scenario(("RO0174A", "CO"))
+    url = previous["observations"][0]["sourceUrl"]
+    rows = tables[url].to_pylist()
+    if case == "still-valid":
+        rows[0]["Validity"] = 1
+    elif case == "missing":
+        rows.pop(0)
+    elif case == "unknown-status":
+        rows[0]["Validity"] = -99
+    elif case == "malformed-status":
+        rows[0]["Validity"] = -1.0
+    elif case == "duplicate":
+        rows.append(dict(rows[0]))
+    elif case == "foreign-pollutant":
+        rows[0]["Pollutant"] = 5
+    elif case == "foreign-series":
+        rows[0]["Samplingpoint"] = "RO/SPO-RO0213A_00010_100"
+    elif case == "changed-unit":
+        rows[0]["Unit"] = "ug.m-3"
+    elif case == "changed-aggregation":
+        rows[0]["AggType"] = "day"
+    elif case == "missing-field":
+        for row in rows:
+            del row["Validity"]
+    elif case == "no-valid-replacement":
+        rows[1]["Validity"] = -1
+    elif case == "candidate-value":
+        candidate["observations"][0]["value"] = 21
+    elif case == "candidate-interval":
+        candidate["observations"][0]["observedFrom"] = "2026-03-28T08:00:00+01:00"
+        candidate["observations"][0]["observedTo"] = "2026-03-28T09:00:00+01:00"
+    elif case == "candidate-reported":
+        candidate["observations"][0]["reportedAt"] = "2026-03-28T11:01:00+01:00"
+    elif case == "candidate-quality":
+        candidate["observations"][0]["verification"] = 2
+        candidate["observations"][0]["status"] = "preliminary"
+    elif case == "changed-series":
+        candidate["observations"][0]["sourceUrl"] = url.replace(
+            "_100.parquet", "_101.parquet"
+        )
+        candidate["observations"][0]["samplingPointId"] = candidate["observations"][0][
+            "samplingPointId"
+        ].replace("_100", "_101")
+    tables[url] = pyarrow.Table.from_pylist(rows)
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps(previous))
+    before = path.read_bytes()
+    monkeypatch.setattr(importer, "fetch_parquet_table", tables.__getitem__)
+    with pytest.raises((ValueError, TypeError, KeyError)):
+        importer.write_observation_snapshot(candidate, path)
+    assert path.read_bytes() == before
+    assert not list(tmp_path.glob(".*.tmp"))
+
+
+def test_one_unconfirmed_pair_blocks_other_confirmed_invalidations(
+    tmp_path, monkeypatch
+):
+    previous, candidate, tables = _invalidation_scenario(
+        ("RO0174A", "CO"), ("RO0213A", "PM10")
+    )
+    url = previous["observations"][1]["sourceUrl"]
+    rows = tables[url].to_pylist()
+    rows[0]["Validity"] = 1
+    tables[url] = pyarrow.Table.from_pylist(rows)
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps(previous))
+    before = path.read_bytes()
+    monkeypatch.setattr(importer, "fetch_parquet_table", tables.__getitem__)
+    with pytest.raises(ValueError, match="1 observation intervals"):
+        importer.write_observation_snapshot(candidate, path)
+    assert path.read_bytes() == before
+
+
+@pytest.mark.parametrize("validity", [None, True, -1.0, "-1", -2])
+def test_invalidation_requires_explicit_integer_validity(validity):
+    previous, _, tables = _invalidation_scenario(("RO0174A", "CO"))
+    old = previous["observations"][0]
+    row = tables[old["sourceUrl"]].to_pylist()[0]
+    row["Validity"] = validity
+    with pytest.raises(ValueError, match="validity"):
+        importer.is_previous_observation_invalidated(
+            pyarrow.Table.from_pylist([row]), old
+        )
+
+
+def test_confirmed_invalidation_compares_equivalent_timezone_instants(
+    tmp_path, monkeypatch
+):
+    previous, candidate, tables = _invalidation_scenario(("RO0174A", "CO"))
+    for document in (previous, candidate):
+        for field in ("observedFrom", "observedTo", "reportedAt"):
+            row = document["observations"][0]
+            row[field] = (
+                importer.parse_timestamp(row[field]).astimezone(UTC).isoformat()
+            )
+    path = tmp_path / "observations.json"
+    path.write_text(json.dumps(previous))
+    monkeypatch.setattr(importer, "fetch_parquet_table", tables.__getitem__)
+    importer.write_observation_snapshot(candidate, path)
+    assert json.loads(path.read_text()) == candidate

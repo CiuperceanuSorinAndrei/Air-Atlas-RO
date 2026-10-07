@@ -73,7 +73,8 @@ The owner wrote the age-based missing-pair classification and common-pair regres
 with assistant guidance. The assistant wrote the delegated tests and failed-attempt publication guard.
 
 Missing pairs now block only while the previous observation is less than six hours old; common
-pairs still cannot regress. Any failed import attempt blocks publication, while successfully read
+pairs retain the regression guard, with the confirmed source-invalidation exception documented
+below. Any failed import attempt blocks publication, while successfully read
 series without valid observations remain skipped. This is current-map snapshot retention, not
 database history deletion or proof of provider revocation. The publication guard does not establish
 discovery completeness, national coverage or a provider SLA.
@@ -82,6 +83,26 @@ Bounded live verification: 717 attempts, 640 readings at 180 stations, 77 skippe
 629 readings were recent at collection verification. The same 115 historical pairs were omitted,
 with no recent missing pair or common-pair interval regression. Freshness is evaluated again at
 release; historical counts are evidence, not a promise of ongoing availability.
+
+## October 7 source invalidation repair
+
+A read-only comparison of 717 discovered groups reproduced three regressions against the served
+snapshot: OT-1 (`RO0174A`) CO and CL-3 (`RO0213A`) PM10/PM2.5. The exact previously published
+intervals now have source `Validity=-1`, previously `1`; selecting the latest valid row therefore
+moves backward. An unconditional monotonicity check blocked fresh data for unrelated stations.
+
+The assistant implemented the explicitly delegated repair and regression tests. Publication now
+requires a fresh same-series confirmation of the previous interval's invalidation and a complete
+match between the candidate and the current latest valid source row. Missing/ambiguous evidence,
+quality/value/provenance mismatches and failed reads still preserve the complete prior snapshot.
+This recheck runs at both collection and publication; stale replacements remain excluded by the
+frontend's existing six-hour rule. No history data or SQL schema is changed.
+
+Tests cover confirmed, unconfirmed and mixed regressions, wrong identities/units/aggregation,
+malformed evidence, changed source series, candidate mismatches, timezone equivalence and failed
+verification. Changed-history HTTP 200 tests additionally check existing-device metadata refresh,
+revocation and rollback of observations, ETag, checkpoint and metadata on failure. Verification
+and deployment results must be recorded separately; test coverage alone does not prove recovery.
 
 ## Subsequent milestones and gates
 
