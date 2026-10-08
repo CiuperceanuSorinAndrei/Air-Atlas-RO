@@ -3,6 +3,8 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: '7 5 * * *'
 permissions:
   contents: read
 jobs:

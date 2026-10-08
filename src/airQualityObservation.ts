@@ -91,6 +91,10 @@ export function groupByStation(observations: AirQualityObservation[]): Map<strin
 export function latestImport(document: ObservationDocument): number {
   return Math.max(...document.observations.map(row => Date.parse(row.ingestedAt)))
 }
+export function latestMeasurement(document: ObservationDocument | null): number | null {
+  if (!document?.observations.length) return null
+  return Math.max(...document.observations.map(row => Date.parse(row.observedTo)))
+}
 export function acceptSnapshot(previous: ObservationDocument | null, next: ObservationDocument): ObservationDocument {
   if (previous && latestImport(next) < latestImport(previous)) throw Error('Older snapshot received')
   return next

@@ -1,0 +1,20 @@
+name: Monitor served air quality
+on:
+  schedule:
+    - cron: '47 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7
+        with:
+          python-version: '3.13'
+      - name: Check publicly served freshness and coverage
+        run: uv run --locked python -m scripts.check_served_data "https://ciuperceanusorinandrei.github.io/Air-Atlas-RO/observations.json?monitor=${GITHUB_RUN_ID}"

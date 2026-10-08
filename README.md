@@ -25,11 +25,12 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   and older intervals for common pairs. Expired missing pairs may leave the map snapshot without
   deleting database history. Same-interval value corrections are allowed. Atomic, strict JSON
   writes preserve the old snapshot on failure.
-- The map groups physical stations, clusters nearby markers and shows only reported intervals
-  that have started, last at most one day and end less than six hours ago. In-progress intervals
+- The map groups physical stations, clusters nearby markers and shows latest-known reported measurements
+  with their original intervals and visible age. Recent status applies to intervals that have started,
+  last at most one day and end less than six hours ago. In-progress intervals
   are labelled. This window describes freshness, not scientific quality or a health index.
 - The frontend validates bounded JSON at runtime, polls the public snapshot once a minute and
-  retains the last valid document after errors. Readings continue to expire. Keyboard-accessible
+  retains the last valid document after errors. Latest-known readings remain visible with their age; recent status expires after six hours. Keyboard-accessible
   markers and a text list provide access when map tiles fail. Source/licence links are visible.
 - `collect_history` combines selected normalized series with duplicate/conflict and series-count
   checks. `scripts/sync_eea_history.py` is a manual, private PostgreSQL writer: a matching ETag
@@ -76,14 +77,17 @@ publication, failures and rollback, [roadmap](docs/roadmap.md) for remaining mil
 
 ## Automation and hosting
 
-CI runs on pushes and pull requests. Pages and refresh run the same gates, including SQL fixtures.
+CI runs on pushes, pull requests and a daily schedule. Code releases retain the full gate, including
+SQL fixtures and dependency audit. Data refreshes use a separate data gate and approved site artifacts.
 Actions and the PostGIS image are pinned to immutable revisions; Dependabot proposes updates.
 Collection/build jobs have read access. Separate publication/deployment jobs receive the minimum
 write permissions needed. Refresh stages only the snapshot and refuses a racing non-fast-forward push.
 
 GitHub cron requests a run at minute 17 each hour, but actual execution can be delayed. Successful
 refreshes trigger Pages through `workflow_run` because `GITHUB_TOKEN` pushes do not trigger normal
-push workflows. Pages checks one checkout and deploys that checked artifact. The site and tile
+push workflows. Data-only Pages runs reuse the approved application artifact and replace only the
+validated snapshot. A separate hourly monitor checks served freshness and coverage counts; see
+[release separation](docs/release-separation.md) for bootstrap, retention and verification limits. The site and tile
 provider have no availability guarantee. Failure-email delivery still requires independent evidence.
 
 ## Data attribution and licence
@@ -106,3 +110,14 @@ locally with matching values, geography and timestamps. This activates one manua
 scheduled national history remains future work. The October 6 metadata path updates current
 source-device context independently of the measurement ETag; its new live synchronization
 has not yet been exercised.
+
+## Frontend redesign
+
+The local October 8 redesign adds a light map-first interface, station details, pollutant filters,
+GeoNames locality search with county disambiguation and explicit geolocation. Modelled hourly
+exploration is planned; the current public snapshot is latest-only. See [frontend design](docs/frontend-design.md)
+and [locality catalogue](docs/locality-catalogue.md). Local implementation is not deployment evidence.
+
+Exact-address search is implemented behind a dedicated Geoapify browser key; see
+[address search setup](docs/address-search.md). Without configuration, locality/station search remains
+available. Point coverage/model estimates are not yet implemented.
