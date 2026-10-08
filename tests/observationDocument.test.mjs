@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import { validateObservationDocument, acceptSnapshot, groupByStation } from '../src/airQualityObservation.ts'
+import { validateObservationDocument, acceptSnapshot, groupByStation, latestMeasurement } from '../src/airQualityObservation.ts'
 const baseline = JSON.parse(readFileSync(new URL('../src/data/observations.json', import.meta.url)))
 test('published hourly and daily data satisfy runtime contract', () => {
   assert.equal(validateObservationDocument(baseline), baseline)
@@ -60,3 +60,13 @@ for (const [code, pollutant] of [['00001','SO2'], ['00005','PM10'], ['00007','O3
     assert.throws(() => validateObservationDocument(document))
   })
 }
+
+test('latest measurement handles absent data and compares instants across time zones', () => {
+  assert.equal(latestMeasurement(null), null)
+  assert.equal(latestMeasurement({ ...baseline, observations: [] }), null)
+  const observations = [
+    { ...baseline.observations[0], observedTo: '2026-10-07T12:00:00+03:00' },
+    { ...baseline.observations[0], observedTo: '2026-10-07T10:30:00+01:00' },
+  ]
+  assert.equal(latestMeasurement({ ...baseline, observations }), Date.parse('2026-10-07T09:30:00Z'))
+})

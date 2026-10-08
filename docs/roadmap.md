@@ -1,7 +1,7 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-06.
+work are deliberately separated. Last reviewed: 2026-10-08.
 
 ## Existing stage
 
@@ -14,6 +14,56 @@ The September 30 hardening work adds strict data contracts, download limits, exp
 regression-safe atomic publication, frontend snapshot validation/polling, accessible information,
 licence attribution, dependency repair and publication checks. The October 1 work separately adds history
 collection and a manual persistence pilot; national pollution scoring remains unimplemented.
+
+## Frontend redesign and temporal exploration — October 8
+
+Owner-selected direction: a light, map-first Romanian atlas with restrained Liquid Glass-inspired
+web surfaces, a normal continuous basemap initially centred on Romania (country-mask experiment
+rejected), no redundant title/layer/legend cards, teal accents, locality search,
+station details and permanently visible latest-known measurements with explicit observation age.
+The assistant owns frontend design/implementation for this redesign; the owner reviews and steers.
+This supersedes the earlier owner-written choice for this frontend scope only.
+
+The final product target is continuous **hourly** air-quality exploration, including modelled
+estimates when station measurements for the selected hour are unavailable. Freshness is metadata,
+not a gate on time navigation. The timeline moves one hour at a time across a supported published
+range, with gaps explicitly explained rather than skipped. Show a model surface plus independently
+inspectable station measurements; never imply a station observation measures an entire area.
+
+Values retain measured/modelled provenance, valid hour or original observation interval, units,
+model run/version, spatial resolution and uncertainty/validation information. A stale observation is
+not a current-hour measurement. Model failure still produces an explicit unavailable state; continuous
+coverage is the product objective, not permission to invent unsupported values. Forecast, analysis
+and reanalysis products and later revisions remain distinguishable.
+
+CAMS hourly European analyses/forecasts and historical reanalyses are an initial provider candidate,
+subject to access, rights, pollutant inventory and validation. Start with a published model product;
+observation fusion or higher-resolution downscaling requires a separately evaluated method. Satellite
+columns remain a separate context layer, not surface concentrations.
+
+The current public snapshot contains one latest-valid row per station/pollutant, not an hourly series.
+Build the latest-known interim view and honest history-unavailable state first. Activate the hourly
+product only after bounded public history/model artifacts exist. Keep private database credentials
+out of browser assets; the single-stream pilot is not national history.
+
+Delivery dependencies: reviewed source rights/inventory; historical observations with corrections
+and withdrawals; hourly model ingestion and retained runs; bounded public products; validation and
+provenance; working hourly navigation and model colouring with documented per-pollutant units and
+legend. In the all-pollutants view, the principal indicator will be the European AQI category,
+with valid hour and provenance; never an invented numerical score or an average across pollutants
+or stations. The local frontend currently labels this calculation as pending. EU AQI remains gated
+on its actual method, station-type completeness, hourly alignment and QA. Grey/no-data never means
+clean air. Current station freshness colours remain distinct from concentration severity.
+
+Exact-address extension: add street/house-number geocoding with result precision and map-pin
+confirmation; keep locality search as fallback. Geoapify was selected by the owner; the frontend adapter is implemented, configured locally and verified with a live public-address
+request. Production key restrictions and deployment configuration remain pending. For each point/pollutant/hour, station
+assignment requires a validated representativeness area and a compatible measurement. Distance
+alone never defines coverage. Otherwise use an available model grid cell and label it modelled;
+if neither source is available, show an explicit unavailable state plus nearby reference stations.
+Model resolution and provenance remain visible even for a precisely geocoded address.
+
+See [Frontend design](frontend-design.md) for layout, time semantics, layer behaviour and delivery gates.
 
 ## History collection and next bounded implementation
 
@@ -151,11 +201,11 @@ expired observations produce visibly degraded service. Independent monitoring mu
 runs and stale served data. The initial warning proposal is two missed hourly update checks;
 measured provider/publication latency must determine final SLOs.
 
-Release/data publication separation and these monitoring/recovery drills remain unimplemented.
-Both current refresh and Pages workflows still run the full audit gate. The bounded October 6 PR
-repairs source-map-js and adds manual device metadata synchronization; it documents the reliability
-policy without changing the workflows. The implementation sequence and acceptance scenarios are
-in [operations](operations.md#production-availability-and-freshness-policy).
+October 8 local implementation separates code releases from data-only refresh/deployment using
+retained approved-site artifacts. It adds a separate hourly served-data monitor and a daily full
+security gate. Full local tests/build/audit and workflow syntax checks pass; remote execution,
+initial artifact bootstrap, notification delivery and recovery drills remain pending. See
+[release separation](release-separation.md) for verification evidence and retention limits.
 
 ## Continuation gate
 

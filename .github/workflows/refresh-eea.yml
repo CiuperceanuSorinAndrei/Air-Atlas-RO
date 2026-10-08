@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: read
+  actions: read
 
 concurrency:
   group: refresh-eea
@@ -17,20 +18,6 @@ jobs:
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    services:
-      postgres:
-        image: postgis/postgis:17-3.5@sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6
-        env:
-          POSTGRES_PASSWORD: atlas_ci_only
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    env:
-      PGPASSWORD: atlas_ci_only
     outputs:
       sha: ${{ steps.base.outputs.sha }}
     steps:
@@ -42,10 +29,10 @@ jobs:
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           python-version: '3.13'
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
-        with:
-          node-version: '24'
-          cache: npm
+      - name: Require an approved code release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/approved_site.py
       - name: Choose metadata cache key
         id: cache-date
         run: echo "date=$(date -u +%Y-%m-%d)" >> "$GITHUB_OUTPUT"
@@ -54,34 +41,12 @@ jobs:
           path: .cache/eea_station_metadata.json
           key: eea-metadata-${{ steps.cache-date.outputs.date }}
           restore-keys: eea-metadata-
-      - name: Verify database migrations
-        run: bash scripts/check_database.sh
       - name: Import EEA observations
         run: uv run --locked python scripts/import_eea.py
       - name: Verify generated snapshot
         run: |
           uv run --locked python scripts/import_eea.py --check src/data/observations.json
-          bash scripts/check.sh
-      - name: Require recent observations
-        run: |
-          python3 - <<'PY'
-          import json
-          from datetime import UTC, datetime, timedelta
-          from pathlib import Path
-
-          document = json.loads(Path('src/data/observations.json').read_text())
-          now = datetime.now(UTC)
-          fresh = sum(
-              datetime.fromisoformat(row['observedFrom']) <= now
-              and datetime.fromisoformat(row['reportedAt']) <= now
-              and datetime.fromisoformat(row['observedTo']) - datetime.fromisoformat(row['observedFrom']) in (timedelta(hours=1), timedelta(days=1))
-              and now - datetime.fromisoformat(row['observedTo']) < timedelta(hours=6)
-              for row in document['observations']
-          )
-          print(f"Fresh observations: {fresh}; imported: {document['importSummary']['imported']}")
-          if fresh == 0:
-              raise SystemExit('EEA import has no observations for the six-hour map window')
-          PY
+          uv run --locked pytest tests/test_import_eea.py
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
           name: verified-snapshot
@@ -94,6 +59,7 @@ jobs:
     timeout-minutes: 10
     permissions:
       contents: write
+      actions: read
       checks: write
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -106,6 +72,10 @@ jobs:
       - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
         with:
           python-version: '3.13'
+      - name: Recheck approved application assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/approved_site.py
       - name: Revalidate publication boundary
         run: |
           uv run --locked python - <<'PY'
@@ -126,10 +96,12 @@ jobs:
             echo 'Snapshot unchanged'
             exit 0
           fi
+          if [ "$(git diff --cached --name-only)" != 'src/data/observations.json' ]; then
+            echo 'Publication may change only observations.json'
+            exit 1
+          fi
           git commit -m 'data: refresh EEA observations'
           candidate="refresh-candidate-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
-          # Main requires a successful check. Publish the verified commit to a
-          # temporary branch first; non-fast-forward main updates still fail closed.
           git push origin "HEAD:refs/heads/$candidate"
           trap 'git push origin --delete "$candidate" || true' EXIT
           python3 - <<'PY'
@@ -144,7 +116,7 @@ jobs:
               'conclusion': 'success',
               'output': {
                   'title': 'Verified EEA snapshot',
-                  'summary': 'scripts/check.sh passed after import; freshness and coverage/regression guards passed. Only observations.json changed.',
+                  'summary': 'Importer tests, schema and coverage/regression guards passed. Only observations.json changed; unchanged code has a matching successfully deployed approved-site artifact. Freshness is monitored separately.',
               },
           }
           path = Path(os.environ['RUNNER_TEMP']) / 'snapshot-check.json'

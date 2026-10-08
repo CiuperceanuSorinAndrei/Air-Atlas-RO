@@ -8,8 +8,8 @@ successful check from GitHub Actions, linear history, resolved review conversati
 force pushes/deletion. Fast-forward the same verified SHA to `main` or merge a checked pull request.
 Never manufacture a passing check for code that has not completed the gate.
 
-The refresh workflow checks its exact candidate, including SQL migrations and freshness, then
-uploads only the JSON. Its write job revalidates coverage/interval regression against the same
+The refresh workflow requires matching approved code assets, then checks its exact data candidate
+with importer tests and integrity validation before uploading only the JSON. Its write job revalidates coverage/interval regression against the same
 base SHA. A temporary branch makes the candidate SHA available to GitHub; the workflow records
 its actual completed gate as `production-checks`, pushes fast-forward to protected `main` and
 removes the temporary branch. Failure or a racing main change leaves the published snapshot intact.
@@ -20,7 +20,7 @@ The next scheduled/manual run starts from the new main; no force push or automat
 Inspect `Refresh EEA observations` and the subsequent Pages run separately. Code, data import,
 publication and deployment are distinct outcomes. Check public `observations.json`, its maximum
 `ingestedAt`, failed/skipped counts and measurement freshness. A successful build alone does not
-prove fresh data. The frontend expires old readings even when updates fail.
+prove fresh data. The redesigned frontend preserves latest-known readings with visible age even when updates fail; their recent status expires.
 
 Snapshot publication rejects any nonzero `importSummary.failed`, including when only expired
 previous readings are absent or no baseline file exists. The collector still returns partial reports
@@ -38,7 +38,8 @@ matches, changed series and failed verification do not establish invalidation. T
 also match the latest valid source row, including its value, interval, quality and provenance;
 only its ingestion timestamp may differ. Every regressed pair must pass, or the entire previous
 snapshot remains intact. The collect and publish jobs independently recheck this boundary.
-The workflow separately requires recent observations before publication.
+Measurement recency is monitored separately and does not reject a structurally valid latest-known
+snapshot. The frontend preserves the original observation time and labels expired data.
 
 Transient network/provider failures may recover on the next run. Schema, identity, unit, coordinate
 conflict, recent lost pair or unconfirmed regressed interval errors require source review. Confirmed
@@ -55,9 +56,11 @@ on email or GitHub's hourly schedule as a production freshness SLA.
 
 ## Production availability and freshness policy
 
-Decision recorded October 6. This is the target operating policy; workflow separation, independent
-monitoring, alert delivery and a degraded-service status are not implemented by this change.
-The current refresh and Pages workflows still run the complete release gate, including npm audit.
+Decision recorded October 6; local workflow implementation added October 8. Code releases retain
+the full gate. Data updates reuse approved assets and run data-specific integrity checks. A separate
+hourly served-data monitor and daily full security gate are implemented; remote execution and alert
+delivery remain unverified. See [release separation](release-separation.md) for exact mechanics and
+bootstrap/retention limits. The frontend displays old readings with their age.
 
 A reachable page with expired observations is a degraded air-quality service. Measure page/data
 availability separately from measurement freshness and source coverage. Track three distinct
@@ -70,12 +73,12 @@ and observation age separately rather than requiring a changed payload every hou
 | --- | --- |
 | New release fails tests or dependency audit | Block that release; retain the accepted application version. A build-only advisory must not independently stop valid data refreshes on an approved execution environment. |
 | Provider timeout, invalid data or rejected snapshot | Preserve the last accepted snapshot and its actual timestamps; use bounded retries for transient errors, then alert. Never relabel old observations as fresh. |
-| Freshness or coverage falls below the accepted target | Keep the page available with explicit degraded status, last accepted update and affected coverage. Exclude expired readings from current measurements; show them only in a separately labelled historical view if one is implemented. |
+| Freshness or coverage falls below the accepted target | Keep the page available with explicit degraded status, last accepted update and affected coverage. Keep latest-known readings visibly labelled with age; never imply they measure the selected current hour. Future hourly products distinguish modelled estimates from measurements. |
 | Exploitable vulnerability affects the active serving or ingestion component | Assess exposure and isolate, roll back or stop the affected component as needed; document the mitigation. Do not bypass the audit with blanket continue-on-error. |
 
 The initial warning threshold is two missed expected hourly end-to-end update checks. Account for
-run duration and observed scheduling delay when implementing it. The existing six-hour display
-window remains a measurement cutoff, not an availability SLA. Choose and validate numerical SLOs
+run duration and observed scheduling delay when implementing it. The existing six-hour recency
+window remains a freshness label, not an availability SLA. Choose and validate numerical SLOs
 from observed provider cadence, publication latency and covered station/pollutant pairs before
 making a national production promise. One recent reading must not hide widespread coverage loss.
 
@@ -85,12 +88,13 @@ recovered; the current frontend fetch-error message alone does not detect this i
 alert delivery with controlled failures and send a recovery notice only after served data passes
 the same checks. GitHub workflow emails alone are not this monitor.
 
-### Planned separation of releases and data publication
+### Separation of releases and data publication
 
 1. Release code and dependencies through full tests, SQL checks, security audit and build. Record
    the accepted commit and immutable application/ingestion artifacts with provenance and hashes.
 2. Run periodic ingestion using the approved code and locked execution environment. Its gate checks
-   schema, identity, units, quality, intervals, freshness, failed attempts and coverage/regression.
+   schema, identity, units, quality, intervals, failed attempts and coverage/regression.
+   Measurement freshness is monitored separately.
    Security monitoring remains active separately; new advisories require triage and a patched release.
 3. Publish only validated snapshots alongside the exact accepted application assets, atomically.
    Pages must not rebuild or re-audit the application for each data-only update. Verify the code
@@ -103,11 +107,10 @@ the same checks. GitHub workflow emails alone are not this monitor.
    scheduling, stale/partial coverage and recovery. Assert the accepted site survives, bad data never
    replaces valid data, alerts arrive, and approved fresh data can still publish during a blocked release.
 
-Until those gates are implemented and demonstrated, keep the current fail-closed publication
-checks. Do not remove npm audit from only the collector: Pages currently repeats the same gate.
-The immediate recovery for October 6 is the reviewed source-map-js patch and a verified refresh
-followed by Pages; that restores this incident but does not implement the planned separation.
-
+The local implementation is ready for remote validation; do not claim the separation is operational
+before the initial approved code artifact and a real data-only Pages run are verified. Existing
+source-integrity guards remain mandatory. Remote failure/recovery drills and notification delivery
+are still pending; [release separation](release-separation.md) records the current evidence.
 Sources: [Google SRE data-processing guidance](https://sre.google/workbook/data-processing/)
 for freshness/correctness and end-to-end measurement;
 [GitHub schedule limitations](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule)
@@ -118,7 +121,7 @@ for delayed or dropped scheduled jobs.
 Revert the faulty code commit on a review branch, run checks, then merge/push the verified revert.
 Do not reset/force-push main. For a bad data snapshot, restore the last accepted JSON in a reviewed
 commit, documenting why intentionally older data is being used. Deploy that checked commit and
-verify the public JSON/assets. Old data may correctly disappear from the recent map.
+verify the public JSON/assets. Old data loses recent status; the redesigned latest-known view keeps accepted values visible with age.
 
 Database migrations are applied separately from code deployment. Tables are private; the October 1 EEA pilot stores history. The repository migrations reproduce the foundation; CI tests rebuild it from zero.
 Before storing real history, establish backup retention and restore drills, then use additive,
