@@ -54,6 +54,23 @@ Workflow-failure emails are owner-reported enabled. Delivery is not independentl
 verify a controlled failure reaches the chosen inbox before claiming alert coverage. Do not rely
 on email or GitHub's hourly schedule as a production freshness SLA.
 
+## External scheduling and monitoring
+
+Checkly now dispatches `refresh-eea.yml` every 60 minutes and checks the public snapshot every
+15 minutes, independently of GitHub cron. Both checks rotate between Frankfurt and London,
+use no retries, and subscribe to the owner email channel for failure/recovery. The public monitor
+requires ingestion strictly younger than two hours and at least one reading strictly younger than
+six hours; it does not establish complete national coverage. The Python fallback report now exposes
+`ingestion_age_hours` and `ingestion_is_recent` to distinguish source latency from ingestion delay.
+
+The dispatch and public-data checks passed remote test sessions. A controlled scheduled failure
+and recovery produced successful Checkly email-send records; inbox receipt is still owner-confirmed
+evidence. The public-data check also passed its first automatic production run. Keep GitHub schedules
+as fallback until a recurring external dispatch completes import, publication and served-data
+verification, then review observed cadence. An interval is not an exact top-of-hour start or an SLA.
+See [Checkly configuration and evidence](../ops/checkly/README.md) for source, non-secret settings,
+check IDs and verification limits. Checkly credentials remain outside Git and browser assets.
+
 ## Production availability and freshness policy
 
 Decision recorded October 6; local workflow implementation added October 8. Code releases retain

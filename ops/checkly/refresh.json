@@ -1,0 +1,60 @@
+{
+  "id": "4846df0d-497f-4008-8b3a-c31754cda413",
+  "name": "Atlas Refresh",
+  "checkType": "API",
+  "activated": true,
+  "frequency": 60,
+  "locations": [
+    "eu-central-1",
+    "eu-west-2"
+  ],
+  "doubleCheck": false,
+  "retryStrategy": null,
+  "runParallel": false,
+  "request": {
+    "method": "POST",
+    "url": "https://api.github.com/repos/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/workflows/refresh-eea.yml/dispatches",
+    "body": "{\n  \"ref\": \"main\"\n}",
+    "bodyType": "JSON",
+    "headers": [
+      {
+        "key": "Authorization",
+        "value": "Bearer {{ATLAS_GITHUB_TOKEN}}",
+        "locked": false
+      },
+      {
+        "key": "Accept",
+        "value": "application/vnd.github+json",
+        "locked": false
+      },
+      {
+        "key": "X-GitHub-Api-Version",
+        "value": "2026-03-10",
+        "locked": false
+      }
+    ],
+    "queryParameters": [],
+    "assertions": [
+      {
+        "regex": null,
+        "source": "STATUS_CODE",
+        "target": "200",
+        "property": "",
+        "comparison": "EQUALS"
+      }
+    ],
+    "basicAuth": {
+      "password": "",
+      "username": ""
+    },
+    "followRedirects": false,
+    "skipSSL": false,
+    "ipFamily": "IPv4"
+  },
+  "alertChannelSubscriptions": [
+    {
+      "alertChannelId": 357384,
+      "activated": true
+    }
+  ]
+}

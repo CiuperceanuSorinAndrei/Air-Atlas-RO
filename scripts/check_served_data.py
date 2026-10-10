@@ -21,6 +21,7 @@ def assess_snapshot(document, now):
         < timedelta(hours=6)
     ]
     latest_ingestion = max(datetime.fromisoformat(row["ingestedAt"]) for row in rows)
+    ingestion_is_recent = timedelta(0) <= now - latest_ingestion < timedelta(hours=2)
     report = {
         "readings": len(rows),
         "recent_readings": len(recent),
@@ -34,10 +35,10 @@ def assess_snapshot(document, now):
             datetime.fromisoformat(row["observedTo"]) for row in rows
         ).isoformat(),
         "latest_ingestion": latest_ingestion.isoformat(),
+        "ingestion_age_hours": (now - latest_ingestion).total_seconds() / 3600,
+        "ingestion_is_recent": ingestion_is_recent,
     }
-    degraded = not recent or not timedelta(0) <= now - latest_ingestion < timedelta(
-        hours=2
-    )
+    degraded = not recent or not ingestion_is_recent
     return report, degraded
 
 
@@ -63,7 +64,9 @@ def main():
     print(json.dumps(report, indent=2))
     if degraded:
         raise SystemExit(
-            "Degraded: no recent readings or no served import within two hours."
+            f"Degraded: recent_readings={report['recent_readings']}; "
+            f"ingestion_age_hours={report['ingestion_age_hours']:.2f} ore; "
+            f"ingestion_is_recent={report['ingestion_is_recent']}."
         )
 
 
