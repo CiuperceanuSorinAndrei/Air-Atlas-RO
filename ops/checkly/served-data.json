@@ -1,0 +1,26 @@
+{
+  "name": "Atlas served data",
+  "activated": true,
+  "frequency": 15,
+  "locations": [
+    "eu-central-1",
+    "eu-west-2"
+  ],
+  "runParallel": false,
+  "doubleCheck": false,
+  "retryStrategy": null,
+  "runtimeId": "2026.04",
+  "tags": [
+    "atlas"
+  ],
+  "alertChannelSubscriptions": [
+    {
+      "alertChannelId": 357384,
+      "activated": true
+    }
+  ],
+  "useGlobalAlertSettings": true,
+  "description": "Public Atlas JSON: ingestion younger than 2 hours, measurements younger than 6 hours, successful import summary.",
+  "scriptFile": "served-data.check.js",
+  "id": "edbbcb9b-a4a3-4dae-a613-5b5ea83dd42e"
+}
