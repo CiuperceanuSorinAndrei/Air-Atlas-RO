@@ -23,6 +23,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
+          ref: main
           persist-credentials: false
       - id: base
         run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
@@ -89,6 +90,12 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          base=$(git rev-parse HEAD)
+          git fetch --no-tags origin main
+          if [ "$(git rev-parse FETCH_HEAD)" != "$base" ]; then
+            echo '::notice::Main advanced; discard this snapshot and collect again on the next run.'
+            exit 0
+          fi
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add -- src/data/observations.json
@@ -123,4 +130,11 @@ jobs:
           path.write_text(json.dumps(result))
           subprocess.run(['gh', 'api', '--method', 'POST', f"repos/{os.environ['GITHUB_REPOSITORY']}/check-runs", '--input', str(path)], check=True, stdout=subprocess.DEVNULL)
           PY
-          git push origin HEAD:main
+          if ! git push origin HEAD:main; then
+            git fetch --no-tags origin main
+            if [ "$(git rev-parse FETCH_HEAD)" != "$base" ]; then
+              echo '::notice::Main advanced during publication; discard this snapshot and collect again on the next run.'
+              exit 0
+            fi
+            exit 1
+          fi

@@ -19,7 +19,12 @@
       "activated": true
     }
   ],
-  "useGlobalAlertSettings": true,
+  "useGlobalAlertSettings": false,
+  "alertSettings": {
+    "escalationType": "RUN_BASED",
+    "runBasedEscalation": { "failedRunThreshold": 1 },
+    "reminders": { "amount": 0, "interval": 5 }
+  },
   "description": "Public Atlas JSON: ingestion younger than 2 hours, measurements younger than 6 hours, successful import summary.",
   "scriptFile": "served-data.check.js",
   "id": "edbbcb9b-a4a3-4dae-a613-5b5ea83dd42e"

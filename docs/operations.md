@@ -8,11 +8,14 @@ successful check from GitHub Actions, linear history, resolved review conversati
 force pushes/deletion. Fast-forward the same verified SHA to `main` or merge a checked pull request.
 Never manufacture a passing check for code that has not completed the gate.
 
-The refresh workflow requires matching approved code assets, then checks its exact data candidate
+The refresh workflow checks out current `main` when collection starts, including after a queued
+dispatch. It requires matching approved code assets, then checks its exact data candidate
 with importer tests and integrity validation before uploading only the JSON. Its write job revalidates coverage/interval regression against the same
 base SHA. A temporary branch makes the candidate SHA available to GitHub; the workflow records
 its actual completed gate as `production-checks`, pushes fast-forward to protected `main` and
-removes the temporary branch. Failure or a racing main change leaves the published snapshot intact.
+removes the temporary branch. A main change before or during the final push discards the obsolete
+candidate with a workflow notice and a successful exit; it does not publish or rebase that candidate.
+Other fetch/push failures still fail the workflow. Every failure leaves the published snapshot intact.
 The next scheduled/manual run starts from the new main; no force push or automatic rebase is used.
 
 ## Import failure or stale page
@@ -63,11 +66,19 @@ requires ingestion strictly younger than two hours and at least one reading stri
 six hours; it does not establish complete national coverage. The Python fallback report now exposes
 `ingestion_age_hours` and `ingestion_is_recent` to distinguish source latency from ingestion delay.
 
+Both Checkly checks use explicit per-check alert settings: alert on the first failed run, no reminder
+emails during a continuing incident, and the existing failure/recovery email subscription. Freshness
+thresholds and validation remain unchanged. The GitHub served-data monitor is manual-only to avoid
+duplicate workflow-failure emails for the same stale measurements; Checkly continues every 15 minutes.
+The hourly GitHub refresh fallback and daily full security checks remain scheduled.
+
 The dispatch and public-data checks passed remote test sessions. A controlled scheduled failure
 and recovery produced successful Checkly email-send records; inbox receipt is still owner-confirmed
 evidence. The public-data check also passed its first automatic production run. Keep GitHub schedules
-as fallback until a recurring external dispatch completes import, publication and served-data
-verification, then review observed cadence. An interval is not an exact top-of-hour start or an SLA.
+for refresh as fallback. October 12 inspection found 41 consecutive hourly Checkly dispatches and
+multiple successful downstream refresh/Pages cycles. Direct checks of six EEA series matched public
+values and intervals ending October 10 at 20:00 UTC; recent ingestion did not make those measurements
+fresh. This bounded sample does not establish nationwide source freshness or an availability SLA.
 See [Checkly configuration and evidence](../ops/checkly/README.md) for source, non-secret settings,
 check IDs and verification limits. Checkly credentials remain outside Git and browser assets.
 
@@ -75,8 +86,9 @@ check IDs and verification limits. Checkly credentials remain outside Git and br
 
 Decision recorded October 6; local workflow implementation added October 8. Code releases retain
 the full gate. Data updates reuse approved assets and run data-specific integrity checks. A separate
-hourly served-data monitor and daily full security gate are implemented; remote execution and alert
-delivery remain unverified. See [release separation](release-separation.md) for exact mechanics and
+independent 15-minute served-data monitor and daily full security gate are implemented. Controlled
+Checkly email sends and automatic monitor execution have been verified; inbox receipt is owner-reported.
+See [release separation](release-separation.md) for exact mechanics and
 bootstrap/retention limits. The frontend displays old readings with their age.
 
 A reachable page with expired observations is a degraded air-quality service. Measure page/data

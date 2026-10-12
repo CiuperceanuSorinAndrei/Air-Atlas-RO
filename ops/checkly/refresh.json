@@ -11,6 +11,12 @@
   "doubleCheck": false,
   "retryStrategy": null,
   "runParallel": false,
+  "useGlobalAlertSettings": false,
+  "alertSettings": {
+    "escalationType": "RUN_BASED",
+    "runBasedEscalation": { "failedRunThreshold": 1 },
+    "reminders": { "amount": 0, "interval": 5 }
+  },
   "request": {
     "method": "POST",
     "url": "https://api.github.com/repos/CiuperceanuSorinAndrei/Air-Atlas-RO/actions/workflows/refresh-eea.yml/dispatches",
