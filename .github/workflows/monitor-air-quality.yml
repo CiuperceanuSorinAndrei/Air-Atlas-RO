@@ -1,7 +1,5 @@
 name: Monitor served air quality
 on:
-  schedule:
-    - cron: '47 * * * *'
   workflow_dispatch:
 permissions:
   contents: read
