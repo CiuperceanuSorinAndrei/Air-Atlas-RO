@@ -2,10 +2,25 @@ import test from 'node:test'
 import assert from 'node:assert/strict'
 import {
   distanceKm,
+  formatTime,
   measurementAge,
   searchLocalities,
   validateLocalities,
 } from '../src/stationView.ts'
+
+test('repeated Bucharest hours have distinct labels with their UTC offsets', () => {
+  const first = formatTime('2025-10-26T00:00:00Z')
+  const second = formatTime('2025-10-26T01:00:00Z')
+  assert.notEqual(first, second)
+  assert.match(first, /03:00.*GMT\+3/)
+  assert.match(second, /03:00.*GMT\+2/)
+})
+
+test('spring labels retain the physical interval across the skipped civil hour', () => {
+  assert.match(formatTime('2026-03-29T00:00:00Z'), /02:00.*GMT\+2/)
+  assert.match(formatTime(Date.parse('2026-03-29T01:00:00Z')), /04:00.*GMT\+3/)
+})
+
 const places = [
   {
     id: 1,

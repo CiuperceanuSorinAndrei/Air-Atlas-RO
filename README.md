@@ -47,6 +47,10 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   The `atlas_ingestor` migration starts without a login and grants only scoped EEA ingestion
   rights; a separate private login is activated for the pilot. The frontend and latest-map importer do not connect to this database.
 
+A [local RNMCA DJ-1 / NO2 pilot](docs/rnmca-pilot.md) checks native QA and assembles one
+completed hourly observation with UTC time, source provenance and a detached original. It is
+offline and does not publish RNMCA data or connect to the database/API/frontend.
+
 ## Development and checks
 
 Use Node.js 24+ and Python 3.13 with [uv](https://docs.astral.sh/uv/).
@@ -99,6 +103,9 @@ selects, normalizes and filters it. No EEA endorsement is implied. Map data and 
 [OpenStreetMap contributors](https://www.openstreetmap.org/copyright), subject to their
 [tile usage policy](https://operations.osmfoundation.org/policies/tiles/).
 The [MIT licence](LICENSE) covers project code, not third-party data or trademarks.
+The offline RNMCA fixture is attributed to [RNMCA](https://www.calitateaer.ro/); it is a
+historical, informative and unofficial source extract. Its measurement interval and processing
+are preserved in the [local pilot contract](docs/rnmca-pilot.md).
 
 ## Verified history pilot — October 1
 
