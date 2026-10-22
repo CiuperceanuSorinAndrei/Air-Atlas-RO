@@ -1,0 +1,329 @@
+{
+  "capturedDate": "2026-10-12",
+  "configurationVersion": 1791476315175,
+  "locationId": 27064,
+  "stationCode": "DJ-1",
+  "measurementValueId": 6404090401,
+  "pollutant": "NO2",
+  "unit": "ug.m-3",
+  "qaqcStates": [
+    {
+      "id": 78001,
+      "name": "Bruta",
+      "description": "Valorile cu statusul de date brute reprezinta date care au fost receptionate direct din statie."
+    },
+    {
+      "id": 78003,
+      "name": "Certificata",
+      "description": "Valorile cu statusul de date certificate reprezinta date care au fost revizuite dupa validare, posibil de catre un alt operator."
+    },
+    {
+      "id": 78002,
+      "name": "Validata",
+      "description": "Valorile cu statusul de date validate reprezinta date care au fost revizuite de catre un operator."
+    }
+  ],
+  "qaqcStatuses": [
+    {
+      "id": 79001,
+      "name": "Corect",
+      "description": "Datele sunt considerate corecte."
+    },
+    {
+      "id": 79003,
+      "name": "Incert",
+      "description": "Datele sunt considerate incerte."
+    },
+    {
+      "id": 79002,
+      "name": "Incorect",
+      "description": "Datele sunt considerate incorecte."
+    }
+  ],
+  "statusGroup": {
+    "id": 95002,
+    "name": "Grup de statusuri comun",
+    "description": "Grup de statusuri comun",
+    "statusGroupEntries": [
+      {
+        "id": 97003,
+        "status": 96011,
+        "position": 0,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97004,
+        "status": 96012,
+        "position": 1,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97005,
+        "status": 96013,
+        "position": 2,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97006,
+        "status": 96014,
+        "position": 3,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97007,
+        "status": 96015,
+        "position": 4,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97008,
+        "status": 96016,
+        "position": 5,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97009,
+        "status": 96017,
+        "position": 6,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97010,
+        "status": 96018,
+        "position": 7,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97011,
+        "status": 96019,
+        "position": 8,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97012,
+        "status": 96020,
+        "position": 9,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97013,
+        "status": 96021,
+        "position": 10,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97014,
+        "status": 96022,
+        "position": 11,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97015,
+        "status": 96023,
+        "position": 12,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97016,
+        "status": 96024,
+        "position": 13,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97017,
+        "status": 96025,
+        "position": 14,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97018,
+        "status": 96026,
+        "position": 15,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97019,
+        "status": 96029,
+        "position": 16,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97020,
+        "status": 96030,
+        "position": 17,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97021,
+        "status": 96027,
+        "position": 18,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97022,
+        "status": 96028,
+        "position": 19,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97023,
+        "status": 96003,
+        "position": 20,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97024,
+        "status": 96005,
+        "position": 21,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97025,
+        "status": 96006,
+        "position": 22,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97026,
+        "status": 96007,
+        "position": 23,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97027,
+        "status": 96008,
+        "position": 24,
+        "invalidatesValue": true
+      },
+      {
+        "id": 97028,
+        "status": 96009,
+        "position": 25,
+        "invalidatesValue": false
+      },
+      {
+        "id": 97029,
+        "status": 96010,
+        "position": 26,
+        "invalidatesValue": true
+      }
+    ]
+  },
+  "dataElement": {
+    "timestamp": 1791658800000,
+    "usable": true,
+    "dataElementFields": {
+      "type": "Webs_FieldsHourlyValue",
+      "value": 48.81861538888885,
+      "status": 0,
+      "version": 3613450,
+      "percentage": 100.0,
+      "standardDeviation": 16.38923614344896,
+      "minTimestamp": 1791658690000,
+      "minValue": 19.03124,
+      "maxTimestamp": 1791656640000,
+      "maxValue": 92.10496,
+      "qaqcStateId": 78002,
+      "qaqcStatusId": 79001
+    }
+  },
+  "sourceFiles": {
+    "rnmca-DJ-1-7d.json": {
+      "bytes": 904204,
+      "sha256": "66b0fb6c1ea8a1ee27daf8c37d972f2eee0d2564c6ffc03bdd75d045dd93c4c9"
+    },
+    "atlas-rnmca-full-config-20261012.json": {
+      "bytes": 5648138,
+      "sha256": "e869f22cc922b771227afdd89119559510702377ec09bfb74b86dc45a831ec13"
+    },
+    "atlas-rnmca-main-openapi-20261012.json": {
+      "bytes": 85936,
+      "sha256": "da5354788a19221609ca3fed30e2af6980108928c52755a7f13ac206e25eeeb6"
+    }
+  },
+  "measurementValue": {
+    "id": 6404090401,
+    "name": "Valori orare",
+    "description": "Valori orare",
+    "valueSubtype": 4001,
+    "performRangeCheck": true,
+    "statusGroup": 95002,
+    "measurementValueThresholds": [
+      {
+        "id": 46640409040104,
+        "thresholdSimple": 4040131
+      },
+      {
+        "id": 46640409040101,
+        "thresholdSimple": 4040133
+      },
+      {
+        "id": 46640409040102,
+        "thresholdSimple": 4040111
+      },
+      {
+        "id": 46640409040103,
+        "thresholdSimple": 4040129
+      }
+    ],
+    "measurementValueComputations": [
+      {
+        "id": 96404090401,
+        "type": 17001,
+        "settings": {
+          "type": "Webs_ValueSettingsHourly",
+          "id": 76404090401,
+          "intervalBetweenValues": 1,
+          "computeSum": false
+        }
+      }
+    ],
+    "parameterMeasurementUnit": 320401,
+    "versioned": true
+  },
+  "parameterMeasurementUnit": {
+    "id": 320401,
+    "parameter": 31004,
+    "measurementUnit": 30001
+  },
+  "measurementUnit": {
+    "id": 30001,
+    "symbol": "µg/m³",
+    "name": "micrograme pe metru cub",
+    "description": "micrograme pe metru cub"
+  },
+  "parameter": {
+    "id": 31004,
+    "code": "NO2",
+    "name": "NO2",
+    "description": "Concentratia dioxidului de azot",
+    "parameterMeasurementUnits": [
+      {
+        "id": 320404,
+        "parameter": 31004,
+        "measurementUnit": 30004
+      },
+      {
+        "id": 320438,
+        "parameter": 31004,
+        "measurementUnit": 30038
+      },
+      {
+        "id": 320401,
+        "parameter": 31004,
+        "measurementUnit": 30001
+      },
+      {
+        "id": 320402,
+        "parameter": 31004,
+        "measurementUnit": 30002
+      }
+    ]
+  },
+  "valueSubtype": {
+    "id": 4001,
+    "name": "Valori orare",
+    "description": "Hourly averages description",
+    "valueType": 3001
+  }
+}
