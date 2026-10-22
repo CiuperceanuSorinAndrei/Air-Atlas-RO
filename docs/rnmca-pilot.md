@@ -91,8 +91,13 @@ The fix includes <https://github.com/advisories/GHSA-rq7h-c2jc-7f22> and
 <https://github.com/advisories/GHSA-vfpm-58rq-9qcg>; npm audit is rerun on the resulting lock.
 
 Final local closure gate: 339 Python tests passed; 15 PostgreSQL/PostGIS tests skipped
-without a local DSN and delegated to required CI. All 32 frontend tests, Ruff, ESLint,
+without a local DSN and delegated to required CI. All 34 frontend tests, Ruff, ESLint,
 snapshot validation and production build passed. npm audit reported zero vulnerabilities;
 OSV returned no advisories for the 11 locked PyPI packages plus uv 0.13.4.
 An independent check covered all 1,000 millisecond offsets at each of three dates
 (2026, 2500 and 9999), 3,000 cases in total.
+
+The closure also repairs the existing map time formatter: every Bucharest timestamp includes
+its UTC offset. Repeated autumn 03:00 labels now distinguish GMT+3 from GMT+2, and spring
+interval labels distinguish 02:00 GMT+2 from 04:00 GMT+3. The formatter lives in stationView
+and is used directly by App; regression tests exercise that shared function.

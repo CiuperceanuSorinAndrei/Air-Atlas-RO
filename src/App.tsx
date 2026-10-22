@@ -22,6 +22,7 @@ import { searchAddresses, type AddressResult } from './addressSearch'
 import { isRecentObservation } from './observationFreshness'
 import {
   distanceKm,
+  formatTime,
   measurementAge,
   searchLocalities,
   searchText,
@@ -47,15 +48,6 @@ const pollutantNames: Record<string, string> = {
   SO2: 'Dioxid de sulf',
   CO: 'Monoxid de carbon',
 }
-const formatTime = (value: string | number) =>
-  new Date(value).toLocaleString('ro-RO', {
-    timeZone: 'Europe/Bucharest',
-    day: '2-digit',
-    month: 'short',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
 const formatValue = (value: number) =>
   value.toLocaleString('ro-RO', { maximumFractionDigits: 2 })
 const romaniaBounds: [LatLngTuple, LatLngTuple] = [

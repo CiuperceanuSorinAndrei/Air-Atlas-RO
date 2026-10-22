@@ -1,5 +1,17 @@
 import type { AirQualityObservation } from './airQualityObservation'
 
+export function formatTime(value: string | number): string {
+  return new Date(value).toLocaleString('ro-RO', {
+    timeZone: 'Europe/Bucharest',
+    timeZoneName: 'shortOffset',
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
+}
+
 export type Locality = {
   id: number
   name: string
