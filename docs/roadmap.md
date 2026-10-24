@@ -1,12 +1,12 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-08.
+work are deliberately separated. Last reviewed: 2026-10-24.
 
 ## Existing stage
 
 The snapshot pipeline supports EEA NO2, PM10, PM2.5, SO2, O3 and CO with source provenance,
-interval/status display, partial coverage, a six-hour freshness filter and snapshot-to-Pages automation.
+interval/status display, partial coverage, explicit age for latest-known readings and snapshot-to-Pages automation.
 Manual history selectors/normalization exist. A private multi-source Supabase/PostGIS
 foundation exists, with reproducible migrations and integrity/security tests.
 
@@ -14,6 +14,21 @@ The September 30 hardening work adds strict data contracts, download limits, exp
 regression-safe atomic publication, frontend snapshot validation/polling, accessible information,
 licence attribution, dependency repair and publication checks. The October 1 work separately adds history
 collection and a manual persistence pilot; national pollution scoring remains unimplemented.
+
+## Current implementation gate — October 24
+
+The offline [RNMCA DJ-1 / NO2 pilot](rnmca-pilot.md) now normalizes batches, reconciles duplicates
+and corrections by interval/source version before QA filtering, retains withdrawal revisions and
+reports missing accepted UTC hours in explicit windows. Historical replay and synthetic regressions
+cover these contracts; this does not activate live RNMCA ingestion, persistence or public delivery.
+
+Next: settle bounded EEA normalization and eligible per-hour fallback against the captured RNMCA
+reference. Preserve original source labels and normalization versions; no blanket one-hour shift.
+Then build one complete worker → PostgreSQL/PostGIS → thin Python read API → frontend pilot.
+The accepted launch target is one VPS with Compose, within 20 EUR/month excluding domain and
+external backup; provider/size await measurements. The current public path remains EEA JSON.
+Automatic off-site backup and isolated restore precede recurring production history. Prepare/test
+Compose with the complete pilot; no infrastructure provisioning is part of this checkpoint.
 
 ## Frontend redesign and temporal exploration — October 8
 
@@ -65,7 +80,7 @@ Model resolution and provenance remain visible even for a precisely geocoded add
 
 See [Frontend design](frontend-design.md) for layout, time semantics, layer behaviour and delivery gates.
 
-## History collection and next bounded implementation
+## History collection and persistence foundation
 
 `collect_history` now combines manually selected series without station/pollutant fallback.
 It retains source/series IDs, intervals, aggregation and quality. Duplicate URLs are fetched once;
@@ -156,19 +171,18 @@ and deployment results must be recorded separately; test coverage alone does not
 
 ## Subsequent milestones and gates
 
-1. SO2, O3, PM2.5 and CO are supported by the snapshot importer and frontend. Preserve source
-   units: CO in `mg.m-3`, all other supported pollutants in `ug.m-3`. Interval, quality and six-hour
-   freshness rules apply independently to each reading; no national completeness is implied.
-2. Preserve station classification and scoring windows. Implement European AQI from its official
-   method only after temporal completeness and QA rules are tested. US AQI is a separate method.
-   Do not derive a national score from one latest NO2/PM10 reading.
-3. Add legally permitted original Romanian providers after access, licence, attribution, inventory,
-   authority tier and overlap review. RNMCA credentials and supplier permissions remain pending.
-4. Add CAMS model layers and Sentinel-5P column context as separate domains. Satellite columns are
-   not surface concentrations; any conversion requires independent validation and uncertainty.
-5. National release requires a durable scheduler, measured freshness/availability targets,
-   independently tested alert delivery, backup/restore drills after data is stored, operational
-   ownership and a supported tile-hosting plan. GitHub cron and public OSM tiles remain demo choices.
+1. Complete the shared observation contract: EEA normalization and per-interval fallback remain
+   open after the bounded RNMCA window. Preserve source units, QA, original labels and gaps.
+2. Build one complete worker/database/API/frontend pilot, including bounded queries, replay,
+   corrections/withdrawals, failure recovery and tested Compose configuration.
+3. Expand scheduled hourly history and legally permitted sources after rights/inventory review,
+   live writer verification and automatic external backup/isolated restore. RNMCA authenticated
+   access is verified; public storage/display rights remain source-specific release gates.
+4. Add validated CAMS hourly model products, then temporal map exploration. Keep Sentinel-5P
+   columns separate from surface concentrations; conversion requires independent validation.
+5. Implement European AQI from its official method after alignment, completeness and QA gates.
+6. National operations require measured freshness/availability targets, verified alert delivery,
+   resource limits, operational ownership, backup/restore and a supported tile-hosting plan.
 
 ## Operational work already planned
 

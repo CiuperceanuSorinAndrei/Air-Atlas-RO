@@ -9,6 +9,7 @@ from scripts.import_rnmca import (
     RNMCA_INVALID_STATUS_MASK,
     RNMCA_KNOWN_STATUS_MASK,
     normalize_rnmca_observation,
+    normalize_rnmca_observations,
     rnmca_effective_value,
     rnmca_hourly_is_eligible,
 )
@@ -327,3 +328,75 @@ def test_ordinary_missing_value_is_an_explicit_error(row):
 
     with pytest.raises(ValueError, match="Missing RNMCA value"):
         rnmca_effective_value(row)
+
+
+@pytest.mark.parametrize("rejected_only", [False, True])
+def test_batch_without_accepted_rows_returns_empty_list(row, rejected_only):
+    row["usable"] = False
+    rows = [row] if rejected_only else []
+
+    assert (
+        normalize_rnmca_observations(
+            rows,
+            location_id=CAPTURE["locationId"],
+            measurement_value_id=CAPTURE["measurementValueId"],
+            ingested_at=INGESTED_AT,
+        )
+        == []
+    )
+
+
+def test_batch_preserves_order_duplicates_zero_and_input(row):
+    zero = deepcopy(row)
+    zero["rangeExceedance"] = {"overrideValue": 0}
+    rejected = deepcopy(row)
+    rejected["usable"] = False
+    rows = [zero, rejected, row, row]
+    original = deepcopy(rows)
+
+    observations = normalize_rnmca_observations(
+        rows,
+        location_id=CAPTURE["locationId"],
+        measurement_value_id=CAPTURE["measurementValueId"],
+        ingested_at=INGESTED_AT,
+    )
+
+    assert [item["value"] for item in observations] == [
+        0,
+        row["dataElementFields"]["value"],
+        row["dataElementFields"]["value"],
+    ]
+    assert rows == original
+    assert observations == [normalize(zero), normalize(row), normalize(row)]
+    observations[1]["rawObservation"]["usable"] = False
+    assert rows == original
+    assert observations[2]["rawObservation"]["usable"] is True
+
+
+@pytest.mark.parametrize(
+    ("malformed", "error", "message"),
+    [
+        (None, TypeError, "RNMCA data element must be an object"),
+        ({}, TypeError, "RNMCA dataElementFields must be an object"),
+    ],
+)
+def test_batch_propagates_row_errors_without_returning_partial_results(
+    row, malformed, error, message
+):
+    with pytest.raises(error, match=message):
+        normalize_rnmca_observations(
+            [row, malformed],
+            location_id=CAPTURE["locationId"],
+            measurement_value_id=CAPTURE["measurementValueId"],
+            ingested_at=INGESTED_AT,
+        )
+
+
+def test_batch_propagates_invalid_channel_error(row):
+    with pytest.raises(ValueError, match="supports only the captured"):
+        normalize_rnmca_observations(
+            [row],
+            location_id=0,
+            measurement_value_id=CAPTURE["measurementValueId"],
+            ingested_at=INGESTED_AT,
+        )

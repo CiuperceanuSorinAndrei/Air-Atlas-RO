@@ -1,6 +1,6 @@
 # Local RNMCA DJ-1 / NO2 pilot
 
-This is an offline, single-observation normalization path. It does not fetch RNMCA, select between
+This is an offline, bounded hourly normalization and reconciliation path. It does not fetch RNMCA, select between
 providers, write history, or publish to the map. The public EEA snapshot remains on its existing path.
 
 ## Source contract and scope
@@ -33,6 +33,7 @@ configuration. The original documentation endpoint is
 - The selected value must be available and finite. A zero override is available; a null override
   is unavailable, even if the ordinary value is numeric.
 
+Hourly effective-value structure and numeric validity are checked even when known QA rejects a row.
 Unknown QA IDs and unknown status bits raise `ValueError`. Malformed boolean, integer or object
 types raise `TypeError`. An incomplete override raises `ValueError`. The fixed masks and QA IDs
 belong to this captured pilot contract; expanding channels or adopting a changed provider
@@ -69,9 +70,71 @@ UTC intervals stay distinct through daylight-saving transitions. Missing source 
 filled by this single-row adapter. Source-window checks, duplicate/correction reconciliation,
 EEA fallback, persistence, API and frontend integration remain separate work.
 
+## Batch normalization
+
+`normalize_rnmca_observations(data_elements, *, location_id, measurement_value_id, ingested_at)`
+applies the single-row adapter to a list for the captured DJ-1 / NO2 channel. It returns accepted
+observations in input order, preserving duplicates and zero values, without changing the input.
+Known quality rejections and unavailable values are omitted. Empty or entirely rejected input
+returns an empty list. Row errors propagate; no partial list is returned on failure.
+This wrapper does not read files, detect missing hours or reconcile source versions. Shared
+arguments are validated by the single-row adapter when a row is processed.
+
+## Duplicate and correction reconciliation
+
+`reconcile_rnmca_data_elements(data_elements, *, location_id, measurement_value_id, ingested_at)`
+selects one raw hourly element per interval for the fixed pilot channel, ordered by interval.
+The archived Main Measurement Data API versioned-data description says operations increment the
+version of each affected element; the captured channel is versioned. The highest source version
+wins within each interval, independently of arrival order. Equal canonical JSON content at the same
+interval/version is a duplicate; object-key order is ignored, but distinct JSON value types remain
+distinct. Non-finite or non-JSON raw content cannot enter reconciliation. Different content at that same identity raises `ValueError`,
+even if a newer revision is also present. Values are never averaged and QA rank does not override
+source version. Returned elements are detached copies; input is unchanged.
+
+Run reconciliation **before** batch normalization and coverage reporting. A newer unusable,
+invalid-QA or unavailable-value revision remains the selected raw element; normalization excludes
+it, leaving the hour without an accepted observation. It must not revive an older accepted value.
+All revisions require known quality metadata, valid nonnegative versions and completed aligned
+UTC hourly intervals, including rejected or superseded revisions. Malformed data raises errors.
+Known well-formed QA rejections still return no accepted observation.
+
+This is a stateless bounded replay, not a persistent merge or a version cursor. To reconcile
+multiple captures, supply their combined raw revisions (or retained current raw revisions plus
+incoming rows), including rejected revisions. Passing only accepted observations loses withdrawals.
+Missing rows in a later capture do not imply deletion. Empty input still validates the pilot IDs
+and ingestion context. These rules are covered synthetically; the single historical capture does
+not establish that real corrections occurred or demonstrate live incremental synchronization.
+
+## Missing accepted hours
+
+`missing_rnmca_hourly_intervals(observations, *, window_start, window_end)` receives normalized
+accepted observations for the single pilot channel and explicit timezone-aware datetime boundaries.
+It returns chronologically ordered `observedFrom`/`observedTo` UTC interval dictionaries for hours
+without an accepted observation. The window starts at `window_start` and ends at `window_end`;
+its duration must be positive and its boundaries must align to physical UTC hours. Each supplied
+observation must span exactly one aligned UTC hour wholly inside the window; invalid boundaries
+or out-of-window observations raise errors. Equivalent offsets are converted to UTC. Empty input
+leaves all requested hours missing. Input order and repeated intervals do not change coverage.
+
+This is accepted-observation coverage, not a statement that the provider omitted those rows.
+Quality rejections also leave uncovered intervals. No values are filled, no versions are reconciled,
+and duplicate coverage does not establish which version is authoritative. The caller selects one
+channel and the requested window; deriving boundaries from accepted rows can hide edge gaps.
+
+## October 24 historical replay
+
+The archived seven-day capture spans `2026-10-04T21:00:00+00:00` through
+`2026-10-12T08:00:00+00:00`: 179 physical UTC intervals, all present as raw rows.
+Reconciliation followed by normalization yields 172 accepted observations and seven uncovered
+accepted hours, all caused by known QA exclusions. Doubling and reversing the capture still yields
+179 current raw revisions; replay is idempotent. This capture contains no duplicate interval or
+observed correction history. Correction, conflict and withdrawal behavior is tested synthetically,
+including a newer rejection followed by replay of the old accepted capture.
+
 ## Verification
 
-Run `pytest tests/test_observation_time.py tests/test_import_rnmca.py tests/test_rnmca_observation.py`.
+Run `pytest tests/test_observation_time.py tests/test_import_rnmca.py tests/test_rnmca_observation.py tests/test_rnmca_window.py tests/test_rnmca_reconciliation.py`.
 The tests cover the captured value and provenance, all captured status flags, QA acceptance and
 rejection, zero/null overrides, malformed and unknown metadata, completed-hour boundaries,
 temporal extrema, UTC ingestion, independent raw snapshots and synthetic DST intervals.
@@ -101,3 +164,20 @@ The closure also repairs the existing map time formatter: every Bucharest timest
 its UTC offset. Repeated autumn 03:00 labels now distinguish GMT+3 from GMT+2, and spring
 interval labels distinguish 02:00 GMT+2 from 04:00 GMT+3. The formatter lives in stationView
 and is used directly by App; regression tests exercise that shared function.
+
+## October 24 closure review
+
+Review added 42 regression cases beyond the initial batch/window/reconciliation tests. It repaired
+QA short-circuiting that hid malformed effective values and Python equality treating distinct JSON
+types as equal in duplicate provenance. Tests cover these failures before and after repair, JSON-safe
+raw provenance and the complete reconciliation → normalization → bounded-coverage path.
+
+Local full gate: 443 Python tests passed; 15 PostgreSQL/PostGIS tests require the disposable CI DSN.
+All 34 frontend tests, Ruff, ESLint, snapshot validation and production build passed. The existing
+required CI gate exercises the database migrations and all 15 database cases before merge.
+
+The npm audit found GHSA-mrhx-c7xc-m3w5 in transitive development dependency zod 4.6.2.
+The lock now selects zod 4.6.7, within existing dependency ranges; npm audit reports zero
+vulnerabilities. See the [GitHub advisory](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5).
+OSV querybatch reported no advisories for 11 locked PyPI dependencies plus CI uv 0.13.4.
+These are dated checks, not a guarantee about future advisories or untested behavior.

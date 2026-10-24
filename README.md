@@ -47,9 +47,10 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   The `atlas_ingestor` migration starts without a login and grants only scoped EEA ingestion
   rights; a separate private login is activated for the pilot. The frontend and latest-map importer do not connect to this database.
 
-A [local RNMCA DJ-1 / NO2 pilot](docs/rnmca-pilot.md) checks native QA and assembles one
-completed hourly observation with UTC time, source provenance and a detached original. It is
-offline and does not publish RNMCA data or connect to the database/API/frontend.
+A [local RNMCA DJ-1 / NO2 pilot](docs/rnmca-pilot.md) validates native QA, reconciles raw
+hourly revisions before filtering, assembles accepted observations and reports missing accepted
+UTC hours in an explicit window. It preserves corrections and withdrawals without reviving older
+values. This path is offline and does not publish RNMCA data or connect to the database/API/frontend.
 
 ## Development and checks
 
