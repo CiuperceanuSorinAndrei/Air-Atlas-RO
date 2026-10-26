@@ -1,7 +1,7 @@
 # Plan and roadmap
 
 This Markdown plan describes the current stage; no PDF is required. Implemented work and planned
-work are deliberately separated. Last reviewed: 2026-10-24.
+work are deliberately separated. Last reviewed: 2026-10-26.
 
 ## Existing stage
 
@@ -15,16 +15,18 @@ regression-safe atomic publication, frontend snapshot validation/polling, access
 licence attribution, dependency repair and publication checks. The October 1 work separately adds history
 collection and a manual persistence pilot; national pollution scoring remains unimplemented.
 
-## Current implementation gate — October 24
+## Current implementation gate — October 26
 
 The offline [RNMCA DJ-1 / NO2 pilot](rnmca-pilot.md) now normalizes batches, reconciles duplicates
 and corrections by interval/source version before QA filtering, retains withdrawal revisions and
 reports missing accepted UTC hours in explicit windows. Historical replay and synthetic regressions
 cover these contracts; this does not activate live RNMCA ingestion, persistence or public delivery.
 
-Next: settle bounded EEA normalization and eligible per-hour fallback against the captured RNMCA
-reference. Preserve original source labels and normalization versions; no blanket one-hour shift.
-Then build one complete worker → PostgreSQL/PostGIS → thin Python read API → frontend pilot.
+The [shared offline pilot](dj1-no2-pilot.md) now implements bounded EEA normalization and
+eligible per-hour fallback against the captured RNMCA reference, with explicit DST ambiguity,
+source conflicts, original labels and versioned rules. The public path remains unchanged.
+Next: build one complete worker → PostgreSQL/PostGIS → thin Python read API → frontend pilot,
+carrying the reviewed source contract, normalization versions and raw rejected revisions through persistence.
 The accepted launch target is one VPS with Compose, within 20 EUR/month excluding domain and
 external backup; provider/size await measurements. The current public path remains EEA JSON.
 Automatic off-site backup and isolated restore precede recurring production history. Prepare/test
@@ -171,8 +173,9 @@ and deployment results must be recorded separately; test coverage alone does not
 
 ## Subsequent milestones and gates
 
-1. Complete the shared observation contract: EEA normalization and per-interval fallback remain
-   open after the bounded RNMCA window. Preserve source units, QA, original labels and gaps.
+1. Bounded offline shared source contract implemented: RNMCA revisions/QA plus EEA normalization
+   and per-interval fallback. Broader channels, repeated-hour EEA disambiguation and live semantics
+   changes require renewed evidence; preserve source units, QA, original labels and gaps.
 2. Build one complete worker/database/API/frontend pilot, including bounded queries, replay,
    corrections/withdrawals, failure recovery and tested Compose configuration.
 3. Expand scheduled hourly history and legally permitted sources after rights/inventory review,
