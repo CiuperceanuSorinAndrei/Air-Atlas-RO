@@ -1,7 +1,9 @@
 # Local RNMCA DJ-1 / NO2 pilot
 
-This is an offline, bounded hourly normalization and reconciliation path. It does not fetch RNMCA, select between
-providers, write history, or publish to the map. The public EEA snapshot remains on its existing path.
+This is an offline, bounded hourly normalization and reconciliation path. The separate
+[shared DJ-1/NO2 pilot](dj1-no2-pilot.md) now adds scoped EEA alignment and per-hour selection.
+Neither path fetches RNMCA, writes history or publishes to the map. The public EEA snapshot
+remains on its existing path.
 
 ## Source contract and scope
 
@@ -34,6 +36,8 @@ configuration. The original documentation endpoint is
   is unavailable, even if the ordinary value is numeric.
 
 Hourly effective-value structure and numeric validity are checked even when known QA rejects a row.
+The hourly row adapter also validates revision, interval and extrema metadata before returning
+a known rejection; known non-hourly aggregations still return no observation.
 Unknown QA IDs and unknown status bits raise `ValueError`. Malformed boolean, integer or object
 types raise `TypeError`. An incomplete override raises `ValueError`. The fixed masks and QA IDs
 belong to this captured pilot contract; expanding channels or adopting a changed provider
@@ -68,7 +72,8 @@ For the captured row, the result is `48.81861538888885 ug.m-3` over
 `2026-10-10T18:00:00+00:00` to `2026-10-10T19:00:00+00:00`.
 UTC intervals stay distinct through daylight-saving transitions. Missing source hours are not
 filled by this single-row adapter. Source-window checks, duplicate/correction reconciliation,
-EEA fallback, persistence, API and frontend integration remain separate work.
+EEA fallback is implemented in the separate [shared pilot](dj1-no2-pilot.md); persistence,
+API and frontend integration remain separate work.
 
 ## Batch normalization
 

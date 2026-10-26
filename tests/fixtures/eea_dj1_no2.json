@@ -1,0 +1,35 @@
+{
+  "capturedDate": "2026-10-12",
+  "sourceFiles": {
+    "SPO-RO0078A_00008_100.parquet": {
+      "bytes": 179546,
+      "sha256": "e59006484c6f8fa9f8f77bc9d0347395b5bf36a20777bee3555c8654576cc4fe"
+    }
+  },
+  "eeaObservation": {
+    "source": "EEA",
+    "aggregationType": "hour",
+    "sourceRecordId": "5f3ad5ab-6927-4380-b68d-38515be842fd",
+    "dataCapture": null,
+    "samplingPointId": "RO/SPO-RO0078A_00008_100",
+    "pollutant": "NO2",
+    "value": 48.81862,
+    "unit": "ug.m-3",
+    "reportedAt": "2026-10-10T23:22:32+01:00",
+    "observedFrom": "2026-10-10T20:00:00+01:00",
+    "observedTo": "2026-10-10T21:00:00+01:00",
+    "ingestedAt": "2026-10-12T08:30:00+00:00",
+    "validity": 1,
+    "verification": 3,
+    "sourceUrl": "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0078A_00008_100.parquet",
+    "status": "preliminary",
+    "stationId": "RO0078A",
+    "stationName": "DJ-1",
+    "longitude": 23.806199999794934,
+    "latitude": 44.318599999974296
+  },
+  "expectedInterval": {
+    "observedFrom": "2026-10-10T18:00:00+00:00",
+    "observedTo": "2026-10-10T19:00:00+00:00"
+  }
+}

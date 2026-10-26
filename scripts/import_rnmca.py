@@ -131,10 +131,13 @@ def normalize_rnmca_observation(
     data_element, *, location_id, measurement_value_id, ingested_at
 ):
     ingested_at = _rnmca_ingested_at(location_id, measurement_value_id, ingested_at)
-    if not rnmca_hourly_is_eligible(data_element):
+    eligible = rnmca_hourly_is_eligible(data_element)
+    fields = data_element["dataElementFields"]
+    if fields["type"] != "Webs_FieldsHourlyValue":
         return None
     version, observed_from, observed_to = _rnmca_revision(data_element, ingested_at)
-    fields = data_element["dataElementFields"]
+    if not eligible:
+        return None
     return {
         "source": "RNMCA",
         "stationCode": "DJ-1",
