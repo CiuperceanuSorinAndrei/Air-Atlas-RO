@@ -35,7 +35,8 @@ The dependency integration includes PRs #29, #30, #31, #33, #35, #37, #38, #39,
 update failed at runtime despite its utility tests passing. A real ReactDOM
 initialization test covers this compatibility boundary. PyArrow 26 and Ruff
 0.17.1 are tested with the current source and database suites; the older Ruff
-PR's failed audit predates the already-published Zod remediation.
+PR's failed audit concerned older Vite versions; current Vite 8.3.4 already
+contains that remediation.
 
 ## Supabase usage
 
