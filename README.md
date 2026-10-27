@@ -50,9 +50,12 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
 A [local RNMCA DJ-1 / NO2 pilot](docs/rnmca-pilot.md) validates native QA, reconciles raw
 hourly revisions before filtering, assembles accepted observations and reports missing accepted
 UTC hours in an explicit window. It preserves corrections and withdrawals without reviving older
-values. This path is offline and does not publish RNMCA data or connect to the database/API/frontend.
+values. This source adapter is offline and does not publish RNMCA data.
 The [shared DJ-1/NO2 pilot](docs/dj1-no2-pilot.md) adds historical EEA normalization,
 explicit ambiguity/conflict handling and eligible per-hour fallback while preserving original inputs.
+The [bounded persistence writer](docs/dj1-no2-history.md) saves the reconciled report and
+selected observations atomically in PostgreSQL/PostGIS, retaining rejected evidence and replay
+versions. It uses dedicated private pilot streams; the public snapshot path remains EEA JSON.
 
 ## Development and checks
 

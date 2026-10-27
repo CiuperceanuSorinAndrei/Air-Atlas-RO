@@ -113,6 +113,7 @@ this demonstrates fallback without claiming the historical RNMCA row was actuall
 Run `pytest tests/test_observation_time.py tests/test_dj1_no2_pilot.py tests/test_pilot_closure.py`
 and the existing RNMCA suites. Closure regressions also verify that a rejected single RNMCA
 hour still validates source version, interval and extrema before returning no observation.
-The complete worker/database/API/frontend pilot, persistence of normalization versions,
-changed-rule reprocessing, live overlap monitoring, source expansion and operational recovery
-remain later integration work. This checkpoint establishes the bounded offline source contract.
+The [bounded persistence writer](dj1-no2-history.md) now stores this report and selected
+observations atomically, including normalization versions and rejected raw evidence.
+The complete API/frontend/Compose pilot, changed-rule reprocessing, live overlap monitoring,
+source expansion and operational recovery remain later integration work.

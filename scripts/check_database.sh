@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-export PGHOST=127.0.0.1 PGPORT=5432 PGUSER=postgres
+export PGHOST="${PGHOST:-127.0.0.1}" PGPORT="${PGPORT:-5432}" PGUSER="${PGUSER:-postgres}"
 psql -d postgres -v ON_ERROR_STOP=1 <<'SQL'
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
@@ -13,5 +13,5 @@ done
 psql -d atlas_audit -v ON_ERROR_STOP=1 -f supabase/test_foundation.sql
 
 if [[ -n "${GITHUB_ENV:-}" ]]; then
-  echo 'ATLAS_TEST_DATABASE_DSN=host=127.0.0.1 port=5432 user=postgres dbname=atlas_audit' >> "$GITHUB_ENV"
+  echo "ATLAS_TEST_DATABASE_DSN=host=$PGHOST port=$PGPORT user=$PGUSER dbname=atlas_audit" >> "$GITHUB_ENV"
 fi
