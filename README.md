@@ -56,6 +56,8 @@ explicit ambiguity/conflict handling and eligible per-hour fallback while preser
 The [bounded persistence writer](docs/dj1-no2-history.md) saves the reconciled report and
 selected observations atomically in PostgreSQL/PostGIS, retaining rejected evidence and replay
 versions. It uses dedicated private pilot streams; the public snapshot path remains EEA JSON.
+The [metadata incident note](docs/metadata-refresh-incident.md) records the current external
+metadata blockage, bounded pagination/fast-failure behavior and Supabase's disconnected pilot status.
 
 ## Development and checks
 

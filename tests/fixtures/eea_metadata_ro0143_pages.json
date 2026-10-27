@@ -1,0 +1,414 @@
+{
+  "capturedDate": "2026-10-27",
+  "endpoint": "https://discomap.eea.europa.eu/App/AQViewer/filter?fqn=Airquality_Dissem.b2g.Measurements",
+  "sourceCaptures": [
+    {
+      "file": "RO0143A-filter.json",
+      "sha256": "582eea8b01ad3045d7a50d2bce6f9c44f2c13e03621bc6f75aa063a4adddb8ba",
+      "bytes": 63698
+    },
+    {
+      "file": "RO0143A-page1.json",
+      "sha256": "1f1cebdbcdd8dda7823ca4e27fd4674b4110ca3ef21cfb79370e13960e74d099",
+      "bytes": 12580
+    }
+  ],
+  "pages": [
+    {
+      "Preview": {
+        "CurrentPage": 0,
+        "NumPages": 2,
+        "TotalRows": 34,
+        "SortBy": null,
+        "SortAscending": true,
+        "Rows": [
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "SO2",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00001_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "SO2",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00001_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "SO2",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00001_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00005_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00005_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00005_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00005_101",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "O3",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00007_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "O3",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00007_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "O3",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00007_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "NO2",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00008_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "NO2",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00008_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "NO2",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00008_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "NOX as NO2",
+            "ReportingYear": "2016",
+            "SampleId": "SPO_F-RO0143A_00009_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envwbzq5q/REP_D-RO_ANPM_20170908_D5-00ref.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "NOX as NO2",
+            "ReportingYear": "2016",
+            "SampleId": "SPO_F-RO0143A_00009_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envwbzq5q/REP_D-RO_ANPM_20170908_D5-00ref.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "CO",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00010_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "CO",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00010_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "CO",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00010_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Pb",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00012_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Pb",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00012_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Cd",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00014_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Cd",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00014_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Ni",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00015_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "Ni",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00015_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "As",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00018_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "As",
+            "ReportingYear": "2014",
+            "SampleId": "SPO_F-RO0143A_00018_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envvhoxdw/REP_D-RO_ANPM_20151006_D-004.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "C6H6",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00020_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "C6H6",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00020_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "\"GL-3\"",
+            "Longitude": 28.03394,
+            "Latitude": 45.47295,
+            "AirPollutant": "C6H6",
+            "ReportingYear": "2025",
+            "SampleId": "SPO_F-RO0143A_00020_100_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "NO",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_00038_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          }
+        ]
+      }
+    },
+    {
+      "Preview": {
+        "CurrentPage": 1,
+        "NumPages": 2,
+        "TotalRows": 34,
+        "SortBy": null,
+        "SortAscending": true,
+        "Rows": [
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "Pb in PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_05012_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "Cd in PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_05014_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "Ni in PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_05015_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          },
+          {
+            "Country": "Romania",
+            "AirQualityStationEoICode": "RO0143A",
+            "AQStationName": "GL-3",
+            "Longitude": 28.03441,
+            "Latitude": 45.47416,
+            "AirPollutant": "As in PM10",
+            "ReportingYear": "2025",
+            "SampleId": "SAM-RO0143A_05018_100",
+            "SourceDataURL": "http://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1311,7 +1311,9 @@ def test_main_requests_all_supported_pollutants(monkeypatch) -> None:
         "fetch_parquet_urls",
         lambda country, pollutants: requested.append((country, pollutants)) or [],
     )
-    monkeypatch.setattr(importer, "collect_observations", lambda urls: document)
+    monkeypatch.setattr(
+        importer, "collect_observations", lambda urls, *, fail_fast: document
+    )
     monkeypatch.setattr(
         importer, "write_observation_snapshot", lambda result, path: None
     )

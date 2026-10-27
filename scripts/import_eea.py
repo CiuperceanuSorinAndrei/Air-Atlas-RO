@@ -436,6 +436,28 @@ def extract_station_id(sampling_point_id: str) -> str:
     return station_id
 
 
+def _dataflow_preview(payload, station_id):
+    if not isinstance(payload, dict):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: expected an object."
+        )
+    if not isinstance(payload.get("Preview"), dict):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing Preview object."
+        )
+    if not isinstance(payload["Preview"].get("Rows"), list):
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing Rows list."
+        )
+    if type(payload["Preview"].get("TotalRows")) is not int:
+        raise TypeError(
+            f"Invalid Dataflow D filter response for {station_id}: missing TotalRows integer."
+        )
+    if payload["Preview"]["TotalRows"] < 0 or payload["Preview"]["TotalRows"] > 2000:
+        raise ValueError(f"Dataflow D row limit exceeded for {station_id}.")
+    return payload["Preview"]
+
+
 def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
     init_url = "https://discomap.eea.europa.eu/App/AQViewer/init?fqn=Airquality_Dissem.b2g.Measurements"
     init_request = urllib.request.Request(
@@ -481,32 +503,66 @@ def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
     )
     filter_response_body = read_response(filter_request, 8 * 1024 * 1024)
     filter_payload = json.loads(filter_response_body.decode("utf-8"))
-    if not isinstance(filter_payload, dict):
-        raise TypeError(
-            f"Invalid Dataflow D filter response for {station_id}: expected an object."
-        )
-    if not isinstance(filter_payload.get("Preview"), dict):
-        raise TypeError(
-            f"Invalid Dataflow D filter response for {station_id}: missing Preview object."
-        )
-    if not isinstance(filter_payload["Preview"].get("Rows"), list):
-        raise TypeError(
-            f"Invalid Dataflow D filter response for {station_id}: missing Rows list."
-        )
-    if type(filter_payload["Preview"].get("TotalRows")) is not int:
-        raise TypeError(
-            f"Invalid Dataflow D filter response for {station_id}: missing TotalRows integer."
-        )
-    if len(filter_payload["Preview"]["Rows"]) != filter_payload["Preview"]["TotalRows"]:
+    preview = _dataflow_preview(filter_payload, station_id)
+    rows = list(preview["Rows"])
+    total = preview["TotalRows"]
+    pages = preview.get("NumPages", 1)
+    page = preview.get("CurrentPage", 0)
+    if (
+        type(page) is not int
+        or page != 0
+        or type(pages) is not int
+        or not 0 <= pages <= 64
+    ):
         raise ValueError(
-            f"Incomplete Dataflow D results for {station_id}: received "
-            f"{len(filter_payload['Preview']['Rows'])} of "
-            f"{filter_payload['Preview'].get('TotalRows')} rows."
+            f"Incomplete Dataflow D results for {station_id}: invalid pagination."
         )
-    if len(filter_payload["Preview"]["Rows"]) == 0:
+    if len(rows) < total:
+        if not rows or pages < 2 or "CurrentPage" not in preview:
+            raise ValueError(
+                f"Incomplete Dataflow D results for {station_id}: missing pagination."
+            )
+        seen = {json.dumps(rows, sort_keys=True, allow_nan=False)}
+        for page in range(1, pages):
+            init_payload["Request"]["Page"] = page
+            filter_request.data = json.dumps(init_payload["Request"]).encode("utf-8")
+            payload = json.loads(
+                read_response(filter_request, 8 * 1024 * 1024).decode("utf-8")
+            )
+            following = _dataflow_preview(payload, station_id)
+            if (
+                type(following.get("CurrentPage")) is not int
+                or following["CurrentPage"] != page
+                or type(following.get("NumPages")) is not int
+                or following["NumPages"] != pages
+                or following["TotalRows"] != total
+            ):
+                raise ValueError(
+                    f"Incomplete Dataflow D results for {station_id}: pagination changed."
+                )
+            content = json.dumps(following["Rows"], sort_keys=True, allow_nan=False)
+            if not following["Rows"] or content in seen:
+                raise ValueError(
+                    f"Incomplete Dataflow D results for {station_id}: no page progress."
+                )
+            seen.add(content)
+            rows.extend(following["Rows"])
+            if len(rows) > total:
+                raise ValueError(
+                    f"Incomplete Dataflow D results for {station_id}: too many rows."
+                )
+    elif total and pages != 1:
+        raise ValueError(
+            f"Incomplete Dataflow D results for {station_id}: inconsistent page count."
+        )
+    if len(rows) != total:
+        raise ValueError(
+            f"Incomplete Dataflow D results for {station_id}: received {len(rows)} of {total} rows."
+        )
+    if not rows:
         raise ValueError(f"No Dataflow D rows found for {station_id}.")
     station_variants = set()
-    for row in filter_payload["Preview"]["Rows"]:
+    for row in rows:
         if not isinstance(row, dict):
             raise TypeError(
                 f"Invalid Dataflow D row for {station_id}: expected an object."
@@ -813,7 +869,7 @@ def collect_history(
     return {"observations": observations, "importSummary": summary}
 
 
-def collect_observations(parquet_urls: list[str]) -> dict:
+def collect_observations(parquet_urls: list[str], *, fail_fast=False) -> dict:
     normalized_observations = []
     skipped_counter = 0
     failed_counter = 0
@@ -842,6 +898,10 @@ def collect_observations(parquet_urls: list[str]) -> dict:
             ) as error:
                 failed_counter += 1
                 print(f"Error importing {parquet_url}: {error}", file=sys.stderr)
+                if fail_fast:
+                    raise ValueError(
+                        f"Snapshot import blocked by {parquet_url}: {error}"
+                    ) from error
     assert (
         attempted_counter
         == len(normalized_observations) + skipped_counter + failed_counter
@@ -1022,7 +1082,7 @@ def main() -> None:
         return
     urls = fetch_parquet_urls("RO", list(POLLUTANT_NAMES.values()))
     urls = sorted(urls)
-    import_result = collect_observations(urls)
+    import_result = collect_observations(urls, fail_fast=True)
     path = Path(__file__).resolve().parent.parent / "src" / "data" / "observations.json"
     write_observation_snapshot(import_result, path)
 
