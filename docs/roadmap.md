@@ -25,8 +25,10 @@ cover these contracts; this does not activate live RNMCA ingestion, persistence 
 The [shared offline pilot](dj1-no2-pilot.md) now implements bounded EEA normalization and
 eligible per-hour fallback against the captured RNMCA reference, with explicit DST ambiguity,
 source conflicts, original labels and versioned rules. The public path remains unchanged.
-Next: build one complete worker → PostgreSQL/PostGIS → thin Python read API → frontend pilot,
-carrying the reviewed source contract, normalization versions and raw rejected revisions through persistence.
+The [bounded persistence writer](dj1-no2-history.md) now carries this contract into private
+PostgreSQL/PostGIS: atomic reports/measurements, retained raw revisions, replay deduplication
+and isolated pilot-role access. Numeric widening preserves source precision.
+Next: connect the persisted pilot to a bounded thin Python read API and frontend, then test Compose.
 The accepted launch target is one VPS with Compose, within 20 EUR/month excluding domain and
 external backup; provider/size await measurements. The current public path remains EEA JSON.
 Automatic off-site backup and isolated restore precede recurring production history. Prepare/test
@@ -176,8 +178,8 @@ and deployment results must be recorded separately; test coverage alone does not
 1. Bounded offline shared source contract implemented: RNMCA revisions/QA plus EEA normalization
    and per-interval fallback. Broader channels, repeated-hour EEA disambiguation and live semantics
    changes require renewed evidence; preserve source units, QA, original labels and gaps.
-2. Build one complete worker/database/API/frontend pilot, including bounded queries, replay,
-   corrections/withdrawals, failure recovery and tested Compose configuration.
+2. Complete the worker/database/API/frontend pilot. Bounded historical persistence/replay is
+   implemented; bounded read queries, frontend integration and tested Compose remain open.
 3. Expand scheduled hourly history and legally permitted sources after rights/inventory review,
    live writer verification and automatic external backup/isolated restore. RNMCA authenticated
    access is verified; public storage/display rights remain source-specific release gates.

@@ -1,4 +1,3 @@
-import os
 import threading
 import urllib.request
 from datetime import datetime
@@ -130,17 +129,9 @@ def test_partial_response_is_rejected(monkeypatch):
 
 
 @pytest.fixture
-def database():
-    dsn = os.environ.get("ATLAS_TEST_DATABASE_DSN")
-    if not dsn:
-        pytest.skip("Disposable PostgreSQL DSN not configured")
+def database(local_database_dsn):
+    dsn = local_database_dsn
     with psycopg.connect(dsn, autocommit=True) as admin:
-        if admin.info.dbname != "atlas_audit" or admin.info.host not in (
-            "127.0.0.1",
-            "localhost",
-            "/private/tmp",
-        ):
-            pytest.fail("Tests require the disposable local atlas_audit database")
         with admin.transaction():
             source_record: tuple[int] | None = admin.execute(
                 "INSERT INTO atlas.sources(code,name) VALUES ('EEA','EEA') RETURNING id"

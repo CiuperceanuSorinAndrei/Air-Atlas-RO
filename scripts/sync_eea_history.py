@@ -113,6 +113,51 @@ def fetch_history_version(
     return list(unique.values()), new_etag
 
 
+def insert_history_observations(connection, source_id, stream_id, device_id, rows):
+    with connection.cursor() as cursor:
+        cursor.executemany(
+            """INSERT INTO atlas.observations(
+                source_id, stream_id, device_id, parameter_code, aggregation_type,
+                observed_from, observed_to, value, unit, reported_at, ingested_at,
+                validation_state, source_validity, source_verification,
+                source_record_id, observation_location, quality_details, pilot_report_id)
+               VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
+                 extensions.ST_SetSRID(extensions.ST_MakePoint(%s,%s),4326)::extensions.geography,%s,%s)""",
+            [
+                (
+                    source_id,
+                    stream_id,
+                    device_id,
+                    row["pollutant"],
+                    row["aggregationType"],
+                    row["observedFrom"],
+                    row["observedTo"],
+                    Decimal(str(row["value"])),
+                    row["unit"],
+                    row["reportedAt"],
+                    row["ingestedAt"],
+                    row["status"],
+                    str(row["validity"]),
+                    str(row["verification"]),
+                    row["sourceRecordId"],
+                    row["longitude"],
+                    row["latitude"],
+                    Jsonb(
+                        {
+                            "dataCapture": row["dataCapture"],
+                            "stationId": row["stationId"],
+                            "stationName": row["stationName"],
+                            "sourceUrl": row["sourceUrl"],
+                            **row.get("qualityDetails", {}),
+                        }
+                    ),
+                    row.get("pilotReportId"),
+                )
+                for row in rows
+            ],
+        )
+
+
 def sync_stream(connection: psycopg.Connection[tuple], stream_id: int) -> dict:
     if (
         not connection.autocommit
@@ -174,46 +219,9 @@ def sync_stream(connection: psycopg.Connection[tuple], stream_id: int) -> dict:
             if rows:
                 if device is None:
                     raise ValueError("Source device was not created.")
-                with connection.cursor() as cursor:
-                    cursor.executemany(
-                        """INSERT INTO atlas.observations(
-                            source_id, stream_id, device_id, parameter_code, aggregation_type,
-                            observed_from, observed_to, value, unit, reported_at, ingested_at,
-                            validation_state, source_validity, source_verification,
-                            source_record_id, observation_location, quality_details)
-                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,
-                             extensions.ST_SetSRID(extensions.ST_MakePoint(%s,%s),4326)::extensions.geography,%s)""",
-                        [
-                            (
-                                source_id,
-                                stream_id,
-                                device[0],
-                                row["pollutant"],
-                                row["aggregationType"],
-                                row["observedFrom"],
-                                row["observedTo"],
-                                Decimal(str(row["value"])),
-                                row["unit"],
-                                row["reportedAt"],
-                                row["ingestedAt"],
-                                row["status"],
-                                str(row["validity"]),
-                                str(row["verification"]),
-                                row["sourceRecordId"],
-                                row["longitude"],
-                                row["latitude"],
-                                Jsonb(
-                                    {
-                                        "dataCapture": row["dataCapture"],
-                                        "stationId": row["stationId"],
-                                        "stationName": row["stationName"],
-                                        "sourceUrl": row["sourceUrl"],
-                                    }
-                                ),
-                            )
-                            for row in rows
-                        ],
-                    )
+                insert_history_observations(
+                    connection, source_id, stream_id, device[0], rows
+                )
         if device is not None:
             updated_device = connection.execute(
                 """UPDATE atlas.source_devices
