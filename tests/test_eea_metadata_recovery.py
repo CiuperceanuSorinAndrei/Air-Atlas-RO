@@ -123,14 +123,14 @@ def test_inconsistent_pages_never_enter_metadata_cache(tmp_path, monkeypatch, ca
     assert not cache.exists()
 
 
-def test_captured_34_rows_remain_conflicting_after_complete_read(tmp_path, monkeypatch):
+def test_captured_34_rows_without_namespace_cannot_authorize_xml(tmp_path, monkeypatch):
     fixture = json.loads(
         (Path(__file__).parent / "fixtures/eea_metadata_ro0143_pages.json").read_text()
     )
     pages = fixture["pages"]
     assert [len(p["Preview"]["Rows"]) for p in pages] == [30, 4]
     requests = install(monkeypatch, pages, station="RO0143A")
-    with pytest.raises(ValueError, match="Conflicting Dataflow D station metadata"):
+    with pytest.raises(ValueError, match="invalid reporting namespace"):
         importer.get_station_metadata("RO0143A", tmp_path / "metadata.json")
     assert requests == [0, 1]
     assert not (tmp_path / "metadata.json").exists()

@@ -1,7 +1,7 @@
 # Code releases, data publication and served-data monitoring
 
-October 8 release candidate: implemented and verified locally; owner has authorized publication.
-Remote CI, code deployment and the first data-only workflow exercise are pending at this checkpoint. The Geoapify Actions repository variable is configured. Domain restrictions remain
+October 8 release: code deployment and release/data separation were published through PR #26.
+The original local checkpoint is historical; release/data/artifact and monitoring evidence are distinct. The Geoapify Actions repository variable is configured. Domain restrictions remain
 owner/provider configuration, not independently verified.
 
 ## Code release

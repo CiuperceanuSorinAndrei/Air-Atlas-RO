@@ -1,0 +1,199 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ns0:FeatureCollection xmlns:ns0="http://www.opengis.net/gml/3.2" xmlns:ns1="http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0" xmlns:ns2="http://inspire.ec.europa.eu/schemas/base/3.3" xmlns:ns3="http://www.w3.org/1999/xlink" xmlns:ns4="http://inspire.ec.europa.eu/schemas/ef/3.0">
+  <ns0:featureMember>
+    <ns1:AQD_ReportingHeader ns0:id="D_ReportingHeader">
+      <ns1:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>ReportingHeader_D</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns1:inspireId>
+      <ns1:reportingPeriod>
+        <ns0:TimePeriod ns0:id="TimePeriod_D">
+          <ns0:beginPosition>2025-01-01T00:00:00+02:00</ns0:beginPosition>
+          <ns0:endPosition>2026-01-01T00:00:00+02:00</ns0:endPosition>
+        </ns0:TimePeriod>
+      </ns1:reportingPeriod>
+      <ns1:content ns3:href="RO.ANPM.AQ/STA-RO0078A" />
+      <ns1:content ns3:href="RO.ANPM.AQ/STA-RO0150A" />
+      <ns1:content ns3:href="RO.ANPM.AQ/STA-RO0141A" />
+      <ns1:content ns3:href="RO.ANPM.AQ/STA-RO0008R" />
+      <ns1:content ns3:href="RO.ANPM.AQ/STA-RO0143A" />
+    </ns1:AQD_ReportingHeader>
+  </ns0:featureMember>
+  <ns0:featureMember>
+    <ns1:AQD_Station ns0:id="STA-RO0078A">
+      <ns4:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>STA-RO0078A</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns4:inspireId>
+      <ns4:name>DJ-1</ns4:name>
+      <ns4:mediaMonitored ns3:href="http://inspire.ec.europa.eu/codelist/MediaValue/air" />
+      <ns4:geometry>
+        <ns0:Point srsName="urn:ogc:def:crs:EPSG::4326" ns0:id="Point_STA-RO0078A">
+          <ns0:pos srsDimension="2">44.318569 23.806239</ns0:pos>
+        </ns0:Point>
+      </ns4:geometry>
+      <ns4:measurementRegime ns3:href="http://inspire.ec.europa.eu/codelist/measurementregimevalue/continuousdatacollection" />
+      <ns4:mobile>false</ns4:mobile>
+      <ns4:operationalActivityPeriod>
+        <ns4:OperationalActivityPeriod ns0:id="OperationalActivityPeriod_STA-RO0078A">
+          <ns4:activityTime>
+            <ns0:TimePeriod ns0:id="TimePeriod_STA-RO0078A">
+              <ns0:beginPosition>2008-01-01T00:00:00+02:00</ns0:beginPosition>
+              <ns0:endPosition indeterminatePosition="unknown" />
+            </ns0:TimePeriod>
+          </ns4:activityTime>
+        </ns4:OperationalActivityPeriod>
+      </ns4:operationalActivityPeriod>
+      <ns4:belongsTo ns3:href="RO.ANPM.AQ/NET-RO018A" />
+      <ns1:natlStationCode>RO-DJ-1</ns1:natlStationCode>
+      <ns1:municipality>CRAIOVA</ns1:municipality>
+      <ns1:EUStationCode>RO0078A</ns1:EUStationCode>
+      <ns1:areaClassification ns3:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban" />
+      <ns1:altitude uom="http://dd.eionet.europa.eu/vocabulary/uom/length/m">118.0</ns1:altitude>
+    </ns1:AQD_Station>
+  </ns0:featureMember>
+  <ns0:featureMember>
+    <ns1:AQD_Station ns0:id="STA-RO0150A">
+      <ns4:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>STA-RO0150A</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns4:inspireId>
+      <ns4:name>GJ-1</ns4:name>
+      <ns4:mediaMonitored ns3:href="http://inspire.ec.europa.eu/codelist/MediaValue/air" />
+      <ns4:geometry>
+        <ns0:Point srsName="urn:ogc:def:crs:EPSG::4326" ns0:id="Point_STA-RO0150A">
+          <ns0:pos srsDimension="2">45.050194 23.273978</ns0:pos>
+        </ns0:Point>
+      </ns4:geometry>
+      <ns4:measurementRegime ns3:href="http://inspire.ec.europa.eu/codelist/measurementregimevalue/continuousdatacollection" />
+      <ns4:mobile>false</ns4:mobile>
+      <ns4:operationalActivityPeriod>
+        <ns4:OperationalActivityPeriod ns0:id="OperationalActivityPeriod_STA-RO0150A">
+          <ns4:activityTime>
+            <ns0:TimePeriod ns0:id="TimePeriod_STA-RO0150A">
+              <ns0:beginPosition>2008-01-01T00:00:00+02:00</ns0:beginPosition>
+              <ns0:endPosition>2021-12-23T00:00:00+02:00</ns0:endPosition>
+            </ns0:TimePeriod>
+          </ns4:activityTime>
+        </ns4:OperationalActivityPeriod>
+      </ns4:operationalActivityPeriod>
+      <ns4:belongsTo ns3:href="RO.ANPM.AQ/NET-RO038A" />
+      <ns1:natlStationCode>RO-GJ-1</ns1:natlStationCode>
+      <ns1:municipality>TARGU JIU</ns1:municipality>
+      <ns1:EUStationCode>RO0150A</ns1:EUStationCode>
+      <ns1:areaClassification ns3:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban" />
+      <ns1:altitude uom="http://dd.eionet.europa.eu/vocabulary/uom/length/m">208.0</ns1:altitude>
+    </ns1:AQD_Station>
+  </ns0:featureMember>
+  <ns0:featureMember>
+    <ns1:AQD_Station ns0:id="STA-RO0141A">
+      <ns4:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>STA-RO0141A</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns4:inspireId>
+      <ns4:name>GL-1</ns4:name>
+      <ns4:mediaMonitored ns3:href="http://inspire.ec.europa.eu/codelist/MediaValue/air" />
+      <ns4:geometry>
+        <ns0:Point srsName="urn:ogc:def:crs:EPSG::4326" ns0:id="Point_STA-RO0141A">
+          <ns0:pos srsDimension="2">45.420411 28.018594</ns0:pos>
+        </ns0:Point>
+      </ns4:geometry>
+      <ns4:measurementRegime ns3:href="http://inspire.ec.europa.eu/codelist/measurementregimevalue/continuousdatacollection" />
+      <ns4:mobile>false</ns4:mobile>
+      <ns4:operationalActivityPeriod>
+        <ns4:OperationalActivityPeriod ns0:id="OperationalActivityPeriod_STA-RO0141A">
+          <ns4:activityTime>
+            <ns0:TimePeriod ns0:id="TimePeriod_STA-RO0141A">
+              <ns0:beginPosition>2008-01-01T00:00:00+02:00</ns0:beginPosition>
+              <ns0:endPosition indeterminatePosition="unknown" />
+            </ns0:TimePeriod>
+          </ns4:activityTime>
+        </ns4:OperationalActivityPeriod>
+      </ns4:operationalActivityPeriod>
+      <ns4:belongsTo ns3:href="RO.ANPM.AQ/NET-RO036A" />
+      <ns1:natlStationCode>RO-GL-1</ns1:natlStationCode>
+      <ns1:municipality>GALATI</ns1:municipality>
+      <ns1:EUStationCode>RO0141A</ns1:EUStationCode>
+      <ns1:areaClassification ns3:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/urban" />
+      <ns1:altitude uom="http://dd.eionet.europa.eu/vocabulary/uom/length/m">51.0</ns1:altitude>
+    </ns1:AQD_Station>
+  </ns0:featureMember>
+  <ns0:featureMember>
+    <ns1:AQD_Station ns0:id="STA-RO0008R">
+      <ns4:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>STA-RO0008R</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns4:inspireId>
+      <ns4:name>EM-3</ns4:name>
+      <ns4:mediaMonitored ns3:href="http://inspire.ec.europa.eu/codelist/MediaValue/air" />
+      <ns4:geometry>
+        <ns0:Point srsName="urn:ogc:def:crs:EPSG::4326" ns0:id="Point_STA-RO0008R">
+          <ns0:pos srsDimension="2">47.324686 25.134839</ns0:pos>
+        </ns0:Point>
+      </ns4:geometry>
+      <ns4:measurementRegime ns3:href="http://inspire.ec.europa.eu/codelist/measurementregimevalue/continuousdatacollection" />
+      <ns4:mobile>false</ns4:mobile>
+      <ns4:operationalActivityPeriod>
+        <ns4:OperationalActivityPeriod ns0:id="OperationalActivityPeriod_STA-RO0008R">
+          <ns4:activityTime>
+            <ns0:TimePeriod ns0:id="TimePeriod_STA-RO0008R">
+              <ns0:beginPosition>2008-01-01T00:00:00+02:00</ns0:beginPosition>
+              <ns0:endPosition indeterminatePosition="unknown" />
+            </ns0:TimePeriod>
+          </ns4:activityTime>
+        </ns4:OperationalActivityPeriod>
+      </ns4:operationalActivityPeriod>
+      <ns4:belongsTo ns3:href="RO.ANPM.AQ/NET-RO051A" />
+      <ns1:natlStationCode>RO-EM-3</ns1:natlStationCode>
+      <ns1:municipality>POIANA STAMPEI</ns1:municipality>
+      <ns1:EUStationCode>RO0008R</ns1:EUStationCode>
+      <ns1:areaClassification ns3:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/rural" />
+      <ns1:altitude uom="http://dd.eionet.europa.eu/vocabulary/uom/length/m">912.0</ns1:altitude>
+    </ns1:AQD_Station>
+  </ns0:featureMember>
+  <ns0:featureMember>
+    <ns1:AQD_Station ns0:id="STA-RO0143A">
+      <ns4:inspireId>
+        <ns2:Identifier>
+          <ns2:localId>STA-RO0143A</ns2:localId>
+          <ns2:namespace>RO.ANPM.AQ</ns2:namespace>
+        </ns2:Identifier>
+      </ns4:inspireId>
+      <ns4:name>GL-3</ns4:name>
+      <ns4:mediaMonitored ns3:href="http://inspire.ec.europa.eu/codelist/MediaValue/air" />
+      <ns4:geometry>
+        <ns0:Point srsName="urn:ogc:def:crs:EPSG::4326" ns0:id="Point_STA-RO0143A">
+          <ns0:pos srsDimension="2">45.474156 28.034406</ns0:pos>
+        </ns0:Point>
+      </ns4:geometry>
+      <ns4:measurementRegime ns3:href="http://inspire.ec.europa.eu/codelist/measurementregimevalue/continuousdatacollection" />
+      <ns4:mobile>false</ns4:mobile>
+      <ns4:operationalActivityPeriod>
+        <ns4:OperationalActivityPeriod ns0:id="OperationalActivityPeriod_STA-RO0143A">
+          <ns4:activityTime>
+            <ns0:TimePeriod ns0:id="TimePeriod_STA-RO0143A">
+              <ns0:beginPosition>2008-01-01T00:00:00+02:00</ns0:beginPosition>
+              <ns0:endPosition indeterminatePosition="unknown" />
+            </ns0:TimePeriod>
+          </ns4:activityTime>
+        </ns4:OperationalActivityPeriod>
+      </ns4:operationalActivityPeriod>
+      <ns4:belongsTo ns3:href="RO.ANPM.AQ/NET-RO036A" />
+      <ns1:natlStationCode>RO-GL-3</ns1:natlStationCode>
+      <ns1:municipality>GALATI</ns1:municipality>
+      <ns1:EUStationCode>RO0143A</ns1:EUStationCode>
+      <ns1:areaClassification ns3:href="http://dd.eionet.europa.eu/vocabulary/aq/areaclassification/suburban" />
+      <ns1:altitude uom="http://dd.eionet.europa.eu/vocabulary/uom/length/m">68.0</ns1:altitude>
+    </ns1:AQD_Station>
+  </ns0:featureMember>
+</ns0:FeatureCollection>

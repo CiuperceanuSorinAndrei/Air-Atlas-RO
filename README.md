@@ -16,7 +16,8 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   and metadata for one physical station must agree. EEA's timezone-naive timestamps mean fixed
   UTC+1, not Romanian local time. Display uses Europe/Bucharest.
 - Official ArcGIS metadata has an exact-ID Dataflow D fallback for no features or transient errors.
-  Conflicting records fail visibly. Validated metadata expires after 24 hours; optional cache I/O
+  Conflicting table records require a unique station in the linked official Romanian reporting XML;
+  unresolved or competing documents fail visibly. Validated metadata expires after 24 hours; optional cache I/O
   failures do not discard a valid observation. Cache writes are atomic.
 - Downloads allow only specific official HTTPS hosts and same-host redirects. Compressed Parquet
   is capped at 32 MiB, 200,000 rows, 128 MiB declared/decoded size and a bounded primitive schema.
@@ -41,7 +42,7 @@ It does not yet provide national live coverage, pollution scores, an API or a pr
   and locations remain unchanged on 304. Metadata failures roll back the stream checkpoint.
   The writer reports new/missing series without automatically deleting or licensing them.
   Scheduled collection still selects latest observations; live history ingestion is manual.
-- Six private Supabase/PostGIS tables are reproduced in `supabase/migrations`. RLS is enabled,
+- The private PostgreSQL/PostGIS foundation and bounded pilot tables are reproduced in `supabase/migrations`. RLS is enabled,
   no public policies are installed and application roles have no schema/table/sequence grants.
   Cross-source foreign keys, finite values, positive intervals and public-rights gates are tested.
   The `atlas_ingestor` migration starts without a login and grants only scoped EEA ingestion
@@ -56,8 +57,10 @@ explicit ambiguity/conflict handling and eligible per-hour fallback while preser
 The [bounded persistence writer](docs/dj1-no2-history.md) saves the reconciled report and
 selected observations atomically in PostgreSQL/PostGIS, retaining rejected evidence and replay
 versions. It uses dedicated private pilot streams; the public snapshot path remains EEA JSON.
-The [metadata incident note](docs/metadata-refresh-incident.md) records the current external
-metadata blockage, bounded pagination/fast-failure behavior and Supabase's disconnected pilot status.
+The [metadata incident note](docs/metadata-refresh-incident.md) records the October 27 incident,
+XML recovery path, bounded pagination/fast-failure behavior and the disconnected Supabase pilot.
+The [accepted reliability/history contract](docs/reliability-and-history-contract.md) owns the
+revised delivery order and planned catalog, degradation and history gates; those are not implemented.
 
 ## Development and checks
 

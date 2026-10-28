@@ -175,19 +175,24 @@ and deployment results must be recorded separately; test coverage alone does not
 
 ## Subsequent milestones and gates
 
-1. Bounded offline shared source contract implemented: RNMCA revisions/QA plus EEA normalization
-   and per-interval fallback. Broader channels, repeated-hour EEA disambiguation and live semantics
-   changes require renewed evidence; preserve source units, QA, original labels and gaps.
-2. Complete the worker/database/API/frontend pilot. Bounded historical persistence/replay is
-   implemented; bounded read queries, frontend integration and tested Compose remain open.
-3. Expand scheduled hourly history and legally permitted sources after rights/inventory review,
-   live writer verification and automatic external backup/isolated restore. RNMCA authenticated
-   access is verified; public storage/display rights remain source-specific release gates.
-4. Add validated CAMS hourly model products, then temporal map exploration. Keep Sentinel-5P
-   columns separate from surface concentrations; conversion requires independent validation.
-5. Implement European AQI from its official method after alignment, completeness and QA gates.
-6. National operations require measured freshness/availability targets, verified alert delivery,
-   resource limits, operational ownership, backup/restore and a supported tile-hosting plan.
+The [accepted October 28 reliability/history contract](reliability-and-history-contract.md)
+owns the revised order and future acceptance policies. Those policies are planned, not shipped.
+
+1. Close and publish the XML metadata repair with full PostgreSQL CI, national refresh and
+   served verification; distinguish successful import from recent measurements at the source.
+2. Verify Geoapify restrictions and reconcile current documentation and source/method contracts.
+3. Add separately approved station metadata and channel inventories, then controlled degradation,
+   source confirmation and strictly corrective publication under the accepted contract.
+4. Complete the bounded worker/database/read-API/frontend pilot and test Compose; new recurring
+   ingestion stays disabled. Do not delay the first visible historical series for a storage rewrite.
+5. Before recurring history or station expansion, separate evidence/state/execution identity,
+   remove the duplicate metadata lookup including 304, and measure retention/backup/recovery.
+6. Add validated CAMS surface products, temporal exploration and official European AQI under the
+   existing source-time, QA, completeness and representation gates. Keep satellite columns separate.
+
+Channel-specific fixtures/rules remain justified; cloned collectors per station are not the rollout
+strategy. Reworking production-checks, moving snapshots from main, tile-provider replacement,
+Supabase retirement, alternate 72-hour JSON and NowCast are deferred without commitment.
 
 ## Operational work already planned
 

@@ -4,7 +4,7 @@ Status, October 8: owner selected Geoapify; frontend adapter and explicit-submit
 The owner-supplied key is configured in ignored local environment settings. A live browser request
 for a public Craiova address returned HTTP 200; selecting the approximate result showed its precision
 and nearby reference stations. Mobile selection had no horizontal overflow at 390 px. The GitHub Actions repository variable is configured for the public build. Domain
-restrictions remain owner/provider settings not independently verified; production deployment is pending.
+restrictions remain owner/provider settings not independently verified; the feature was published through PR #26.
 Station coverage and modelled point estimates are separate unimplemented data products.
 
 Validation: 31 frontend tests, ESLint and production build passed. Browser fixtures verified
