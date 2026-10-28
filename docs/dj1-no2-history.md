@@ -96,3 +96,9 @@ This is bounded historical persistence, not national recurring ingestion. It
 retains all overlapping report snapshots and has no retention/compaction policy.
 Changed-rule reprocessing, live source permissions, backup automation and the
 bounded read API/frontend/Compose pilot remain separate integration gates.
+
+The [accepted October 28 contract](reliability-and-history-contract.md) replaces this bounded
+full-report replay model as the target for recurring ingestion: separate source evidence, semantic
+state and execution logs. The current writer still intentionally deduplicates only exact audit
+payloads. A later replay context preserves selected measurements but creates a distinct report;
+this limit is regression-tested and must not be described as semantic deduplication.

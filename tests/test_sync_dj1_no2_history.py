@@ -166,6 +166,33 @@ def test_replay_deduplicates_report_and_observations(database, captured):
     assert admin.execute("SELECT count(*) FROM atlas.observations").fetchone()[0] == 1
 
 
+def test_later_replay_context_preserves_measurement_but_is_a_distinct_audit_report(
+    database, captured
+):
+    worker, admin, _ = database
+    raw, eea = captured
+    first = run(worker, [raw], [eea])
+    before = admin.execute(
+        "SELECT value,observed_from,observed_to FROM atlas.observations"
+    ).fetchall()
+    second = sync.sync_dj1_no2_history(
+        worker,
+        [raw],
+        [eea],
+        window_start=datetime(2026, 10, 10, 18, tzinfo=UTC),
+        window_end=datetime(2026, 10, 10, 20, tzinfo=UTC),
+        ingested_at=datetime(2026, 10, 12, 9, 1, tzinfo=UTC),
+    )
+    assert second["reportId"] != first["reportId"]
+    assert (
+        admin.execute(
+            "SELECT value,observed_from,observed_to FROM atlas.observations"
+        ).fetchall()
+        == before
+    )
+    assert admin.execute("SELECT count(*) FROM atlas.pilot_reports").fetchone()[0] == 2
+
+
 def test_withdrawal_survives_stale_and_empty_captures(database, captured):
     worker, admin, _ = database
     raw, _ = captured

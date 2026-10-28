@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import math
 import os
@@ -9,8 +10,10 @@ import time
 import urllib.error
 import urllib.parse
 import urllib.request
+import xml.etree.ElementTree as ET
 from datetime import UTC, datetime, timedelta, timezone
 from decimal import Decimal
+from functools import lru_cache
 from pathlib import Path
 
 import pyarrow as pa
@@ -35,10 +38,18 @@ HTTP_HOSTS = frozenset(
         "eeadmz1-downloads-api-appservice.azurewebsites.net",
         "air.discomap.eea.europa.eu",
         "discomap.eea.europa.eu",
+        "cdr.eionet.europa.eu",
     }
 )
 STATION_PATTERN = re.compile(r"RO[A-Z0-9]{1,6}\Z")
 SERIES_PATTERN = re.compile(r"SPO-(RO[A-Z0-9]{1,6})_([0-9]{5})_([0-9]+)\.parquet\Z")
+XML_NAMESPACES = {
+    "gml": "http://www.opengis.net/gml/3.2",
+    "aqd": "http://dd.eionet.europa.eu/schemaset/id2011850eu-1.0",
+    "ef": "http://inspire.ec.europa.eu/schemas/ef/3.0",
+    "base": "http://inspire.ec.europa.eu/schemas/base/3.3",
+    "xlink": "http://www.w3.org/1999/xlink",
+}
 
 
 def validate_https_url(url: str, hosts: set[str] | frozenset[str] = HTTP_HOSTS) -> None:
@@ -458,6 +469,137 @@ def _dataflow_preview(payload, station_id):
     return payload["Preview"]
 
 
+def dataflow_xml_text(node: ET.Element, path: str) -> str:
+    matches = node.findall(path, XML_NAMESPACES)
+    if len(matches) != 1 or len(matches[0]):
+        raise ValueError(f"Expected one Dataflow D XML value for {path}.")
+    return require_text(matches[0].text, f"Dataflow D XML {path}")
+
+
+@lru_cache(maxsize=4)
+def fetch_dataflow_d_report(source_url: str, reporting_year: int) -> tuple:
+    validate_https_url(source_url, {"cdr.eionet.europa.eu"})
+    parsed = urllib.parse.urlsplit(source_url)
+    if parsed.query or not re.fullmatch(
+        r"/ro/eu/aqd/d/env[a-z0-9]+/[A-Za-z0-9_-]+\.xml", parsed.path
+    ):
+        raise ValueError("Invalid Romanian Dataflow D reporting document URL.")
+    body = read_response(urllib.request.Request(source_url), 32 * 1024 * 1024)
+    text = body.decode("utf-8-sig")
+    if "<!DOCTYPE" in text.upper() or "<!ENTITY" in text.upper():
+        raise ValueError("Dataflow D XML declarations are not permitted.")
+    try:
+        root = ET.fromstring(text)
+    except ET.ParseError as error:
+        raise ValueError("Invalid Dataflow D XML document.") from error
+    ns = XML_NAMESPACES
+    if root.tag != f"{{{ns['gml']}}}FeatureCollection":
+        raise ValueError("Invalid Dataflow D XML feature collection.")
+    headers = root.findall("gml:featureMember/aqd:AQD_ReportingHeader", ns)
+    if len(headers) != 1:
+        raise ValueError("Expected one Dataflow D reporting header.")
+    header = headers[0]
+    namespace = dataflow_xml_text(
+        header, "aqd:inspireId/base:Identifier/base:namespace"
+    )
+    period = "aqd:reportingPeriod/gml:TimePeriod/"
+    begin = parse_timestamp(dataflow_xml_text(header, period + "gml:beginPosition"))
+    end = parse_timestamp(dataflow_xml_text(header, period + "gml:endPosition"))
+    if (
+        namespace != "RO.ANPM.AQ"
+        or (begin.year, begin.month, begin.day, begin.hour, begin.minute, begin.second)
+        != (reporting_year, 1, 1, 0, 0, 0)
+        or (end.year, end.month, end.day, end.hour, end.minute, end.second)
+        != (reporting_year + 1, 1, 1, 0, 0, 0)
+    ):
+        raise ValueError("Dataflow D reporting identity or period mismatch.")
+    contents = frozenset(
+        node.get(f"{{{ns['xlink']}}}href") for node in header.findall("aqd:content", ns)
+    )
+    stations = tuple(root.findall("gml:featureMember/aqd:AQD_Station", ns))
+    return stations, contents, hashlib.sha256(body).hexdigest()
+
+
+def resolve_dataflow_d_station_metadata(rows: list[dict], station_id: str) -> dict:
+    conflict = f"Conflicting Dataflow D station metadata for {station_id}"
+    if any(
+        not isinstance(row.get("ReportingYear"), str)
+        or not re.fullmatch(r"[0-9]{4}", row["ReportingYear"])
+        or not 2013 <= int(row["ReportingYear"]) <= datetime.now(UTC).year
+        for row in rows
+    ):
+        raise ValueError(f"{conflict}: invalid reporting year.")
+    year = max(int(row["ReportingYear"]) for row in rows)
+    current = [row for row in rows if int(row["ReportingYear"]) == year]
+    if any(row.get("B2G_Namespace") != "RO.ANPM.AQ" for row in current):
+        raise ValueError(f"{conflict}: invalid reporting namespace.")
+    sources = {
+        row.get("SourceDataURL")
+        for row in current
+        if isinstance(row.get("SourceDataURL"), str)
+    }
+    if len(sources) != 1 or any(
+        not isinstance(row.get("SourceDataURL"), str) or not row["SourceDataURL"]
+        for row in current
+    ):
+        raise ValueError(f"{conflict}: expected one reporting document.")
+    source_url = sources.pop()
+    if source_url.startswith("http://cdr.eionet.europa.eu/"):
+        source_url = "https://" + source_url.removeprefix("http://")
+    stations, contents, digest = fetch_dataflow_d_report(source_url, year)
+    ns = XML_NAMESPACES
+    local_id = f"STA-{station_id}"
+    identity_path = "ef:inspireId/base:Identifier/"
+    candidates = [
+        station
+        for station in stations
+        if station.findtext("aqd:EUStationCode", namespaces=ns) == station_id
+        or station.findtext(identity_path + "base:localId", namespaces=ns) == local_id
+        or station.get(f"{{{ns['gml']}}}id") == local_id
+    ]
+    if len(candidates) != 1:
+        raise ValueError(f"{conflict}: expected one XML station.")
+    station = candidates[0]
+    if (
+        dataflow_xml_text(station, "aqd:EUStationCode") != station_id
+        or dataflow_xml_text(station, identity_path + "base:localId") != local_id
+        or dataflow_xml_text(station, identity_path + "base:namespace") != "RO.ANPM.AQ"
+        or station.get(f"{{{ns['gml']}}}id") != local_id
+        or f"RO.ANPM.AQ/{local_id}" not in contents
+    ):
+        raise ValueError(f"{conflict}: XML station identity mismatch.")
+    geometries = station.findall("ef:geometry", ns)
+    if len(geometries) != 1 or len(geometries[0]) != 1:
+        raise ValueError(f"{conflict}: expected one XML station geometry.")
+    points = geometries[0].findall("gml:Point", ns)
+    if len(points) != 1 or points[0].get("srsName") != "urn:ogc:def:crs:EPSG::4326":
+        raise ValueError(f"{conflict}: unsupported XML station geometry.")
+    positions = points[0].findall("gml:pos", ns)
+    if (
+        len(positions) != 1
+        or positions[0].get("srsDimension") != "2"
+        or positions[0].get("srsName", points[0].get("srsName"))
+        != points[0].get("srsName")
+        or points[0].get("srsDimension", "2") != "2"
+    ):
+        raise ValueError(f"{conflict}: invalid XML station position.")
+    coordinates = (positions[0].text or "").split()
+    if len(coordinates) != 2:
+        raise ValueError(f"{conflict}: expected two XML station coordinates.")
+    latitude, longitude = map(float, coordinates)
+    metadata = {
+        "stationId": station_id,
+        "stationName": dataflow_xml_text(station, "ef:name"),
+        "longitude": longitude,
+        "latitude": latitude,
+        "metadataSourceUrl": source_url,
+        "metadataReportingYear": year,
+        "metadataSourceSha256": digest,
+    }
+    validate_station_metadata(metadata, station_id)
+    return metadata
+
+
 def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
     init_url = "https://discomap.eea.europa.eu/App/AQViewer/init?fqn=Airquality_Dissem.b2g.Measurements"
     init_request = urllib.request.Request(
@@ -597,10 +739,7 @@ def fetch_dataflow_d_station_metadata(station_id: str) -> dict:
             )
         station_variants.add((row["AQStationName"], row["Longitude"], row["Latitude"]))
     if len(station_variants) != 1:
-        raise ValueError(
-            f"Conflicting Dataflow D station metadata for {station_id}: "
-            f"{len(station_variants)} variants."
-        )
+        return resolve_dataflow_d_station_metadata(rows, station_id)
     station_name, longitude, latitude = station_variants.pop()
     return {
         "stationId": station_id,

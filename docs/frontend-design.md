@@ -1,6 +1,6 @@
 # Atlasul Aerului frontend design
 
-Decision: October 8, 2026. Status: latest-known frontend implemented and checked locally; owner accepted the current design on October 8. Further visual changes are deferred; publication remains pending. Hourly model products remain planned.
+Decision: October 8, 2026. Status: latest-known frontend implemented and checked locally; owner accepted the current design on October 8. The redesign was published through PR #26; the original local verification details below are historical. Further visual changes and hourly model products remain planned.
 
 ## Ownership and visual direction
 
