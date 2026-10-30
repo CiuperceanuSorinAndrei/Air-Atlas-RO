@@ -234,7 +234,7 @@ def test_checked_in_import_summary_matches_observations() -> None:
 
 def test_collect_observations_counts_failed_and_skipped(monkeypatch) -> None:
     failed_url = "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0008R_00008_101.parquet"
-    skipped_url = "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0008R_00008_100.parquet"
+    skipped_url = "https://eeadmz1batchservice02.blob.core.windows.net/airquality-p/RO/SPO-RO0008R_00005_100.parquet"
 
     def fake_import_observation(parquet_url: str) -> dict:
         if parquet_url == failed_url:

@@ -237,3 +237,11 @@ Before new work, use the recorded release evidence in the hardening review: clea
 passing code/data/SQL gates, exact deployed revision, database patch level, private grants/RLS and
 no unresolved release-blocking findings. No finite test suite establishes that software can never
 have a bug; changes reopen the relevant checks. Unimplemented future milestones are not completed work.
+
+### Local checkpoint — 30 October 2026
+
+Geoapify origin restrictions were read back and allowed/unlisted-origin behavior was probed;
+production/development currently share a restricted browser key. The first local catalog/inventory
+slice is [implemented](station-catalog.md): offline validators, discovery reconciliation, opt-in
+catalog-backed collection and hard-error sequence-fallback regression repair. No national approved
+registries, controlled degradation or publication are claimed. Protected release evidence is tracked in the closure checkpoint and GitHub PR.

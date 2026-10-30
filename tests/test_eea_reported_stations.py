@@ -179,6 +179,9 @@ def test_untrusted_document_selection_fails_without_network(monkeypatch, case):
         "wrong_report_namespace",
         "wrong_year",
         "wrong_end",
+        "fractional_begin",
+        "fractional_end",
+        "period_offset_mismatch",
         "naive_period",
         "duplicate_header",
         "wrong_root",
@@ -240,6 +243,13 @@ def test_untrusted_xml_preserves_existing_cache(tmp_path, monkeypatch, case):
         header.find(
             "aqd:reportingPeriod/gml:TimePeriod/gml:endPosition", NS
         ).text = "2027-01-01T00:00:00+02:00"
+    elif case in ["fractional_begin", "fractional_end", "period_offset_mismatch"]:
+        position = "beginPosition" if case == "fractional_begin" else "endPosition"
+        stamp = header.find("aqd:reportingPeriod/gml:TimePeriod/gml:" + position, NS)
+        if case == "period_offset_mismatch":
+            stamp.text = "2026-01-01T00:00:00+03:00"
+        else:
+            stamp.text = stamp.text.replace("T00:00:00", "T00:00:00.000001")
     elif case == "duplicate_header":
         root.append(deepcopy(root[0]))
     elif case == "wrong_root":

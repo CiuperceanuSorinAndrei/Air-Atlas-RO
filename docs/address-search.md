@@ -3,9 +3,33 @@
 Status, October 8: owner selected Geoapify; frontend adapter and explicit-submit UI are implemented.
 The owner-supplied key is configured in ignored local environment settings. A live browser request
 for a public Craiova address returned HTTP 200; selecting the approximate result showed its precision
-and nearby reference stations. Mobile selection had no horizontal overflow at 390 px. The GitHub Actions repository variable is configured for the public build. Domain
-restrictions remain owner/provider settings not independently verified; the feature was published through PR #26.
+and nearby reference stations. Mobile selection had no horizontal overflow at 390 px. The GitHub Actions repository variable is configured for the public build. At that checkpoint domain
+restrictions were not independently verified; see the October 30 readback below. The feature was published through PR #26.
 Station coverage and modelled point estimates are separate unimplemented data products.
+
+## Restriction readback — 30 October 2026
+
+The authenticated Geoapify dashboard was independently inspected. The existing browser key has
+three Allowed HTTP Origins: `https://ciuperceanusorinandrei.github.io`,
+`http://127.0.0.1:5173`, and `http://localhost:5173`. Allowed IP addresses and Allowed HTTP Referers
+have no filters. CORS response origin is `*`; CORS response configuration is separate from key
+restrictions. No provider setting or key was changed in this session. Development and production
+currently share this dedicated browser key; separate keys remain a follow-up, not a completed change.
+
+A bounded provider probe using the existing local browser key and a public Craiova query returned
+HTTP 200 with one result for each of the three configured origins; an unlisted HTTPS origin returned
+HTTP 401. A request without an Origin header also returned HTTP 200. The observed restriction
+therefore rejects an unlisted browser origin, but is not server authentication or proof that
+non-browser clients cannot use the key. No key value or credential-bearing URL was logged or
+included in the external review pack. Browser client keys are public by design.
+
+The existing published UI was also exercised with `Strada Unirii 1, Craiova`; Geoapify returned selectable results labelled
+with approximate precision, preserving the lower-confidence display. This checks the published adapter, not deployment
+of the catalog changes.
+
+Provider reference: [Geoapify API keys](https://myprojects.geoapify.com/help/api-keys/).
+
+
 
 Validation: 31 frontend tests, ESLint and production build passed. Browser fixtures verified
 explicit submission, empty results and quota-error retry; the live check verified a successful request.
