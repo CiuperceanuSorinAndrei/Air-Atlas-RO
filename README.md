@@ -139,3 +139,11 @@ and [locality catalogue](docs/locality-catalogue.md). Local implementation is no
 Exact-address search is implemented behind a dedicated Geoapify browser key; see
 [address search setup](docs/address-search.md). Without configuration, locality/station search remains
 available. Point coverage/model estimates are not yet implemented.
+
+## Catalog/inventory inspection (local, not activated nationally)
+
+The [station catalog and channel inventory](docs/station-catalog.md) now have offline validation,
+bounded discovery reconciliation and an opt-in collection wrapper using catalog metadata without
+live metadata/cache calls. National registry artifacts and controlled degradation remain planned;
+the scheduled refresh continues its current path. [Geoapify configuration](docs/address-search.md)
+records the October 30 restriction readback and actual allowed/disallowed-origin results.

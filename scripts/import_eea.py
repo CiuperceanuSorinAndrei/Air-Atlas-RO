@@ -308,6 +308,12 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
     else:
         raise RuntimeError("Discovery retry limit exhausted.")
 
+    return parse_parquet_urls_payload(response_body)
+
+
+def parse_parquet_urls_payload(response_body: bytes) -> list[str]:
+    if not isinstance(response_body, bytes) or len(response_body) > 2 * 1024 * 1024:
+        raise ValueError("Discovery payload exceeds the byte limit.")
     response_text = response_body.decode("utf-8-sig")
     lines = response_text.splitlines()
     urls = []
@@ -323,6 +329,8 @@ def fetch_parquet_urls(country: str, pollutants: list[str]) -> list[str]:
 
     if not urls:
         raise ValueError("Urls are not available.")
+    if len(urls) > 16_000 or len(set(urls)) != len(urls):
+        raise ValueError("Discovery contains duplicate or excessive URLs.")
 
     return urls
 
@@ -507,6 +515,9 @@ def fetch_dataflow_d_report(source_url: str, reporting_year: int) -> tuple:
     end = parse_timestamp(dataflow_xml_text(header, period + "gml:endPosition"))
     if (
         namespace != "RO.ANPM.AQ"
+        or begin.microsecond != 0
+        or end.microsecond != 0
+        or begin.utcoffset() != end.utcoffset()
         or (begin.year, begin.month, begin.day, begin.hour, begin.minute, begin.second)
         != (reporting_year, 1, 1, 0, 0, 0)
         or (end.year, end.month, end.day, end.hour, end.minute, end.second)
@@ -923,11 +934,18 @@ def get_station_metadata(station_id: str, cache_path: Path) -> dict:
 
 
 def import_observation(
-    parquet_url: str, cache_path: Path = STATION_METADATA_CACHE_PATH
+    parquet_url: str,
+    cache_path: Path = STATION_METADATA_CACHE_PATH,
+    *,
+    station_metadata: dict | None = None,
 ) -> dict:
+    expected_station, _, _ = parse_series_url(parquet_url)
+    if station_metadata is not None:
+        validate_station_metadata(station_metadata, expected_station)
     raw_observation = fetch_latest_observation(parquet_url)
     station_id = validate_raw_identity(raw_observation, parquet_url)
-    station_metadata = get_station_metadata(station_id, cache_path)
+    if station_metadata is None:
+        station_metadata = get_station_metadata(station_id, cache_path)
     normalized_observation = normalize_observation(
         raw_observation, station_metadata, parquet_url
     )
@@ -1008,7 +1026,20 @@ def collect_history(
     return {"observations": observations, "importSummary": summary}
 
 
-def collect_observations(parquet_urls: list[str], *, fail_fast=False) -> dict:
+def collect_observations(
+    parquet_urls: list[str], *, fail_fast=False, station_catalog=None
+) -> dict:
+    catalog_metadata = None
+    if station_catalog is not None:
+        from scripts.eea_catalog import cross_check_findings, validate_station_catalog
+
+        catalog_metadata = validate_station_catalog(station_catalog)
+        if cross_check_findings(station_catalog):
+            raise ValueError("Catalog geometry requires review.")
+        for url in parquet_urls:
+            station_id, _, _ = parse_series_url(url)
+            if station_id not in catalog_metadata:
+                raise ValueError("Station is absent from the supplied catalog.")
     normalized_observations = []
     skipped_counter = 0
     failed_counter = 0
@@ -1019,7 +1050,13 @@ def collect_observations(parquet_urls: list[str], *, fail_fast=False) -> dict:
             parquet_url = candidate[1]
             try:
                 attempted_counter += 1
-                normalized_observation = import_observation(parquet_url)
+                if catalog_metadata is None:
+                    normalized_observation = import_observation(parquet_url)
+                else:
+                    station_id, _, _ = parse_series_url(parquet_url)
+                    normalized_observation = import_observation(
+                        parquet_url, station_metadata=catalog_metadata[station_id]
+                    )
                 normalized_observations.append(normalized_observation)
                 break
             except NoValidObservationsError:
@@ -1041,6 +1078,7 @@ def collect_observations(parquet_urls: list[str], *, fail_fast=False) -> dict:
                     raise ValueError(
                         f"Snapshot import blocked by {parquet_url}: {error}"
                     ) from error
+                break
     assert (
         attempted_counter
         == len(normalized_observations) + skipped_counter + failed_counter
@@ -1073,8 +1111,13 @@ def parse_series_url(parquet_url: str):
 
 def group_series_urls(url_list: list[str]) -> dict:
     grouped_urls = {}
+    seen = set()
     for url in url_list:
         station_id, pollutant_code, sequence = parse_series_url(url)
+        identity = (station_id, pollutant_code, sequence)
+        if identity in seen:
+            raise ValueError("Duplicate EEA series identity.")
+        seen.add(identity)
         key = (station_id, pollutant_code)
         if key not in grouped_urls:
             grouped_urls[key] = []

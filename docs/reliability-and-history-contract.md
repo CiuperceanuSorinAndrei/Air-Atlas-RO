@@ -1,8 +1,10 @@
 # Accepted reliability and history delivery contract
 
 Accepted 28 October 2026 after review of the implementation and proposed failure policies.
-This document is a plan and acceptance boundary, not a claim that the catalog, degraded
-publication or revised history storage exists. The XML repair is the current implementation.
+This document owns the accepted future policies. The XML repair is published; the first local
+catalog/inventory validator, discovery inspector and opt-in collection wrapper are documented in
+[station-catalog.md](station-catalog.md). National catalog activation, controlled degraded
+publication and revised history storage remain planned. Local code is not a published release.
 
 ## Delivery order
 
