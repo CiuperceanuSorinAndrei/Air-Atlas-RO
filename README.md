@@ -60,7 +60,12 @@ versions. It uses dedicated private pilot streams; the public snapshot path rema
 The [metadata incident note](docs/metadata-refresh-incident.md) records the October 27 incident,
 XML recovery path, bounded pagination/fast-failure behavior and the disconnected Supabase pilot.
 The [accepted reliability/history contract](docs/reliability-and-history-contract.md) owns the
-revised delivery order and planned catalog, degradation and history gates; those are not implemented.
+revised delivery order and future approval, degradation and history gates.
+The [catalog tools](docs/station-catalog.md) validate reviewed inputs and build offline candidates;
+the [2 November national candidate bundle](docs/national-catalog-candidates-2026-11-02.md) includes
+exact source evidence and reviewed limitations. The [reviewed local registry checkpoint](docs/catalog-runtime-checkpoint-2026-11-02.md)
+adds an opt-in importer path and fixed-inventory gap reports. Its registries are technically
+accepted for local trials; production approval and scheduled activation remain pending.
 
 ## Development and checks
 

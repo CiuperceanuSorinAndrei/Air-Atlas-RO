@@ -484,15 +484,30 @@ def dataflow_xml_text(node: ET.Element, path: str) -> str:
     return require_text(matches[0].text, f"Dataflow D XML {path}")
 
 
-@lru_cache(maxsize=4)
-def fetch_dataflow_d_report(source_url: str, reporting_year: int) -> tuple:
+def validate_dataflow_d_source_url(source_url: str) -> None:
     validate_https_url(source_url, {"cdr.eionet.europa.eu"})
     parsed = urllib.parse.urlsplit(source_url)
     if parsed.query or not re.fullmatch(
         r"/ro/eu/aqd/d/env[a-z0-9]+/[A-Za-z0-9_-]+\.xml", parsed.path
     ):
         raise ValueError("Invalid Romanian Dataflow D reporting document URL.")
+
+
+@lru_cache(maxsize=4)
+def fetch_dataflow_d_report(source_url: str, reporting_year: int) -> tuple:
+    validate_dataflow_d_source_url(source_url)
     body = read_response(urllib.request.Request(source_url), 32 * 1024 * 1024)
+    return parse_dataflow_d_report(body, reporting_year)[:3]
+
+
+def parse_dataflow_d_report(body: bytes, reporting_year: int) -> tuple:
+    if not isinstance(body, bytes) or len(body) > 32 * 1024 * 1024:
+        raise ValueError("Dataflow D XML byte limit exceeded.")
+    if (
+        type(reporting_year) is not int
+        or not 2013 <= reporting_year <= datetime.now(UTC).year
+    ):
+        raise ValueError("Invalid Dataflow D reporting year.")
     text = body.decode("utf-8-sig")
     if "<!DOCTYPE" in text.upper() or "<!ENTITY" in text.upper():
         raise ValueError("Dataflow D XML declarations are not permitted.")
@@ -528,7 +543,14 @@ def fetch_dataflow_d_report(source_url: str, reporting_year: int) -> tuple:
         node.get(f"{{{ns['xlink']}}}href") for node in header.findall("aqd:content", ns)
     )
     stations = tuple(root.findall("gml:featureMember/aqd:AQD_Station", ns))
-    return stations, contents, hashlib.sha256(body).hexdigest()
+    delivery = {
+        "headerId": require_text(
+            header.get(f"{{{ns['gml']}}}id"), "Reporting header ID"
+        ),
+        "reportingPeriodStart": dataflow_xml_text(header, period + "gml:beginPosition"),
+        "reportingPeriodEnd": dataflow_xml_text(header, period + "gml:endPosition"),
+    }
+    return stations, contents, hashlib.sha256(body).hexdigest(), delivery
 
 
 def resolve_dataflow_d_station_metadata(rows: list[dict], station_id: str) -> dict:
@@ -558,6 +580,15 @@ def resolve_dataflow_d_station_metadata(rows: list[dict], station_id: str) -> di
     if source_url.startswith("http://cdr.eionet.europa.eu/"):
         source_url = "https://" + source_url.removeprefix("http://")
     stations, contents, digest = fetch_dataflow_d_report(source_url, year)
+    return resolve_dataflow_d_station(
+        stations, contents, station_id, source_url, year, digest
+    )
+
+
+def resolve_dataflow_d_station(
+    stations, contents, station_id, source_url, year, digest
+):
+    conflict = f"Conflicting Dataflow D station metadata for {station_id}"
     ns = XML_NAMESPACES
     local_id = f"STA-{station_id}"
     identity_path = "ef:inspireId/base:Identifier/"
@@ -1257,7 +1288,53 @@ def main() -> None:
         type=Path,
         help="Validate a snapshot without network access or mutation",
     )
+    parser.add_argument("--registry-manifest", type=Path)
+    parser.add_argument("--output-directory", type=Path)
+    parser.add_argument("--discovery", type=Path)
+    parser.add_argument("--previous-snapshot", type=Path)
     args = parser.parse_args()
+    trial_options = (args.output_directory, args.discovery, args.previous_snapshot)
+    if args.registry_manifest is not None:
+        if args.check is not None or args.output_directory is None:
+            parser.error(
+                "Registry trials require --output-directory and cannot use --check."
+            )
+        if __package__ in (None, ""):
+            sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+        from scripts.eea_catalog import read_bounded
+        from scripts.eea_registry import collect_registry_run
+
+        try:
+            report = collect_registry_run(
+                args.registry_manifest,
+                args.output_directory,
+                discovery_body=read_bounded(args.discovery, 2 * 1024 * 1024)
+                if args.discovery
+                else None,
+                previous_snapshot=args.previous_snapshot,
+            )
+        except (OSError, ValueError, TypeError, KeyError, RecursionError) as error:
+            parser.exit(
+                1,
+                f"Catalog trial failed; previous snapshot unchanged: {str(error)[:512]}\n",
+            )
+        print(
+            json.dumps(
+                {
+                    key: report[key]
+                    for key in (
+                        "catalogVersion",
+                        "inventoryVersion",
+                        "approvedChannels",
+                        "eligibleChannels",
+                    )
+                },
+                sort_keys=True,
+            )
+        )
+        return
+    if any(option is not None for option in trial_options):
+        parser.error("Trial options require --registry-manifest.")
     if args.check is not None:
         validate_document(json.loads(args.check.read_text(encoding="utf-8")))
         print("Snapshot contract valid")

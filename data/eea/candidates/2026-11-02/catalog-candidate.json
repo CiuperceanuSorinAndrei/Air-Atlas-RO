@@ -1,0 +1,4752 @@
+{
+  "catalogVersion": 1,
+  "schemaVersion": 1,
+  "stations": [
+    {
+      "arcgis": {
+        "latitude": 47.32470000007069,
+        "longitude": 25.134800000082908,
+        "stationId": "RO0008R",
+        "stationName": "EM-3"
+      },
+      "latitude": 47.324686,
+      "localId": "STA-RO0008R",
+      "longitude": 25.134839,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0008R",
+      "stationName": "EM-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.18109999988736,
+        "longitude": 22.055700000096977,
+        "stationId": "RO0009R",
+        "stationName": "EM-2"
+      },
+      "latitude": 45.181136,
+      "localId": "STA-RO0009R",
+      "longitude": 22.05565,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0009R",
+      "stationName": "EM-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.43609999969953,
+        "longitude": 25.305900000309908,
+        "stationId": "RO0010R",
+        "stationName": "EM-1"
+      },
+      "latitude": 45.4361115,
+      "localId": "STA-RO0010R",
+      "longitude": 25.3059025,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0010R",
+      "stationName": "EM-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.4473000002333,
+        "longitude": 26.036699999665583,
+        "stationId": "RO0065A",
+        "stationName": "B-1"
+      },
+      "latitude": 44.447275,
+      "localId": "STA-RO0065A",
+      "longitude": 26.036694,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0065A",
+      "stationName": "B-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.41800000029965,
+        "longitude": 26.160799999598723,
+        "stationId": "RO0066A",
+        "stationName": "B-2"
+      },
+      "latitude": 44.417967,
+      "localId": "STA-RO0066A",
+      "longitude": 26.160786,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0066A",
+      "stationName": "B-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.44490000020501,
+        "longitude": 26.127299999972195,
+        "stationId": "RO0067A",
+        "stationName": "B-3"
+      },
+      "latitude": 44.444925,
+      "localId": "STA-RO0067A",
+      "longitude": 26.127289,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0067A",
+      "stationName": "B-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.383900000314306,
+        "longitude": 26.125000000231125,
+        "stationId": "RO0068A",
+        "stationName": "B-4"
+      },
+      "latitude": 44.383908,
+      "localId": "STA-RO0068A",
+      "longitude": 26.125017,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0068A",
+      "stationName": "B-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.41949999972608,
+        "longitude": 26.03359999985836,
+        "stationId": "RO0069A",
+        "stationName": "B-5"
+      },
+      "latitude": 44.419494,
+      "localId": "STA-RO0069A",
+      "longitude": 26.033642,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0069A",
+      "stationName": "B-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.43500000029361,
+        "longitude": 26.09830000026868,
+        "stationId": "RO0070A",
+        "stationName": "B-6"
+      },
+      "latitude": 44.435044,
+      "localId": "STA-RO0070A",
+      "longitude": 26.098297,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0070A",
+      "stationName": "B-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.349200000210615,
+        "longitude": 26.03079999962678,
+        "stationId": "RO0071A",
+        "stationName": "B-7"
+      },
+      "latitude": 44.349222,
+      "localId": "STA-RO0071A",
+      "longitude": 26.030828,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0071A",
+      "stationName": "B-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.648999999740944,
+        "longitude": 26.144499999598096,
+        "stationId": "RO0072A",
+        "stationName": "B-8"
+      },
+      "latitude": 44.649033,
+      "localId": "STA-RO0072A",
+      "longitude": 26.144475,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0072A",
+      "stationName": "B-8"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.778299999713184,
+        "longitude": 23.615600000200924,
+        "stationId": "RO0073A",
+        "stationName": "CJ-1"
+      },
+      "latitude": 46.778253,
+      "localId": "STA-RO0073A",
+      "longitude": 23.615619,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0073A",
+      "stationName": "CJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.774999999941805,
+        "longitude": 23.59660000042617,
+        "stationId": "RO0074A",
+        "stationName": "CJ-2"
+      },
+      "latitude": 46.775033,
+      "localId": "STA-RO0074A",
+      "longitude": 23.596619,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0074A",
+      "stationName": "CJ-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.76539999980945,
+        "longitude": 23.550299999741004,
+        "stationId": "RO0075A",
+        "stationName": "CJ-3"
+      },
+      "latitude": 46.765425,
+      "localId": "STA-RO0075A",
+      "longitude": 23.550258,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0075A",
+      "stationName": "CJ-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.78220000009108,
+        "longitude": 23.630599999644883,
+        "stationId": "RO0076A",
+        "stationName": "CJ-4"
+      },
+      "latitude": 46.782181,
+      "localId": "STA-RO0076A",
+      "longitude": 23.630594,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0076A",
+      "stationName": "CJ-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.14499999975177,
+        "longitude": 23.87740000029366,
+        "stationId": "RO0077A",
+        "stationName": "CJ-5"
+      },
+      "latitude": 47.145014,
+      "localId": "STA-RO0077A",
+      "longitude": 23.877389,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0077A",
+      "stationName": "CJ-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.318599999974296,
+        "longitude": 23.806199999794934,
+        "stationId": "RO0078A",
+        "stationName": "DJ-1"
+      },
+      "latitude": 44.318569,
+      "localId": "STA-RO0078A",
+      "longitude": 23.806239,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0078A",
+      "stationName": "DJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.319099999782615,
+        "longitude": 23.79670000035669,
+        "stationId": "RO0079A",
+        "stationName": "DJ-2"
+      },
+      "latitude": 44.319139,
+      "localId": "STA-RO0079A",
+      "longitude": 23.796708,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0079A",
+      "stationName": "DJ-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.32680000012354,
+        "longitude": 23.7786999997663,
+        "stationId": "RO0080A",
+        "stationName": "DJ-3"
+      },
+      "latitude": 44.326769,
+      "localId": "STA-RO0080A",
+      "longitude": 23.778689,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0080A",
+      "stationName": "DJ-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.38659999999215,
+        "longitude": 23.733699999637835,
+        "stationId": "RO0081A",
+        "stationName": "DJ-4"
+      },
+      "latitude": 44.386558,
+      "localId": "STA-RO0081A",
+      "longitude": 23.733658,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0081A",
+      "stationName": "DJ-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.34219999999167,
+        "longitude": 23.719700000276575,
+        "stationId": "RO0082A",
+        "stationName": "DJ-5"
+      },
+      "latitude": 44.342222,
+      "localId": "STA-RO0082A",
+      "longitude": 23.719722,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0082A",
+      "stationName": "DJ-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.15680000012871,
+        "longitude": 27.574900000220616,
+        "stationId": "RO0083A",
+        "stationName": "IS-1"
+      },
+      "latitude": 47.156836,
+      "localId": "STA-RO0083A",
+      "longitude": 27.574908,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0083A",
+      "stationName": "IS-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.15099999998527,
+        "longitude": 27.581899999901246,
+        "stationId": "RO0084A",
+        "stationName": "IS-2"
+      },
+      "latitude": 47.15095,
+      "localId": "STA-RO0084A",
+      "longitude": 27.581919,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0084A",
+      "stationName": "IS-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.15779999989108,
+        "longitude": 27.612699999753644,
+        "stationId": "RO0085A",
+        "stationName": "IS-3"
+      },
+      "latitude": 47.157786,
+      "localId": "STA-RO0085A",
+      "longitude": 27.612686,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0085A",
+      "stationName": "IS-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.213300000274444,
+        "longitude": 27.611099999621306,
+        "stationId": "RO0086A",
+        "stationName": "IS-4"
+      },
+      "latitude": 47.213308,
+      "localId": "STA-RO0086A",
+      "longitude": 27.611075,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0086A",
+      "stationName": "IS-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.13569999990895,
+        "longitude": 27.693100000114946,
+        "stationId": "RO0087A",
+        "stationName": "IS-5"
+      },
+      "latitude": 47.135736,
+      "localId": "STA-RO0087A",
+      "longitude": 27.693089,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0087A",
+      "stationName": "IS-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.06430000030356,
+        "longitude": 23.563499999934404,
+        "stationId": "RO0092A",
+        "stationName": "AB-1"
+      },
+      "latitude": 46.064275,
+      "localId": "STA-RO0092A",
+      "longitude": 23.563517,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0092A",
+      "stationName": "AB-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.966399999845756,
+        "longitude": 23.55989999963667,
+        "stationId": "RO0093A",
+        "stationName": "AB-2"
+      },
+      "latitude": 45.966414,
+      "localId": "STA-RO0093A",
+      "longitude": 23.559894,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0093A",
+      "stationName": "AB-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.10960000001624,
+        "longitude": 23.226400000351354,
+        "stationId": "RO0094A",
+        "stationName": "AB-3"
+      },
+      "latitude": 46.109642,
+      "localId": "STA-RO0094A",
+      "longitude": 23.226394,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0094A",
+      "stationName": "AB-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.18109999987822,
+        "longitude": 21.335000000229154,
+        "stationId": "RO0095A",
+        "stationName": "AR-1"
+      },
+      "latitude": 46.181136,
+      "localId": "STA-RO0095A",
+      "longitude": 21.335019,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0095A",
+      "stationName": "AR-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.19049999982294,
+        "longitude": 21.302499999786995,
+        "stationId": "RO0096A",
+        "stationName": "AR-2"
+      },
+      "latitude": 46.190464,
+      "localId": "STA-RO0096A",
+      "longitude": 21.302533,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0096A",
+      "stationName": "AR-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.16680000004419,
+        "longitude": 20.736600000145547,
+        "stationId": "RO0097A",
+        "stationName": "AR-3"
+      },
+      "latitude": 46.16685,
+      "localId": "STA-RO0097A",
+      "longitude": 20.736603,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0097A",
+      "stationName": "AR-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.870100000152,
+        "longitude": 24.85460000026502,
+        "stationId": "RO0098A",
+        "stationName": "AG-1"
+      },
+      "latitude": 44.870136,
+      "localId": "STA-RO0098A",
+      "longitude": 24.854586,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0098A",
+      "stationName": "AG-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.858200000140315,
+        "longitude": 24.871500000315287,
+        "stationId": "RO0099A",
+        "stationName": "AG-2"
+      },
+      "latitude": 44.858167,
+      "localId": "STA-RO0099A",
+      "longitude": 24.871522,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0099A",
+      "stationName": "AG-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.86339999992806,
+        "longitude": 25.007400000326,
+        "stationId": "RO0100A",
+        "stationName": "AG-3"
+      },
+      "latitude": 44.863422,
+      "localId": "STA-RO0100A",
+      "longitude": 25.007381,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0100A",
+      "stationName": "AG-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.97879999996456,
+        "longitude": 24.761300000184285,
+        "stationId": "RO0101A",
+        "stationName": "AG-4"
+      },
+      "latitude": 44.978828,
+      "localId": "STA-RO0101A",
+      "longitude": 24.761258,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0101A",
+      "stationName": "AG-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.75570000010931,
+        "longitude": 24.975499999933483,
+        "stationId": "RO0102A",
+        "stationName": "AG-5"
+      },
+      "latitude": 44.755656,
+      "localId": "STA-RO0102A",
+      "longitude": 24.975533,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0102A",
+      "stationName": "AG-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.285600000116624,
+        "longitude": 25.079699999568255,
+        "stationId": "RO0103A",
+        "stationName": "AG-6"
+      },
+      "latitude": 45.285647,
+      "localId": "STA-RO0103A",
+      "longitude": 25.079656,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0103A",
+      "stationName": "AG-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.56440000016459,
+        "longitude": 26.9107000000849,
+        "stationId": "RO0104A",
+        "stationName": "BC-1"
+      },
+      "latitude": 46.564369,
+      "localId": "STA-RO0104A",
+      "longitude": 26.910667,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0104A",
+      "stationName": "BC-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.55579999980779,
+        "longitude": 26.926899999628105,
+        "stationId": "RO0105A",
+        "stationName": "BC-2"
+      },
+      "latitude": 46.555842,
+      "localId": "STA-RO0105A",
+      "longitude": 26.926942,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0105A",
+      "stationName": "BC-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.256599999915395,
+        "longitude": 26.7929000002237,
+        "stationId": "RO0106A",
+        "stationName": "BC-3"
+      },
+      "latitude": 46.256617,
+      "localId": "STA-RO0106A",
+      "longitude": 26.792892,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0106A",
+      "stationName": "BC-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.068700000136275,
+        "longitude": 21.927199999799953,
+        "stationId": "RO0107A",
+        "stationName": "BH-1"
+      },
+      "latitude": 47.068717,
+      "localId": "STA-RO0107A",
+      "longitude": 21.927233,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0107A",
+      "stationName": "BH-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.097600000126114,
+        "longitude": 21.90120000034457,
+        "stationId": "RO0108A",
+        "stationName": "BH-2"
+      },
+      "latitude": 47.097603,
+      "localId": "STA-RO0108A",
+      "longitude": 21.901167,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0108A",
+      "stationName": "BH-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.032500000089456,
+        "longitude": 21.950500000379535,
+        "stationId": "RO0109A",
+        "stationName": "BH-3"
+      },
+      "latitude": 47.032475,
+      "localId": "STA-RO0109A",
+      "longitude": 21.950494,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0109A",
+      "stationName": "BH-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.04379999971597,
+        "longitude": 22.33189999958403,
+        "stationId": "RO0110A",
+        "stationName": "BH-4"
+      },
+      "latitude": 47.043792,
+      "localId": "STA-RO0110A",
+      "longitude": 22.331906,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0110A",
+      "stationName": "BH-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.12739999997132,
+        "longitude": 24.495499999760753,
+        "stationId": "RO0111A",
+        "stationName": "BN-1"
+      },
+      "latitude": 47.127375,
+      "localId": "STA-RO0111A",
+      "longitude": 24.495494,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0111A",
+      "stationName": "BN-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.739899999749056,
+        "longitude": 26.65849999988787,
+        "stationId": "RO0112A",
+        "stationName": "BT-1"
+      },
+      "latitude": 47.739919,
+      "localId": "STA-RO0112A",
+      "longitude": 26.658519,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0112A",
+      "stationName": "BT-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.28380000003702,
+        "longitude": 27.97109999975085,
+        "stationId": "RO0113A",
+        "stationName": "BR-1"
+      },
+      "latitude": 45.283756,
+      "localId": "STA-RO0113A",
+      "longitude": 27.971103,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0113A",
+      "stationName": "BR-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.263100000116566,
+        "longitude": 27.969499999618517,
+        "stationId": "RO0114A",
+        "stationName": "BR-2"
+      },
+      "latitude": 45.263142,
+      "localId": "STA-RO0114A",
+      "longitude": 27.969506,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0114A",
+      "stationName": "BR-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.270900000256226,
+        "longitude": 27.889199999714634,
+        "stationId": "RO0115A",
+        "stationName": "BR-3"
+      },
+      "latitude": 45.270867,
+      "localId": "STA-RO0115A",
+      "longitude": 27.889208,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0115A",
+      "stationName": "BR-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.297299999940016,
+        "longitude": 27.94949999976106,
+        "stationId": "RO0116A",
+        "stationName": "BR-4"
+      },
+      "latitude": 45.297325,
+      "localId": "STA-RO0116A",
+      "longitude": 27.949461,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0116A",
+      "stationName": "BR-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.1684999999378,
+        "longitude": 27.92259999978207,
+        "stationId": "RO0117A",
+        "stationName": "BR-5"
+      },
+      "latitude": 45.168475,
+      "localId": "STA-RO0117A",
+      "longitude": 27.922636,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0117A",
+      "stationName": "BR-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.63769999974102,
+        "longitude": 25.630700000223165,
+        "stationId": "RO0118A",
+        "stationName": "BV-1"
+      },
+      "latitude": 45.637667,
+      "localId": "STA-RO0118A",
+      "longitude": 25.630747,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0118A",
+      "stationName": "BV-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.6522000003091,
+        "longitude": 25.58309999987966,
+        "stationId": "RO0119A",
+        "stationName": "BV-2"
+      },
+      "latitude": 45.652222,
+      "localId": "STA-RO0119A",
+      "longitude": 25.583056,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0119A",
+      "stationName": "BV-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.65939999992737,
+        "longitude": 25.61600000035488,
+        "stationId": "RO0120A",
+        "stationName": "BV-3"
+      },
+      "latitude": 45.659403,
+      "localId": "STA-RO0120A",
+      "longitude": 25.615992,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0120A",
+      "stationName": "BV-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.71810000019068,
+        "longitude": 25.624200000134753,
+        "stationId": "RO0121A",
+        "stationName": "BV-4"
+      },
+      "latitude": 45.718075,
+      "localId": "STA-RO0121A",
+      "longitude": 25.624194,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0121A",
+      "stationName": "BV-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.651599999946136,
+        "longitude": 25.62569999980964,
+        "stationId": "RO0122A",
+        "stationName": "BV-5"
+      },
+      "latitude": 45.651597,
+      "localId": "STA-RO0122A",
+      "longitude": 25.625653,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0122A",
+      "stationName": "BV-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.15409999993298,
+        "longitude": 26.81860000010341,
+        "stationId": "RO0123A",
+        "stationName": "BZ-1"
+      },
+      "latitude": 45.154075,
+      "localId": "STA-RO0123A",
+      "longitude": 26.818619,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0123A",
+      "stationName": "BZ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.392099999826435,
+        "longitude": 27.044599999930217,
+        "stationId": "RO0124A",
+        "stationName": "BZ-2"
+      },
+      "latitude": 45.392122,
+      "localId": "STA-RO0124A",
+      "longitude": 27.044617,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0124A",
+      "stationName": "BZ-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.20419999979384,
+        "longitude": 27.31370000017755,
+        "stationId": "RO0125A",
+        "stationName": "CL-1"
+      },
+      "latitude": 44.204181,
+      "localId": "STA-RO0125A",
+      "longitude": 27.313672,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0125A",
+      "stationName": "CL-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.20180000031713,
+        "longitude": 27.328000000012747,
+        "stationId": "RO0126A",
+        "stationName": "CL-2"
+      },
+      "latitude": 44.201764,
+      "localId": "STA-RO0126A",
+      "longitude": 27.327958,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0126A",
+      "stationName": "CL-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.29929999989435,
+        "longitude": 21.872100000183632,
+        "stationId": "RO0127A",
+        "stationName": "CS-1"
+      },
+      "latitude": 45.299342,
+      "localId": "STA-RO0127A",
+      "longitude": 21.872125,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0127A",
+      "stationName": "CS-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.51860000001486,
+        "longitude": 22.352700000405967,
+        "stationId": "RO0128A",
+        "stationName": "CS-2"
+      },
+      "latitude": 45.518578,
+      "localId": "STA-RO0128A",
+      "longitude": 22.3527,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0128A",
+      "stationName": "CS-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.72329999975183,
+        "longitude": 21.63350000021306,
+        "stationId": "RO0129A",
+        "stationName": "CS-3"
+      },
+      "latitude": 44.723314,
+      "localId": "STA-RO0129A",
+      "longitude": 21.633481,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0129A",
+      "stationName": "CS-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.36309999979309,
+        "longitude": 22.24319999988373,
+        "stationId": "RO0130A",
+        "stationName": "CS-4"
+      },
+      "latitude": 45.363125,
+      "localId": "STA-RO0130A",
+      "longitude": 22.243186,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0130A",
+      "stationName": "CS-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.177999999964555,
+        "longitude": 28.636200000410174,
+        "stationId": "RO0131A",
+        "stationName": "CT-1"
+      },
+      "latitude": 44.177992,
+      "localId": "STA-RO0131A",
+      "longitude": 28.636214,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0131A",
+      "stationName": "CT-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.17650000010156,
+        "longitude": 28.649700000179212,
+        "stationId": "RO0132A",
+        "stationName": "CT-2"
+      },
+      "latitude": 44.176483,
+      "localId": "STA-RO0132A",
+      "longitude": 28.649681,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0132A",
+      "stationName": "CT-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.31230000011265,
+        "longitude": 28.622899999759348,
+        "stationId": "RO0133A",
+        "stationName": "CT-3"
+      },
+      "latitude": 44.312264,
+      "localId": "STA-RO0133A",
+      "longitude": 28.622939,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0133A",
+      "stationName": "CT-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.81510000007653,
+        "longitude": 28.582599999570405,
+        "stationId": "RO0134A",
+        "stationName": "CT-4"
+      },
+      "latitude": 43.815125,
+      "localId": "STA-RO0134A",
+      "longitude": 28.582639,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0134A",
+      "stationName": "CT-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.14939999970841,
+        "longitude": 28.623800000282923,
+        "stationId": "RO0135A",
+        "stationName": "CT-5"
+      },
+      "latitude": 44.149378,
+      "localId": "STA-RO0135A",
+      "longitude": 28.623817,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0135A",
+      "stationName": "CT-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.31959999982904,
+        "longitude": 28.610299999615552,
+        "stationId": "RO0136A",
+        "stationName": "CT-6"
+      },
+      "latitude": 44.319639,
+      "localId": "STA-RO0136A",
+      "longitude": 28.610292,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0136A",
+      "stationName": "CT-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.24570000026528,
+        "longitude": 28.27170000035761,
+        "stationId": "RO0137A",
+        "stationName": "CT-7"
+      },
+      "latitude": 44.245664,
+      "localId": "STA-RO0137A",
+      "longitude": 28.271692,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0137A",
+      "stationName": "CT-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.87509999977874,
+        "longitude": 25.80439999976691,
+        "stationId": "RO0138A",
+        "stationName": "CV-1"
+      },
+      "latitude": 45.875094,
+      "localId": "STA-RO0138A",
+      "longitude": 25.804417,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0138A",
+      "stationName": "CV-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.9151999998881,
+        "longitude": 25.466599999676795,
+        "stationId": "RO0139A",
+        "stationName": "DB-1"
+      },
+      "latitude": 44.915189,
+      "localId": "STA-RO0139A",
+      "longitude": 25.46655,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0139A",
+      "stationName": "DB-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.13140000030376,
+        "longitude": 25.42179999956484,
+        "stationId": "RO0140A",
+        "stationName": "DB-2"
+      },
+      "latitude": 45.131361,
+      "localId": "STA-RO0140A",
+      "longitude": 25.421792,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0140A",
+      "stationName": "DB-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.42039999982763,
+        "longitude": 28.018599999636937,
+        "stationId": "RO0141A",
+        "stationName": "GL-1"
+      },
+      "latitude": 45.420411,
+      "localId": "STA-RO0141A",
+      "longitude": 28.018594,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0141A",
+      "stationName": "GL-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.431499999786645,
+        "longitude": 28.054700000376833,
+        "stationId": "RO0142A",
+        "stationName": "GL-2"
+      },
+      "latitude": 45.431539,
+      "localId": "STA-RO0142A",
+      "longitude": 28.054742,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0142A",
+      "stationName": "GL-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.47420000013017,
+        "longitude": 28.034400000045377,
+        "stationId": "RO0143A",
+        "stationName": "GL-3"
+      },
+      "latitude": 45.474156,
+      "localId": "STA-RO0143A",
+      "longitude": 28.034406,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0143A",
+      "stationName": "GL-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.411899999952205,
+        "longitude": 28.006000000391502,
+        "stationId": "RO0144A",
+        "stationName": "GL-4"
+      },
+      "latitude": 45.411864,
+      "localId": "STA-RO0144A",
+      "longitude": 28.005967,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0144A",
+      "stationName": "GL-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.8182999999432,
+        "longitude": 27.43960000025954,
+        "stationId": "RO0145A",
+        "stationName": "GL-5"
+      },
+      "latitude": 45.818261,
+      "localId": "STA-RO0145A",
+      "longitude": 27.439592,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0145A",
+      "stationName": "GL-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.05019999982477,
+        "longitude": 23.273999999796526,
+        "stationId": "RO0150A",
+        "stationName": "GJ-1"
+      },
+      "latitude": 45.050194,
+      "localId": "STA-RO0150A",
+      "longitude": 23.273978,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0150A",
+      "stationName": "GJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.897200000233845,
+        "longitude": 23.17089999980361,
+        "stationId": "RO0151A",
+        "stationName": "GJ-2"
+      },
+      "latitude": 44.897183,
+      "localId": "STA-RO0151A",
+      "longitude": 23.170872,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0151A",
+      "stationName": "GJ-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.68059999970182,
+        "longitude": 23.373599999949164,
+        "stationId": "RO0152A",
+        "stationName": "GJ-3"
+      },
+      "latitude": 44.680625,
+      "localId": "STA-RO0152A",
+      "longitude": 23.373578,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0152A",
+      "stationName": "GJ-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.326699999922916,
+        "longitude": 25.811299999888416,
+        "stationId": "RO0153A",
+        "stationName": "HR-1"
+      },
+      "latitude": 46.326722,
+      "localId": "STA-RO0153A",
+      "longitude": 25.811253,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0153A",
+      "stationName": "HR-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.871400000166894,
+        "longitude": 22.90860000011869,
+        "stationId": "RO0154A",
+        "stationName": "HD-1"
+      },
+      "latitude": 45.871406,
+      "localId": "STA-RO0154A",
+      "longitude": 22.908594,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0154A",
+      "stationName": "HD-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.895900000147286,
+        "longitude": 22.898699999749052,
+        "stationId": "RO0155A",
+        "stationName": "HD-2"
+      },
+      "latitude": 45.895933,
+      "localId": "STA-RO0155A",
+      "longitude": 22.898672,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0155A",
+      "stationName": "HD-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.7768000001692,
+        "longitude": 22.916799999898565,
+        "stationId": "RO0156A",
+        "stationName": "HD-3"
+      },
+      "latitude": 45.776814,
+      "localId": "STA-RO0156A",
+      "longitude": 22.916806,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0156A",
+      "stationName": "HD-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.73469999971233,
+        "longitude": 22.991700000254156,
+        "stationId": "RO0157A",
+        "stationName": "HD-4"
+      },
+      "latitude": 45.734739,
+      "localId": "STA-RO0157A",
+      "longitude": 22.991711,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0157A",
+      "stationName": "HD-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.372800000268874,
+        "longitude": 23.278000000127356,
+        "stationId": "RO0158A",
+        "stationName": "HD-5"
+      },
+      "latitude": 45.372794,
+      "localId": "STA-RO0158A",
+      "longitude": 23.277958,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0158A",
+      "stationName": "HD-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.56499999979561,
+        "longitude": 27.366100000019742,
+        "stationId": "RO0159A",
+        "stationName": "IL-1"
+      },
+      "latitude": 44.564972,
+      "localId": "STA-RO0159A",
+      "longitude": 27.366081,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0159A",
+      "stationName": "IL-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.72299999973396,
+        "longitude": 26.651500000207236,
+        "stationId": "RO0160A",
+        "stationName": "IL-2"
+      },
+      "latitude": 44.723039,
+      "localId": "STA-RO0160A",
+      "longitude": 26.651464,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0160A",
+      "stationName": "IL-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.65210000013417,
+        "longitude": 23.55490000012147,
+        "stationId": "RO0161A",
+        "stationName": "MM-1"
+      },
+      "latitude": 47.652117,
+      "localId": "STA-RO0161A",
+      "longitude": 23.554883,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0161A",
+      "stationName": "MM-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.65169999984876,
+        "longitude": 23.570499999615038,
+        "stationId": "RO0162A",
+        "stationName": "MM-2"
+      },
+      "latitude": 47.651725,
+      "localId": "STA-RO0162A",
+      "longitude": 23.570508,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0162A",
+      "stationName": "MM-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.75149999985194,
+        "longitude": 23.60529999979823,
+        "stationId": "RO0163A",
+        "stationName": "MM-3"
+      },
+      "latitude": 47.751475,
+      "localId": "STA-RO0163A",
+      "longitude": 23.605325,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0163A",
+      "stationName": "MM-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.670699999906795,
+        "longitude": 23.614200000085166,
+        "stationId": "RO0164A",
+        "stationName": "MM-4"
+      },
+      "latitude": 47.670653,
+      "localId": "STA-RO0164A",
+      "longitude": 23.614231,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0164A",
+      "stationName": "MM-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.70439999994129,
+        "longitude": 23.628400000361268,
+        "stationId": "RO0165A",
+        "stationName": "MM-5"
+      },
+      "latitude": 47.704436,
+      "localId": "STA-RO0165A",
+      "longitude": 23.628367,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0165A",
+      "stationName": "MM-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.62659999987374,
+        "longitude": 22.662000000384786,
+        "stationId": "RO0166A",
+        "stationName": "MH-1"
+      },
+      "latitude": 44.626633,
+      "localId": "STA-RO0166A",
+      "longitude": 22.661981,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0166A",
+      "stationName": "MH-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.540999999759755,
+        "longitude": 24.55960000012143,
+        "stationId": "RO0167A",
+        "stationName": "MS-1"
+      },
+      "latitude": 46.541047,
+      "localId": "STA-RO0167A",
+      "longitude": 24.559642,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0167A",
+      "stationName": "MS-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.533600000185345,
+        "longitude": 24.534300000274776,
+        "stationId": "RO0168A",
+        "stationName": "MS-2"
+      },
+      "latitude": 46.533569,
+      "localId": "STA-RO0168A",
+      "longitude": 24.534319,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0168A",
+      "stationName": "MS-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.47749999994536,
+        "longitude": 24.10139999995504,
+        "stationId": "RO0169A",
+        "stationName": "MS-3"
+      },
+      "latitude": 46.477506,
+      "localId": "STA-RO0169A",
+      "longitude": 24.101403,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0169A",
+      "stationName": "MS-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.33380000013704,
+        "longitude": 24.307700000398363,
+        "stationId": "RO0170A",
+        "stationName": "MS-4"
+      },
+      "latitude": 46.333825,
+      "localId": "STA-RO0170A",
+      "longitude": 24.307728,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0170A",
+      "stationName": "MS-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.934099999872224,
+        "longitude": 26.389300000081445,
+        "stationId": "RO0171A",
+        "stationName": "NT-1"
+      },
+      "latitude": 46.934128,
+      "localId": "STA-RO0171A",
+      "longitude": 26.38925,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0171A",
+      "stationName": "NT-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.948799999763615,
+        "longitude": 26.9180000002395,
+        "stationId": "RO0172A",
+        "stationName": "NT-2"
+      },
+      "latitude": 46.9488,
+      "localId": "STA-RO0172A",
+      "longitude": 26.918031,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0172A",
+      "stationName": "NT-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.898700000002606,
+        "longitude": 26.03410000034888,
+        "stationId": "RO0173A",
+        "stationName": "NT-3"
+      },
+      "latitude": 46.898683,
+      "localId": "STA-RO0173A",
+      "longitude": 26.034133,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0173A",
+      "stationName": "NT-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.42949999975938,
+        "longitude": 24.351399999970162,
+        "stationId": "RO0174A",
+        "stationName": "OT-1"
+      },
+      "latitude": 44.429489,
+      "localId": "STA-RO0174A",
+      "longitude": 24.351389,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0174A",
+      "stationName": "OT-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.93799999995352,
+        "longitude": 25.995099999818308,
+        "stationId": "RO0175A",
+        "stationName": "PH-1"
+      },
+      "latitude": 44.937989,
+      "localId": "STA-RO0175A",
+      "longitude": 25.995094,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0175A",
+      "stationName": "PH-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.93919999984216,
+        "longitude": 26.02580000011158,
+        "stationId": "RO0176A",
+        "stationName": "PH-2"
+      },
+      "latitude": 44.939242,
+      "localId": "STA-RO0176A",
+      "longitude": 26.025833,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0176A",
+      "stationName": "PH-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.983800000040205,
+        "longitude": 26.015200000133213,
+        "stationId": "RO0177A",
+        "stationName": "PH-3"
+      },
+      "latitude": 44.98375,
+      "localId": "STA-RO0177A",
+      "longitude": 26.015214,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0177A",
+      "stationName": "PH-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.849500000167936,
+        "longitude": 26.02350000037051,
+        "stationId": "RO0178A",
+        "stationName": "PH-4"
+      },
+      "latitude": 44.849481,
+      "localId": "STA-RO0178A",
+      "longitude": 26.0235,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0178A",
+      "stationName": "PH-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.922000000020084,
+        "longitude": 26.033999999891456,
+        "stationId": "RO0179A",
+        "stationName": "PH-5"
+      },
+      "latitude": 44.922033,
+      "localId": "STA-RO0179A",
+      "longitude": 26.033989,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0179A",
+      "stationName": "PH-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.93810000021321,
+        "longitude": 26.04499999990288,
+        "stationId": "RO0180A",
+        "stationName": "PH-6"
+      },
+      "latitude": 44.938125,
+      "localId": "STA-RO0180A",
+      "longitude": 26.044994,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0180A",
+      "stationName": "PH-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.19510000025337,
+        "longitude": 23.046999999887017,
+        "stationId": "RO0181A",
+        "stationName": "SJ-1"
+      },
+      "latitude": 47.195144,
+      "localId": "STA-RO0181A",
+      "longitude": 23.04705,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0181A",
+      "stationName": "SJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.797499999737624,
+        "longitude": 22.876200000133984,
+        "stationId": "RO0182A",
+        "stationName": "SM-1"
+      },
+      "latitude": 47.797531,
+      "localId": "STA-RO0182A",
+      "longitude": 22.876169,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0182A",
+      "stationName": "SM-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.689699999989365,
+        "longitude": 22.458500000173082,
+        "stationId": "RO0183A",
+        "stationName": "SM-2"
+      },
+      "latitude": 47.689728,
+      "localId": "STA-RO0183A",
+      "longitude": 22.4585,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0183A",
+      "stationName": "SM-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.785000000102464,
+        "longitude": 24.15350000022159,
+        "stationId": "RO0184A",
+        "stationName": "SB-1"
+      },
+      "latitude": 45.785047,
+      "localId": "STA-RO0184A",
+      "longitude": 24.153506,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0184A",
+      "stationName": "SB-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.79719999981282,
+        "longitude": 24.182899999958163,
+        "stationId": "RO0185A",
+        "stationName": "SB-2"
+      },
+      "latitude": 45.797222,
+      "localId": "STA-RO0185A",
+      "longitude": 24.182942,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0185A",
+      "stationName": "SB-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.11280000002213,
+        "longitude": 24.22810000010321,
+        "stationId": "RO0186A",
+        "stationName": "SB-3"
+      },
+      "latitude": 46.112775,
+      "localId": "STA-RO0186A",
+      "longitude": 24.22805,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0186A",
+      "stationName": "SB-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.15870000002723,
+        "longitude": 24.338500000250725,
+        "stationId": "RO0187A",
+        "stationName": "SB-4"
+      },
+      "latitude": 46.158703,
+      "localId": "STA-RO0187A",
+      "longitude": 24.338514,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0187A",
+      "stationName": "SB-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.64929999975958,
+        "longitude": 26.248999999706804,
+        "stationId": "RO0188A",
+        "stationName": "SV-1"
+      },
+      "latitude": 47.649258,
+      "localId": "STA-RO0188A",
+      "longitude": 26.249011,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0188A",
+      "stationName": "SV-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.668799999888186,
+        "longitude": 26.28139999969151,
+        "stationId": "RO0189A",
+        "stationName": "SV-2"
+      },
+      "latitude": 47.668825,
+      "localId": "STA-RO0189A",
+      "longitude": 26.281403,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0189A",
+      "stationName": "SV-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.95320000023508,
+        "longitude": 26.06809999956759,
+        "stationId": "RO0190A",
+        "stationName": "SV-3"
+      },
+      "latitude": 47.953186,
+      "localId": "STA-RO0190A",
+      "longitude": 26.068075,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0190A",
+      "stationName": "SV-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.980399999944346,
+        "longitude": 25.312499999957442,
+        "stationId": "RO0191A",
+        "stationName": "TR-1"
+      },
+      "latitude": 43.980375,
+      "localId": "STA-RO0191A",
+      "longitude": 25.312475,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0191A",
+      "stationName": "TR-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.75800000027013,
+        "longitude": 24.901799999677138,
+        "stationId": "RO0192A",
+        "stationName": "TR-2"
+      },
+      "latitude": 43.758008,
+      "localId": "STA-RO0192A",
+      "longitude": 24.901753,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0192A",
+      "stationName": "TR-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.72790000014399,
+        "longitude": 21.2048000002407,
+        "stationId": "RO0193A",
+        "stationName": "TM-1"
+      },
+      "latitude": 45.727872,
+      "localId": "STA-RO0193A",
+      "longitude": 21.204839,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0193A",
+      "stationName": "TM-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.75469999987221,
+        "longitude": 21.234899999586005,
+        "stationId": "RO0194A",
+        "stationName": "TM-2"
+      },
+      "latitude": 45.754731,
+      "localId": "STA-RO0194A",
+      "longitude": 21.234886,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0194A",
+      "stationName": "TM-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.91340000023104,
+        "longitude": 21.151800000348867,
+        "stationId": "RO0195A",
+        "stationName": "TM-3"
+      },
+      "latitude": 45.913431,
+      "localId": "STA-RO0195A",
+      "longitude": 21.151781,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0195A",
+      "stationName": "TM-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.73669999976717,
+        "longitude": 21.250799999553568,
+        "stationId": "RO0196A",
+        "stationName": "TM-4"
+      },
+      "latitude": 45.736694,
+      "localId": "STA-RO0196A",
+      "longitude": 21.250808,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0196A",
+      "stationName": "TM-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.77759999978362,
+        "longitude": 21.220500000191684,
+        "stationId": "RO0197A",
+        "stationName": "TM-5"
+      },
+      "latitude": 45.777636,
+      "localId": "STA-RO0197A",
+      "longitude": 21.220522,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0197A",
+      "stationName": "TM-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.25790000003039,
+        "longitude": 21.267099999554194,
+        "stationId": "RO0198A",
+        "stationName": "TM-6"
+      },
+      "latitude": 45.257931,
+      "localId": "STA-RO0198A",
+      "longitude": 21.2671,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0198A",
+      "stationName": "TM-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.69449999988577,
+        "longitude": 21.893100000123816,
+        "stationId": "RO0199A",
+        "stationName": "TM-7"
+      },
+      "latitude": 45.694547,
+      "localId": "STA-RO0199A",
+      "longitude": 21.893083,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0199A",
+      "stationName": "TM-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.17950000024072,
+        "longitude": 28.7868999998483,
+        "stationId": "RO0200A",
+        "stationName": "TL-1"
+      },
+      "latitude": 45.179539,
+      "localId": "STA-RO0200A",
+      "longitude": 28.786894,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0200A",
+      "stationName": "TL-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.175199999879965,
+        "longitude": 28.774400000161958,
+        "stationId": "RO0201A",
+        "stationName": "TL-2"
+      },
+      "latitude": 45.175236,
+      "localId": "STA-RO0201A",
+      "longitude": 28.774394,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0201A",
+      "stationName": "TL-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.27100000005093,
+        "longitude": 28.424500000418558,
+        "stationId": "RO0202A",
+        "stationName": "TL-3"
+      },
+      "latitude": 45.271036,
+      "localId": "STA-RO0202A",
+      "longitude": 28.424456,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0202A",
+      "stationName": "TL-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.08269999975695,
+        "longitude": 24.36979999969531,
+        "stationId": "RO0203A",
+        "stationName": "VL-1"
+      },
+      "latitude": 45.082728,
+      "localId": "STA-RO0203A",
+      "longitude": 24.369789,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0203A",
+      "stationName": "VL-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.0387999998729,
+        "longitude": 24.29860000009488,
+        "stationId": "RO0204A",
+        "stationName": "VL-2"
+      },
+      "latitude": 45.038831,
+      "localId": "STA-RO0204A",
+      "longitude": 24.298631,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0204A",
+      "stationName": "VL-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.63210000011905,
+        "longitude": 27.730899999647942,
+        "stationId": "RO0205A",
+        "stationName": "VS-1"
+      },
+      "latitude": 46.632142,
+      "localId": "STA-RO0205A",
+      "longitude": 27.730886,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0205A",
+      "stationName": "VS-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.69669999984899,
+        "longitude": 27.2116000002673,
+        "stationId": "RO0206A",
+        "stationName": "VN-1"
+      },
+      "latitude": 45.696736,
+      "localId": "STA-RO0206A",
+      "longitude": 27.211622,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0206A",
+      "stationName": "VN-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.911499999934726,
+        "longitude": 25.97209999971272,
+        "stationId": "RO0207A",
+        "stationName": "GR-1"
+      },
+      "latitude": 43.911464,
+      "localId": "STA-RO0207A",
+      "longitude": 25.972069,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0207A",
+      "stationName": "GR-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.89559999988617,
+        "longitude": 25.95659999977825,
+        "stationId": "RO0208A",
+        "stationName": "GR-2"
+      },
+      "latitude": 43.89555,
+      "localId": "STA-RO0208A",
+      "longitude": 25.956575,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0208A",
+      "stationName": "GR-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.87549999992042,
+        "longitude": 25.93169999996469,
+        "stationId": "RO0209A",
+        "stationName": "GR-3"
+      },
+      "latitude": 43.875458,
+      "localId": "STA-RO0209A",
+      "longitude": 25.931675,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0209A",
+      "stationName": "GR-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.963400000058854,
+        "longitude": 26.03689999968213,
+        "stationId": "RO0210A",
+        "stationName": "GR-4"
+      },
+      "latitude": 43.963417,
+      "localId": "STA-RO0210A",
+      "longitude": 26.036933,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0210A",
+      "stationName": "GR-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.21559999974579,
+        "longitude": 27.768700000079267,
+        "stationId": "RO0211A",
+        "stationName": "IS-6"
+      },
+      "latitude": 47.215636,
+      "localId": "STA-RO0211A",
+      "longitude": 27.768728,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0211A",
+      "stationName": "IS-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.67740000002598,
+        "longitude": 28.101099999722795,
+        "stationId": "RO0212A",
+        "stationName": "VS-2"
+      },
+      "latitude": 46.677389,
+      "localId": "STA-RO0212A",
+      "longitude": 28.1011,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0212A",
+      "stationName": "VS-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.196799999798635,
+        "longitude": 27.39130000030727,
+        "stationId": "RO0213A",
+        "stationName": "CL-3"
+      },
+      "latitude": 44.196806,
+      "localId": "STA-RO0213A",
+      "longitude": 27.391342,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0213A",
+      "stationName": "CL-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.9970000003223,
+        "longitude": 22.953200000214096,
+        "stationId": "RO0214A",
+        "stationName": "DJ-6"
+      },
+      "latitude": 43.997047,
+      "localId": "STA-RO0214A",
+      "longitude": 22.953186,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0214A",
+      "stationName": "DJ-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.745600000175614,
+        "longitude": 24.869999999742074,
+        "stationId": "RO0215A",
+        "stationName": "TR-3"
+      },
+      "latitude": 43.745575,
+      "localId": "STA-RO0215A",
+      "longitude": 24.869981,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0215A",
+      "stationName": "TR-3"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.71210000030651,
+        "longitude": 24.85990000025422,
+        "stationId": "RO0216A",
+        "stationName": "TR-4"
+      },
+      "latitude": 43.712122,
+      "localId": "STA-RO0216A",
+      "longitude": 24.859886,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0216A",
+      "stationName": "TR-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.65069999981635,
+        "longitude": 25.363600000141265,
+        "stationId": "RO0217A",
+        "stationName": "TR-5"
+      },
+      "latitude": 43.650722,
+      "localId": "STA-RO0217A",
+      "longitude": 25.363583,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0217A",
+      "stationName": "TR-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.71670000001736,
+        "longitude": 21.621599999677994,
+        "stationId": "RO0218A",
+        "stationName": "CS-5"
+      },
+      "latitude": 44.716694,
+      "localId": "STA-RO0218A",
+      "longitude": 21.621639,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0218A",
+      "stationName": "CS-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.13399999973811,
+        "longitude": 24.676599999916515,
+        "stationId": "RO0219A",
+        "stationName": "AG-7"
+      },
+      "latitude": 45.133989,
+      "localId": "STA-RO0219A",
+      "longitude": 24.676625,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0219A",
+      "stationName": "AG-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.42879999996668,
+        "longitude": 24.368799999612612,
+        "stationId": "RO0220A",
+        "stationName": "OT-2"
+      },
+      "latitude": 44.428844,
+      "localId": "STA-RO0220A",
+      "longitude": 24.368836,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0220A",
+      "stationName": "OT-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.35210000007267,
+        "longitude": 25.806799999965403,
+        "stationId": "RO0221A",
+        "stationName": "HR-2"
+      },
+      "latitude": 46.3521,
+      "localId": "STA-RO0221A",
+      "longitude": 25.806842,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0221A",
+      "stationName": "HR-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.13580000029972,
+        "longitude": 25.746899999952067,
+        "stationId": "RO0222A",
+        "stationName": "PH-7"
+      },
+      "latitude": 45.135811,
+      "localId": "STA-RO0222A",
+      "longitude": 25.74695,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0222A",
+      "stationName": "PH-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.70230000028706,
+        "longitude": 25.447100000309824,
+        "stationId": "RO0223A",
+        "stationName": "BV-6"
+      },
+      "latitude": 45.702258,
+      "localId": "STA-RO0223A",
+      "longitude": 25.447139,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0223A",
+      "stationName": "BV-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.573099999711,
+        "longitude": 26.914100000366126,
+        "stationId": "RO0224A",
+        "stationName": "BC-4"
+      },
+      "latitude": 46.5730934,
+      "localId": "STA-RO0224A",
+      "longitude": 26.9141026,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0224A",
+      "stationName": "BC-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.25580000013195,
+        "longitude": 26.77090000020078,
+        "stationId": "RO0225A",
+        "stationName": "BC-5"
+      },
+      "latitude": 46.2557678,
+      "localId": "STA-RO0225A",
+      "longitude": 26.7709007,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0225A",
+      "stationName": "BC-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.816900000154334,
+        "longitude": 28.56620000001069,
+        "stationId": "RO0226A",
+        "stationName": "CT-8"
+      },
+      "latitude": 43.81685,
+      "localId": "STA-RO0226A",
+      "longitude": 28.566231,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0226A",
+      "stationName": "CT-8"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.864800000109106,
+        "longitude": 25.783300000267598,
+        "stationId": "RO0227A",
+        "stationName": "CV-2"
+      },
+      "latitude": 45.864764,
+      "localId": "STA-RO0227A",
+      "longitude": 25.783322,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0227A",
+      "stationName": "CV-2"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.99409999982269,
+        "longitude": 21.997699999791653,
+        "stationId": "RO0228A",
+        "stationName": "BH-5"
+      },
+      "latitude": 46.994083,
+      "localId": "STA-RO0228A",
+      "longitude": 21.997672,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0228A",
+      "stationName": "BH-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.491800000116974,
+        "longitude": 26.030900000084234,
+        "stationId": "RO0229A",
+        "stationName": "B-9"
+      },
+      "latitude": 44.4918098,
+      "localId": "STA-RO0229A",
+      "longitude": 26.0309258,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0229A",
+      "stationName": "B-9"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.46040000017731,
+        "longitude": 25.98739999963065,
+        "stationId": "RO0230A",
+        "stationName": "B-10"
+      },
+      "latitude": 44.4603882,
+      "localId": "STA-RO0230A",
+      "longitude": 25.9873753,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0230A",
+      "stationName": "B-10"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.369699999804354,
+        "longitude": 25.974800000385184,
+        "stationId": "RO0231A",
+        "stationName": "B-11"
+      },
+      "latitude": 44.3697433,
+      "localId": "STA-RO0231A",
+      "longitude": 25.9747982,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0231A",
+      "stationName": "B-11"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.843899999768,
+        "longitude": 23.77579999997563,
+        "stationId": "RO0232A",
+        "stationName": "CJ-6"
+      },
+      "latitude": 46.843889,
+      "localId": "STA-RO0232A",
+      "longitude": 23.775833,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0232A",
+      "stationName": "CJ-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.42550000011146,
+        "longitude": 26.091000000114082,
+        "stationId": "RO0233A",
+        "stationName": "B-12"
+      },
+      "latitude": 44.4254837,
+      "localId": "STA-RO0233A",
+      "longitude": 26.0910034,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0233A",
+      "stationName": "B-12"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.45080000013497,
+        "longitude": 26.13030000022029,
+        "stationId": "RO0234A",
+        "stationName": "B-13"
+      },
+      "latitude": 44.4507599,
+      "localId": "STA-RO0234A",
+      "longitude": 26.1302986,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0234A",
+      "stationName": "B-13"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.4462000000083,
+        "longitude": 26.066300000317035,
+        "stationId": "RO0235A",
+        "stationName": "B-14"
+      },
+      "latitude": 44.4461823,
+      "localId": "STA-RO0235A",
+      "longitude": 26.066267,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0235A",
+      "stationName": "B-14"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.46809999998595,
+        "longitude": 26.140900000198656,
+        "stationId": "RO0236A",
+        "stationName": "B-15"
+      },
+      "latitude": 44.4680557,
+      "localId": "STA-RO0236A",
+      "longitude": 26.1409054,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0236A",
+      "stationName": "B-15"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.432100000186026,
+        "longitude": 26.140199999691596,
+        "stationId": "RO0237A",
+        "stationName": "B-16"
+      },
+      "latitude": 44.4321442,
+      "localId": "STA-RO0237A",
+      "longitude": 26.1402149,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0237A",
+      "stationName": "B-16"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.41970000007845,
+        "longitude": 26.136200000259095,
+        "stationId": "RO0238A",
+        "stationName": "B-17"
+      },
+      "latitude": 44.4197426,
+      "localId": "STA-RO0238A",
+      "longitude": 26.1361542,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0238A",
+      "stationName": "B-17"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.43409999986777,
+        "longitude": 26.04230000012875,
+        "stationId": "RO0239A",
+        "stationName": "B-18"
+      },
+      "latitude": 44.4341087,
+      "localId": "STA-RO0239A",
+      "longitude": 26.0423317,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0239A",
+      "stationName": "B-18"
+    },
+    {
+      "latitude": 44.4226761,
+      "localId": "STA-RO0240A",
+      "longitude": 26.0707493,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0240A",
+      "stationName": "B-19"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.39270000000835,
+        "longitude": 26.12039999985069,
+        "stationId": "RO0241A",
+        "stationName": "B-20"
+      },
+      "latitude": 44.3926773,
+      "localId": "STA-RO0241A",
+      "longitude": 26.1204166,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0241A",
+      "stationName": "B-20"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.38609999988902,
+        "longitude": 26.130399999779417,
+        "stationId": "RO0242A",
+        "stationName": "B-21"
+      },
+      "latitude": 44.3861389,
+      "localId": "STA-RO0242A",
+      "longitude": 26.1304073,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0242A",
+      "stationName": "B-21"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.41849999989281,
+        "longitude": 26.14920000043595,
+        "stationId": "RO0243A",
+        "stationName": "B-22"
+      },
+      "latitude": 44.4185066,
+      "localId": "STA-RO0243A",
+      "longitude": 26.1491985,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0243A",
+      "stationName": "B-22"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.47030000029822,
+        "longitude": 26.002500000430327,
+        "stationId": "RO0244A",
+        "stationName": "B-23"
+      },
+      "latitude": 44.470314,
+      "localId": "STA-RO0244A",
+      "longitude": 26.0024567,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0244A",
+      "stationName": "B-23"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.40709999970193,
+        "longitude": 26.113099999696093,
+        "stationId": "RO0245A",
+        "stationName": "B-24"
+      },
+      "latitude": 44.4071007,
+      "localId": "STA-RO0245A",
+      "longitude": 26.113142,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0245A",
+      "stationName": "B-24"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.3001000000246,
+        "longitude": 26.120100000275016,
+        "stationId": "RO0246A",
+        "stationName": "B-25"
+      },
+      "latitude": 44.3001099,
+      "localId": "STA-RO0246A",
+      "longitude": 26.1201248,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0246A",
+      "stationName": "B-25"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.49930000018745,
+        "longitude": 26.13540000019294,
+        "stationId": "RO0247A",
+        "stationName": "B-26"
+      },
+      "latitude": 44.4992561,
+      "localId": "STA-RO0247A",
+      "longitude": 26.1354294,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0247A",
+      "stationName": "B-26"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.48819999974653,
+        "longitude": 26.184199999737398,
+        "stationId": "RO0248A",
+        "stationName": "B-27"
+      },
+      "latitude": 44.4882393,
+      "localId": "STA-RO0248A",
+      "longitude": 26.184185,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0248A",
+      "stationName": "B-27"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.38580000008825,
+        "longitude": 26.24709999999883,
+        "stationId": "RO0249A",
+        "stationName": "B-28"
+      },
+      "latitude": 44.3857841,
+      "localId": "STA-RO0249A",
+      "longitude": 26.2471256,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0249A",
+      "stationName": "B-28"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.550300000007255,
+        "longitude": 26.07049999976608,
+        "stationId": "RO0250A",
+        "stationName": "B-29"
+      },
+      "latitude": 44.5502739,
+      "localId": "STA-RO0250A",
+      "longitude": 26.0705414,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0250A",
+      "stationName": "B-29"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.56110000006534,
+        "longitude": 25.94710000034004,
+        "stationId": "RO0251A",
+        "stationName": "B-30"
+      },
+      "latitude": 44.5610619,
+      "localId": "STA-RO0251A",
+      "longitude": 25.9471016,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0251A",
+      "stationName": "B-30"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.29929999989435,
+        "longitude": 21.872100000183632,
+        "stationId": "RO0252A",
+        "stationName": "CS-1"
+      },
+      "latitude": 45.299342,
+      "localId": "STA-RO0252A",
+      "longitude": 21.872125,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0252A",
+      "stationName": "CS-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.9151999998881,
+        "longitude": 25.466599999676795,
+        "stationId": "RO0253A",
+        "stationName": "DB-1"
+      },
+      "latitude": 44.915189,
+      "localId": "STA-RO0253A",
+      "longitude": 25.46655,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0253A",
+      "stationName": "DB-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.38659999999215,
+        "longitude": 23.733699999637835,
+        "stationId": "RO0254A",
+        "stationName": "DJ-4"
+      },
+      "latitude": 44.386558,
+      "localId": "STA-RO0254A",
+      "longitude": 23.733658,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0254A",
+      "stationName": "DJ-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.05019999982477,
+        "longitude": 23.273999999796526,
+        "stationId": "RO0255A",
+        "stationName": "GJ-1"
+      },
+      "latitude": 45.050194,
+      "localId": "STA-RO0255A",
+      "longitude": 23.273978,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0255A",
+      "stationName": "GJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.8182999999432,
+        "longitude": 27.43960000025954,
+        "stationId": "RO0256A",
+        "stationName": "GL-5"
+      },
+      "latitude": 45.818261,
+      "localId": "STA-RO0256A",
+      "longitude": 27.439592,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0256A",
+      "stationName": "GL-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.19510000025337,
+        "longitude": 23.046999999887017,
+        "stationId": "RO0257A",
+        "stationName": "SJ-1"
+      },
+      "latitude": 47.195144,
+      "localId": "STA-RO0257A",
+      "longitude": 23.04705,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0257A",
+      "stationName": "SJ-1"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.69449999988577,
+        "longitude": 21.893100000123816,
+        "stationId": "RO0258A",
+        "stationName": "TM-7"
+      },
+      "latitude": 45.694547,
+      "localId": "STA-RO0258A",
+      "longitude": 21.893083,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0258A",
+      "stationName": "TM-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 43.75800000027013,
+        "longitude": 24.901799999677138,
+        "stationId": "RO0259A",
+        "stationName": "TR-2"
+      },
+      "latitude": 43.758008,
+      "localId": "STA-RO0259A",
+      "longitude": 24.901753,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0259A",
+      "stationName": "TR-2"
+    },
+    {
+      "latitude": 45.1367607,
+      "localId": "STA-RO0260A",
+      "longitude": 27.4697781,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0260A",
+      "stationName": "BR-6"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.559700000101934,
+        "longitude": 23.527200000076295,
+        "stationId": "RO0262A",
+        "stationName": "DJ-7"
+      },
+      "latitude": 44.5596848,
+      "localId": "STA-RO0262A",
+      "longitude": 23.5272427,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0262A",
+      "stationName": "DJ-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 47.93060000008273,
+        "longitude": 23.888899999897305,
+        "stationId": "RO0263A",
+        "stationName": "MM-6"
+      },
+      "latitude": 47.930558,
+      "localId": "STA-RO0263A",
+      "longitude": 23.888895,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0263A",
+      "stationName": "MM-6"
+    },
+    {
+      "latitude": 47.678612,
+      "localId": "STA-RO0264A",
+      "longitude": 24.452764,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0264A",
+      "stationName": "MM-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 46.79029999975423,
+        "longitude": 24.71440000034784,
+        "stationId": "RO0265A",
+        "stationName": "MS-5"
+      },
+      "latitude": 46.790322,
+      "localId": "STA-RO0265A",
+      "longitude": 24.714417,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0265A",
+      "stationName": "MS-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.81510000008198,
+        "longitude": 24.127499999867876,
+        "stationId": "RO0266A",
+        "stationName": "SB-5"
+      },
+      "latitude": 45.8151444,
+      "localId": "STA-RO0266A",
+      "longitude": 24.1274667,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0266A",
+      "stationName": "SB-5"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.95589999996394,
+        "longitude": 23.576199999637296,
+        "stationId": "RO0267A",
+        "stationName": "AB-4"
+      },
+      "latitude": 45.9559326,
+      "localId": "STA-RO0267A",
+      "longitude": 23.5762291,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0267A",
+      "stationName": "AB-4"
+    },
+    {
+      "latitude": 47.7361667,
+      "localId": "STA-RO0268A",
+      "longitude": 26.6685,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0268A",
+      "stationName": "BT-2"
+    },
+    {
+      "latitude": 45.8434944,
+      "localId": "STA-RO0269A",
+      "longitude": 24.9679222,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0269A",
+      "stationName": "BV-7"
+    },
+    {
+      "arcgis": {
+        "latitude": 45.03649999984807,
+        "longitude": 23.27499999987926,
+        "stationId": "RO0270A",
+        "stationName": "GJ-4"
+      },
+      "latitude": 45.0365257,
+      "localId": "STA-RO0270A",
+      "longitude": 23.2750416,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0270A",
+      "stationName": "GJ-4"
+    },
+    {
+      "arcgis": {
+        "latitude": 44.42689999978614,
+        "longitude": 24.377299999866455,
+        "stationId": "RO0271A",
+        "stationName": "OT-3"
+      },
+      "latitude": 44.4269142,
+      "localId": "STA-RO0271A",
+      "longitude": 24.377306,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0271A",
+      "stationName": "OT-3"
+    },
+    {
+      "latitude": 45.7821655,
+      "localId": "STA-RO0272A",
+      "longitude": 24.1476383,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0272A",
+      "stationName": "SB-6"
+    },
+    {
+      "latitude": 45.049427,
+      "localId": "STA-RO0273A",
+      "longitude": 25.9516735,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0273A",
+      "stationName": "PH-8"
+    },
+    {
+      "latitude": 45.1724396,
+      "localId": "STA-RO0274A",
+      "longitude": 28.7908421,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0274A",
+      "stationName": "TL-4"
+    },
+    {
+      "latitude": 45.8833,
+      "localId": "STA-RO0275A",
+      "longitude": 22.906826,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0275A",
+      "stationName": "HD-6"
+    },
+    {
+      "latitude": 46.36631,
+      "localId": "STA-RO0276A",
+      "longitude": 25.798943,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0276A",
+      "stationName": "HR-3"
+    },
+    {
+      "latitude": 44.917297,
+      "localId": "STA-RO0277A",
+      "longitude": 25.480513,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0277A",
+      "stationName": "DB-3"
+    },
+    {
+      "latitude": 44.6357765,
+      "localId": "STA-RO0278A",
+      "longitude": 22.6486588,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0278A",
+      "stationName": "MH-2"
+    },
+    {
+      "latitude": 45.1320496,
+      "localId": "STA-RO0279A",
+      "longitude": 27.4593563,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0279A",
+      "stationName": "BR-7"
+    },
+    {
+      "latitude": 46.133797,
+      "localId": "STA-RO0280A",
+      "longitude": 21.35388,
+      "metadataDelivery": {
+        "headerId": "D_ReportingHeader",
+        "reportingPeriodEnd": "2026-01-01T00:00:00+02:00",
+        "reportingPeriodStart": "2025-01-01T00:00:00+02:00"
+      },
+      "metadataEnvelopeUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+      "metadataReportingYear": 2025,
+      "metadataSourceSha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+      "metadataSourceUrl": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+      "namespace": "RO.ANPM.AQ",
+      "stationId": "RO0280A",
+      "stationName": "AR-4"
+    }
+  ]
+}

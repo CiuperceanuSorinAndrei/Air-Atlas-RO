@@ -1,7 +1,7 @@
 # EEA station catalog and channel inventory
 
-Local implementation, 30 October 2026. This is the first catalog/inventory slice, not a national
-rollout. No approved national registries are shipped, no scheduled refresh is switched to them,
+Candidate and local-trial tooling, 2 November 2026, extending the 30 October validators. This is not a national
+rollout. The shipped national artifacts are candidates; no approved registries or scheduled cutover exist,
 and controlled degradation remains planned. Synthetic test records are not approval evidence.
 
 ## Separate reviewed inputs
@@ -85,3 +85,87 @@ Then integrate catalog/inventory loading into the measurement job through a sepa
 change. Persistent degradation, six-channel/three-station budgeting, source confirmation windows,
 withdrawal/quarantine publication and history changes remain governed by
 [the accepted contract](reliability-and-history-contract.md), not this inspection tool.
+
+## Reproducible national candidate construction
+
+The offline builder and the separate network capture command are available locally. Neither
+approves registries, reads the latest-observation snapshot, collects measurements, changes a
+workflow, or publishes anything. Schema v1 remains unchanged.
+
+First inspect the official Romanian Dataflow D directory/envelope and choose the exact delivery
+URL and reporting year. A reporting year alone cannot identify a delivery. Capture public inputs
+into a **new directory**:
+
+```sh
+uv run --locked python -m scripts.capture_eea_candidates \
+  --source-url https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml \
+  --reporting-year 2025 --output /tmp/atlas-eea-source-capture
+```
+
+The capture command uses existing HTTPS host/redirect, timeout and response-byte protections:
+32 MiB XML, 2 MiB discovery, 8 MiB ArcGIS, 2 MiB envelope. It requests Romanian dataset=1 streams
+for all six supported pollutants, and a bounded ArcGIS RO station cross-check. It records original
+response bytes and a manifest with exact URLs, HTTP method/request body, retrieval UTC, ETag,
+byte length and SHA-256. Retrieval time is capture evidence, not measurement freshness or source
+confirmation. Invalid XML/discovery/cross-check responses fail before exposing an output bundle;
+ArcGIS transfer-limit responses are rejected. These separate requests are not a transactional
+provider snapshot. Envelope HTML is retained for human delivery review, not automatically treated
+as metadata approval. Capture does not automatically select a newer official delivery.
+
+Generate candidates entirely offline from those captured files:
+
+```sh
+uv run --locked python -m scripts.build_eea_candidates \
+  --xml /tmp/atlas-eea-source-capture/dataflow-d.xml \
+  --source-url https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml \
+  --reporting-year 2025 \
+  --discovery /tmp/atlas-eea-source-capture/discovery.txt \
+  --arcgis /tmp/atlas-eea-source-capture/arcgis.geojson \
+  --output /tmp/atlas-eea-candidates
+```
+
+Outputs are `catalog-candidate.json`, `inventory-candidate.json` and `review-report.json`.
+Exit 0 means a candidate bundle was constructed; it **never means approved** or complete national
+coverage. Exit 1 means invalid/unreadable inputs or unavailable output. Output directories must
+not exist, including empty directories or symlinks. Serialization and staging complete before
+atomic directory replacement of an exclusively reserved empty destination; errors clean up staging.
+An interrupted reservation can leave an empty destination, never a partly written registry set.
+
+The catalog includes every uniquely identified XML station, even if no dataset=1 stream is
+currently discovered. The inventory includes exactly the discovered supported channels whose
+station identity resolves in that XML. Discovery-only stations and streams remain unresolved
+in the report; no dynamic metadata lookup or guessed cross-provider mapping fills the gap.
+Duplicate URLs or numeric stream identities fail. Inventory sorting is station/pollutant then
+descending numeric sequence. The collector still owns execution priority.
+
+Review every report field before any later registry approval:
+
+- `approvalState: candidate-only`, `requiresOwnerApproval: true` always remain explicit.
+- `discoveryCompleteness` says a single response cannot establish completeness. Without an
+  approved prior inventory there is no loss baseline; zero missing candidate streams is not proof
+  of complete national discovery, since this candidate inventory was constructed from discovery.
+- `xmlOnlyStations`, `discoveryOnlyStations`, missing/extra cross-check IDs, name differences and
+  geodesic discrepancies above 10 m are retained. Missing cross-checks are unknown, not matches.
+  Ended operational periods reported in XML remain visible; catalog inclusion proves neither
+  current operation nor measurement availability.
+- Exact XML/discovery/ArcGIS SHA-256 values identify replay inputs. Official annual periods retain
+  their original offsets. Reordering discovery preserves the registries but changes its byte hash.
+
+For subsequent proposals, supply **both** `--previous-catalog` and `--previous-inventory` and
+explicit larger `--catalog-version` / `--inventory-version`. `baselineDiff` records complete
+before/after station/channel changes and discovery reconciliation against the previous inventory,
+including missing channels and streams. Previous documents are never modified or silently
+shrunk. Baseline hashes use the documented deterministic JSON encoding, not the original input
+file bytes. New candidates remain subject to review, including proposed removals.
+
+The first real captured bundle and its review limitations are documented in
+[national candidate review](national-catalog-candidates-2026-11-02.md). It is stored under
+`data/eea/candidates/2026-11-02/`, outside the public frontend bundle and refresh configuration.
+
+
+## Technically reviewed local registry collection
+
+The [next local checkpoint](catalog-runtime-checkpoint-2026-11-02.md) adds exact-byte registry
+manifests, original-XML sampling-point review and explicit opt-in importer trials. The first
+`data/eea/registries/v1/` bundle is accepted technically for local trials, with documented exception
+dispositions. Production approval/cutover and controlled degradation remain separate future gates.

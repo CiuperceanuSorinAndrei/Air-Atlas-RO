@@ -1,0 +1,12 @@
+{
+  "catalogVersion": 1,
+  "files": {
+    "catalog.json": "deb9600bb2309575d525e0e453609e60c2f881112f6eee61655ae332f55411db",
+    "inventory.json": "7834fdaefebec839ed9f025c252e76aa6c1c18d7d57ceda0edbc93edf8eb311d",
+    "review.json": "387220fc2e7f5f467e38cba1e9adb2b118e98e76cc70bc313c8272483b144e21"
+  },
+  "inventoryVersion": 1,
+  "schemaVersion": 1,
+  "scope": "local-trial",
+  "status": "technically-reviewed"
+}
