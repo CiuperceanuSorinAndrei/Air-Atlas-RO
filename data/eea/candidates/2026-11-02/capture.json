@@ -1,0 +1,59 @@
+[
+  {
+    "file": "dataflow-d.xml",
+    "url": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/dataflow-d-2025updateV2.xml",
+    "method": "GET",
+    "requestBody": null,
+    "retrievedAt": "2026-11-02T15:06:19.233654+00:00",
+    "sha256": "714f08549e37ab0d2edafd8f3a3c678a4d880419170b2cd5e544b13110cd407d",
+    "bytes": 14919523,
+    "etag": null
+  },
+  {
+    "file": "envelope.html",
+    "url": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/",
+    "method": "GET",
+    "requestBody": null,
+    "retrievedAt": "2026-11-02T15:06:19.757174+00:00",
+    "sha256": "46eaa66753cdf814543ddfd98881a841317cced13f405ae4f77a46f5a90a0200",
+    "bytes": 14064,
+    "etag": null
+  },
+  {
+    "file": "discovery.txt",
+    "url": "https://eeadmz1-downloads-api-appservice.azurewebsites.net/ParquetFile/urls",
+    "method": "POST",
+    "requestBody": "{\"countries\": [\"RO\"], \"cities\": [], \"pollutants\": [\"SO2\", \"PM10\", \"O3\", \"NO2\", \"CO\", \"PM2.5\"], \"dataset\": 1, \"source\": \"Atlasul Aerului Importer\"}",
+    "retrievedAt": "2026-11-02T15:06:20.278278+00:00",
+    "sha256": "6a969fb8d2ebe1c8e6d0b1146f353089ba1337991642c0c53a671e64c393fbf3",
+    "bytes": 70284,
+    "etag": null
+  },
+  {
+    "file": "arcgis.geojson",
+    "url": "https://air.discomap.eea.europa.eu/arcgis/rest/services/AirQuality/AirQualityDownloadServiceEUMonitoringStations/MapServer/0/query?where=AirQualityStationEoICode+LIKE+%27RO%25%27&outFields=AirQualityStationEoICode%2CAQStationName&returnGeometry=true&outSR=4326&f=geojson&resultRecordCount=2000",
+    "method": "GET",
+    "retrievedAt": "2026-11-02T15:07:01.477470+00:00",
+    "sha256": "a5dd32935644fe0d4adcb8770de7acb06d8013cd490647400b697a905deb00f2",
+    "bytes": 34474,
+    "etag": "\"1790172022\""
+  },
+  {
+    "file": "dataflow-d-directory.html",
+    "url": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/",
+    "method": "GET",
+    "retrievedAt": "2026-11-02T15:07:01.764378+00:00",
+    "sha256": "2c073460820bf102168bc0b1af6f335f41a8725c939e6a6246a19dad58e1dfaf",
+    "bytes": 37876,
+    "etag": null
+  },
+  {
+    "file": "envelope-overview.html",
+    "url": "https://cdr.eionet.europa.eu/ro/eu/aqd/d/envag8edw/overview",
+    "method": "GET",
+    "retrievedAt": "2026-11-02T15:07:02.160528+00:00",
+    "sha256": "d2bed87cad67207358e969a8aae3ecb0ad860266358e07f286af948cf00c31eb",
+    "bytes": 13995,
+    "etag": null
+  }
+]
