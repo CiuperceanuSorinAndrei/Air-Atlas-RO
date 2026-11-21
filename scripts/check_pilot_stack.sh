@@ -38,7 +38,7 @@ print("pilot stack:", expected)
 PY
 }
 docker compose up --build --detach --wait db web
-if docker compose port db 5432 2>/dev/null | grep -q .; then
+if [ "$(docker inspect --format '{{len .HostConfig.PortBindings}}' "$(docker compose ps --quiet db)")" != 0 ]; then
   echo 'The database port must not be published.'
   exit 1
 fi
