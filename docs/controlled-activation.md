@@ -1,9 +1,11 @@
 # Controlled refresh — activation, operation and rollback
 
-Status, 21 November 2026: implemented and tested locally; **not active**.
-The scheduled refresh keeps publishing with the default importer until the
-owner sets the repository variable described below. No remote run of the
-controlled jobs, state branch or updated monitor has happened yet.
+Status, 21 November 2026: released in PR #69 and running in **`shadow`**
+since 16:03 UTC. The default importer still publishes the public snapshot;
+the controlled run is only persisted on `refresh-state`. The first two
+generations were `normal` with no degraded channel. Mode `on`, the production
+approval document and the 72-run acceptance are not done. The live Checkly
+check runs the updated script, applied and read back the same day.
 
 The policies are those of the [accepted contract](reliability-and-history-contract.md);
 the run itself is described in [controlled degradation](controlled-degradation.md).
@@ -87,7 +89,8 @@ legacy snapshots, so it can be applied before activation.
 
 ## Activation procedure
 
-Each step needs the owner's explicit decision.
+Each step needs the owner's explicit decision. Steps 1–3 were completed on
+21 November 2026; step 4 cannot finish before 24 November, about 16:00 UTC.
 
 1. Release this code. Confirm no ruleset blocks a bot push to a new
    `refresh-state` branch.
@@ -157,4 +160,4 @@ One lineage, one scheduler: the workflow concurrency group is the only
 protection against concurrent runs. Hashes detect inconsistent bundles, not a
 maintainer rewriting the state branch. The state branch grows by about 1 MiB
 of history per run before Git compression; prune it only with a documented
-new initialization. Nothing here has run on GitHub yet.
+new initialization. Mode `on` and the export step have not run on GitHub.
