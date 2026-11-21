@@ -224,8 +224,8 @@ updated separately.
 
 The command itself schedules nothing and writes only private bundles.
 [Controlled activation](controlled-activation.md) describes the opt-in
-workflow modes, the persisted state branch, monitoring and rollback; that path
-is implemented but not active. No history API/UI or storage redesign. Dynamic
+workflow modes, the persisted state branch, monitoring and rollback; since
+21 November 2026 it runs in shadow mode only. No storage redesign. Dynamic
 metadata cache policy is untouched because catalog stations make no live
 metadata calls. The source's semantics for `ResultTime` on invalidation are
 not documented by the provider; withdrawals are honored when not earlier than

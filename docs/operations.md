@@ -57,6 +57,10 @@ series that does not meet the automatic invalidation contract, save the previous
 record the official evidence and affected station/pollutant pairs, make a reviewed baseline change
 and rerun every gate. Same-interval corrections need no baseline reset.
 
+The final push to `main` occasionally fails with `GH006: Required status check "production-checks" is
+expected` immediately after the check run is recorded (seen 19, 20 and 21 November 2026). The previous
+snapshot stays published and the next run succeeds; no retry is implemented yet.
+
 Workflow-failure emails are owner-reported enabled. Delivery is not independently demonstrated;
 verify a controlled failure reaches the chosen inbox before claiming alert coverage. Do not rely
 on email or GitHub's hourly schedule as a production freshness SLA.
