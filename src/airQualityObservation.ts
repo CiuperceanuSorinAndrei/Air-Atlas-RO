@@ -23,6 +23,7 @@ export type AirQualityObservation = {
 export type ObservationDocument = {
   observations: AirQualityObservation[]
   importSummary: { attempted: number; imported: number; skipped: number; failed: number }
+  publication?: { schemaVersion: 1; mode: 'normal' | 'corrective'; generation: number; generatedAt: string; degradedChannels: number; degradedStations: number }
 }
 const names: Record<string, string> = { '00001': 'SO2', '00005': 'PM10', '00007': 'O3', '00008': 'NO2', '00010': 'CO', '06001': 'PM2.5' }
 function object(value: unknown): Record<string, unknown> {
@@ -46,7 +47,18 @@ function timestamp(value: unknown): number {
 }
 export function validateObservationDocument(value: unknown): ObservationDocument {
   const document = object(value), summary = object(document.importSummary)
-  if (!Array.isArray(document.observations) || document.observations.length === 0) throw Error('Empty observations')
+  let generated = Infinity, corrective = false
+  if (document.publication !== undefined) {
+    const publication = object(document.publication)
+    if (Object.keys(publication).sort().join() !== 'degradedChannels,degradedStations,generatedAt,generation,mode,schemaVersion' || publication.schemaVersion !== 1 || !['normal', 'corrective'].includes(String(publication.mode))) throw Error('Invalid publication')
+    for (const [key, minimum] of [['generation', 1], ['degradedChannels', 0], ['degradedStations', 0]] as const) {
+      const count = numeric(publication[key])
+      if (!Number.isSafeInteger(count) || count < minimum) throw Error('Invalid publication')
+    }
+    generated = timestamp(publication.generatedAt)
+    corrective = publication.mode === 'corrective'
+  }
+  if (!Array.isArray(document.observations) || (document.observations.length === 0 && !corrective)) throw Error('Empty observations')
   for (const key of ['attempted', 'imported', 'skipped', 'failed']) {
     const count = numeric(summary[key])
     if (!Number.isSafeInteger(count) || count < 0) throw Error('Invalid import count')
@@ -70,7 +82,7 @@ export function validateObservationDocument(value: unknown): ObservationDocument
     if (row.unit !== (row.pollutant === 'CO' ? 'mg.m-3' : 'ug.m-3') || ![1, 2, 3, 4].includes(numeric(row.validity)) || ![1, 2, 3].includes(numeric(row.verification)) || row.status !== (row.verification === 1 ? 'validated' : 'preliminary')) throw Error('Invalid quality metadata')
     const start = timestamp(row.observedFrom), end = timestamp(row.observedTo), reported = timestamp(row.reportedAt), ingested = timestamp(row.ingestedAt)
     const aggregation = row.aggregationType ?? (end - start === 3_600_000 ? 'hour' : 'day')
-    if (!['hour', 'day'].includes(String(aggregation)) || end - start !== (aggregation === 'hour' ? 3_600_000 : 86_400_000) || start > ingested || reported > ingested) throw Error('Invalid interval')
+    if (!['hour', 'day'].includes(String(aggregation)) || end - start !== (aggregation === 'hour' ? 3_600_000 : 86_400_000) || start > ingested || reported > ingested || ingested > generated) throw Error('Invalid interval')
     if (row.sourceRecordId != null) text(row.sourceRecordId)
     if (row.dataCapture != null && (numeric(row.dataCapture) < 0 || numeric(row.dataCapture) > 100)) throw Error('Invalid data capture')
     const pair = `${row.stationId}:${row.pollutant}`
@@ -88,14 +100,18 @@ export function groupByStation(observations: AirQualityObservation[]): Map<strin
   }
   return stations
 }
-export function latestImport(document: ObservationDocument): number {
+export function latestImport(document: ObservationDocument): number | null {
+  if (!document.observations.length) return null
   return Math.max(...document.observations.map(row => Date.parse(row.ingestedAt)))
 }
 export function latestMeasurement(document: ObservationDocument | null): number | null {
   if (!document?.observations.length) return null
   return Math.max(...document.observations.map(row => Date.parse(row.observedTo)))
 }
+function snapshotOrder(document: ObservationDocument): number {
+  return document.publication ? Date.parse(document.publication.generatedAt) : latestImport(document) ?? -Infinity
+}
 export function acceptSnapshot(previous: ObservationDocument | null, next: ObservationDocument): ObservationDocument {
-  if (previous && latestImport(next) < latestImport(previous)) throw Error('Older snapshot received')
+  if (previous && snapshotOrder(next) < snapshotOrder(previous)) throw Error('Older snapshot received')
   return next
 }

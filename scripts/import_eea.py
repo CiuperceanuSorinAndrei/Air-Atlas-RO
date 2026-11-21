@@ -192,13 +192,53 @@ def validate_observation(row: dict) -> None:
             raise ValueError("Data capture is outside 0–100 percent.")
 
 
+def validate_publication(publication: dict, observations: list) -> None:
+    keys = {
+        "schemaVersion",
+        "mode",
+        "generation",
+        "generatedAt",
+        "degradedChannels",
+        "degradedStations",
+    }
+    if not isinstance(publication, dict) or publication.keys() != keys:
+        raise ValueError("Invalid controlled publication envelope.")
+    if (
+        type(publication["schemaVersion"]) is not int
+        or publication["schemaVersion"] != 1
+        or publication["mode"] not in ("normal", "corrective")
+        or any(
+            type(publication[key]) is not int or publication[key] < minimum
+            for key, minimum in (
+                ("generation", 1),
+                ("degradedChannels", 0),
+                ("degradedStations", 0),
+            )
+        )
+    ):
+        raise ValueError("Invalid controlled publication envelope.")
+    generated = parse_timestamp(publication["generatedAt"])
+    if any(
+        isinstance(row, dict)
+        and isinstance(row.get("ingestedAt"), str)
+        and parse_timestamp(row["ingestedAt"]) > generated
+        for row in observations
+    ):
+        raise ValueError("Publication precedes one of its ingested observations.")
+
+
 def validate_document(document: dict) -> None:
     if not isinstance(document, dict) or not isinstance(
         document.get("observations"), list
     ):
         raise TypeError("Snapshot must contain an observations array.")
     observations = document["observations"]
-    if not observations:
+    publication = document.get("publication")
+    if publication is not None:
+        validate_publication(publication, observations)
+    if not observations and (
+        publication is None or publication["mode"] != "corrective"
+    ):
         raise ValueError(
             "Import produced no observations; keeping the previous snapshot."
         )
@@ -370,13 +410,12 @@ def select_valid_history(table: pa.Table) -> list[dict]:
     return rows
 
 
-def fetch_parquet_table(parquet_url: str) -> pa.Table:
+def download_parquet(parquet_url: str, read):
     parse_series_url(parquet_url)
     request = urllib.request.Request(parquet_url, method="GET")
     for attempt in range(3):
         try:
-            parquet_bytes = read_response(request, MAX_PARQUET_BYTES)
-            break
+            return read(request, MAX_PARQUET_BYTES)
         except urllib.error.HTTPError as error:
             if error.code not in (429, 500, 502, 503, 504) or attempt == 2:
                 raise
@@ -387,9 +426,15 @@ def fetch_parquet_table(parquet_url: str) -> pa.Table:
             if attempt == 2:
                 raise
             time.sleep(2**attempt)
-    else:
-        raise RuntimeError("Download retry limit exhausted.")
-    return decode_parquet_table(parquet_bytes)
+    raise RuntimeError("Download retry limit exhausted.")
+
+
+def fetch_parquet_payload(parquet_url: str) -> tuple[bytes, str | None]:
+    return download_parquet(parquet_url, read_http_response)
+
+
+def fetch_parquet_table(parquet_url: str) -> pa.Table:
+    return decode_parquet_table(download_parquet(parquet_url, read_response))
 
 
 def decode_parquet_table(parquet_bytes: bytes) -> pa.Table:
@@ -1200,6 +1245,8 @@ def is_previous_observation_invalidated(
 
 def write_observation_snapshot(import_result: dict, path: Path) -> None:
     validate_document(import_result)
+    if import_result.get("publication") is not None:
+        raise ValueError("Controlled publications use the controlled-degradation run.")
     failed_count = import_result["importSummary"]["failed"]
     if failed_count > 0:
         raise ValueError(
@@ -1292,7 +1339,33 @@ def main() -> None:
     parser.add_argument("--output-directory", type=Path)
     parser.add_argument("--discovery", type=Path)
     parser.add_argument("--previous-snapshot", type=Path)
+    parser.add_argument("--controlled-degradation", action="store_true")
+    parser.add_argument("--initialize-state", action="store_true")
+    parser.add_argument("--previous-run", type=Path)
+    parser.add_argument("--authority-evidence", type=Path)
     args = parser.parse_args()
+    state_options = (
+        args.initialize_state,
+        args.previous_run is not None,
+        args.authority_evidence is not None,
+    )
+    if any(state_options) and not args.controlled_degradation:
+        parser.error("State options require --controlled-degradation.")
+    if args.controlled_degradation and (
+        args.registry_manifest is None
+        or args.output_directory is None
+        or args.check is not None
+    ):
+        parser.error(
+            "Controlled degradation requires a registry and private output directory."
+        )
+    if args.controlled_degradation and (
+        args.initialize_state == (args.previous_run is not None)
+        or (args.previous_snapshot is not None and not args.initialize_state)
+    ):
+        parser.error(
+            "Choose --initialize-state or --previous-run; snapshot bootstrap is initialization-only."
+        )
     trial_options = (args.output_directory, args.discovery, args.previous_snapshot)
     if args.registry_manifest is not None:
         if args.check is not None or args.output_directory is None:
@@ -1302,9 +1375,36 @@ def main() -> None:
         if __package__ in (None, ""):
             sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
         from scripts.eea_catalog import read_bounded
-        from scripts.eea_registry import collect_registry_run
+        from scripts.eea_registry import (
+            collect_controlled_run,
+            collect_registry_run,
+        )
 
         try:
+            if args.controlled_degradation:
+                report = collect_controlled_run(
+                    args.registry_manifest,
+                    args.output_directory,
+                    initialize=args.initialize_state,
+                    previous_run=args.previous_run,
+                    previous_snapshot=args.previous_snapshot,
+                    discovery_body=read_bounded(args.discovery, 2 * 1024 * 1024)
+                    if args.discovery
+                    else None,
+                    authority_evidence=read_bounded(args.authority_evidence)
+                    if args.authority_evidence
+                    else None,
+                )
+                print(
+                    json.dumps(
+                        {
+                            key: report[key]
+                            for key in ("mode", "decision", "blockedBy", "budget")
+                        },
+                        sort_keys=True,
+                    )
+                )
+                return
             report = collect_registry_run(
                 args.registry_manifest,
                 args.output_directory,

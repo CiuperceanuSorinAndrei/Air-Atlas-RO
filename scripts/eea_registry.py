@@ -4,11 +4,14 @@ import json
 import os
 import re
 import tempfile
+import urllib.error
 import xml.etree.ElementTree as ET
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from scripts import build_eea_candidates as builder
 from scripts import eea_catalog as registry
+from scripts import eea_resilience as resilience
 from scripts import import_eea as importer
 
 
@@ -278,6 +281,251 @@ def collect_registry_run(
         },
         output,
     )
+    return report
+
+
+REQUIRED_COLUMNS = {
+    "Value",
+    "AggType",
+    "Start",
+    "End",
+    "ResultTime",
+    "Pollutant",
+    "Samplingpoint",
+    "Unit",
+    "Validity",
+    "Verification",
+}
+
+
+def latest_verdict(rows, latest, station, url):
+    start, end = (
+        importer.parse_timestamp(latest[key])
+        .astimezone(importer.EEA_TIMEZONE)
+        .replace(tzinfo=None)
+        for key in ("observedFrom", "observedTo")
+    )
+    matches = [raw for raw in rows if raw["Start"] == start and raw["End"] == end]
+    if len(matches) > 1:
+        raise ValueError("Accepted interval is not unique in the source.")
+    if not matches or matches[0]["Validity"] == -99:
+        return None, None
+    reported = importer.to_eea_iso(matches[0]["ResultTime"])
+    order = importer.parse_timestamp(reported) - importer.parse_timestamp(
+        latest["reportedAt"]
+    )
+    if order < timedelta(0):
+        return "stale", None
+    if matches[0]["Validity"] == -1:
+        return "withdrawn", reported
+    if order > timedelta(0):
+        return None, None
+    observation = importer.normalize_observation(matches[0], station, url)
+    if resilience.record_digest(observation) == latest["recordSha256"]:
+        return "confirmed", None
+    return "conflict", None
+
+
+def inspect_channel(streams, discovered, station, row, now):
+    ordered = sorted(
+        streams,
+        key=lambda s: importer.parse_series_url(s["sourceUrl"])[2],
+        reverse=True,
+    )
+    result = resilience.finding("empty")
+    if ordered[0]["sourceUrl"] not in discovered:
+        result["outcome"] = "missing"
+        return result
+    latest = row["latest"]
+    for stream in ordered:
+        url = stream["sourceUrl"]
+        if url not in discovered:
+            break
+        try:
+            body, etag = importer.fetch_parquet_payload(url)
+            table = importer.decode_parquet_table(body)
+            if not REQUIRED_COLUMNS <= set(table.column_names):
+                raise ValueError("Incomplete controlled-degradation source schema.")
+            rows = table.to_pylist()
+            for raw in rows:
+                importer.validate_raw_identity(raw, url)
+                if type(raw["Validity"]) is not int or raw["Validity"] not in (
+                    -99,
+                    -1,
+                    1,
+                    2,
+                    3,
+                    4,
+                ):
+                    raise ValueError("Unknown source validity code.")
+            receipt = {"etag": etag, "payloadSha256": resilience.digest(body)}
+            verdict = withdrawn = candidate = rejection = None
+            if latest is not None and latest["sourceUrl"] == url:
+                verdict, withdrawn = latest_verdict(rows, latest, station, url)
+            try:
+                raw = importer.select_latest_valid_observation(table)
+            except importer.NoValidObservationsError:
+                raw = None
+            if raw is not None:
+                candidate = importer.normalize_observation(raw, station, url)
+                candidate["ingestedAt"] = now
+                importer.validate_observation(candidate)
+                end = importer.parse_timestamp(candidate["observedTo"])
+                reported = importer.parse_timestamp(candidate["reportedAt"])
+                if latest is not None and verdict != "withdrawn":
+                    previous = importer.parse_timestamp(latest["observedTo"])
+                    if end < previous:
+                        rejection = "unconfirmedRegression"
+                    elif end == previous and verdict == "stale":
+                        rejection = "staleSourceVersion"
+                    elif end == previous and verdict == "conflict":
+                        rejection = "versionConflict"
+                for withdrawal in row["withdrawals"]:
+                    if (
+                        rejection is None
+                        and all(
+                            importer.parse_timestamp(withdrawal[key])
+                            == importer.parse_timestamp(candidate[key])
+                            for key in ("observedFrom", "observedTo")
+                        )
+                        and withdrawal["sourceUrl"] == url
+                    ):
+                        order = reported - importer.parse_timestamp(
+                            withdrawal["reportedAt"]
+                        )
+                        if order < timedelta(0):
+                            rejection = "staleSourceVersion"
+                        elif order == timedelta(0):
+                            rejection = "versionConflict"
+            if verdict == "withdrawn":
+                result["withdrawal"] = {"reportedAt": withdrawn, **receipt}
+                latest = None
+            if candidate is None:
+                continue
+            result["outcome"] = "available"
+            if rejection is not None:
+                result["rejections"] = [rejection]
+            else:
+                result.update(candidate=candidate, receipt=receipt)
+                if verdict == "confirmed" and end == previous:
+                    result["latestReceipt"] = receipt
+            break
+        except urllib.error.HTTPError as error:
+            result.update(
+                outcome="failed", transient=error.code in (429, 500, 502, 503, 504)
+            )
+            break
+        except (urllib.error.URLError, TimeoutError, ConnectionError):
+            result.update(outcome="failed", transient=True)
+            break
+        except (importer.pa.ArrowException, ValueError, TypeError, KeyError, OSError):
+            result.update(outcome="failed", transient=False)
+            break
+    return result
+
+
+def inspect_channels(urls, catalog, inventory, previous, quarantined, now):
+    approved = registry.validate_channel_inventory(inventory, catalog)
+    stations = registry.validate_station_catalog(catalog)
+    discovered = set(urls)
+    prior = {(row["stationId"], row["pollutant"]): row for row in previous["channels"]}
+    return {
+        key: resilience.finding("quarantined")
+        if key[0] in quarantined
+        else inspect_channel(streams, discovered, stations[key[0]], prior[key], now)
+        for key, streams in approved.items()
+    }
+
+
+def collect_controlled_run(
+    manifest_path,
+    output,
+    *,
+    initialize=False,
+    previous_run=None,
+    previous_snapshot=None,
+    discovery_body=None,
+    authority_evidence=None,
+    now=None,
+):
+    if initialize == (previous_run is not None) or (
+        previous_snapshot is not None and not initialize
+    ):
+        raise ValueError("Choose explicit initialization or one complete previous run.")
+    if os.path.lexists(output) or not output.parent.is_dir():
+        raise ValueError("Choose a new output directory under an existing parent.")
+    for source in (manifest_path.parent, previous_run):
+        if source is not None and source.resolve() in output.resolve().parents:
+            raise ValueError("Degradation output cannot be inside its input bundle.")
+    catalog, inventory, manifest_digest = load_registry(manifest_path)
+    now = datetime.now(UTC).isoformat() if now is None else now
+    if initialize:
+        snapshot = (
+            registry.read_bounded(previous_snapshot)
+            if previous_snapshot is not None
+            else None
+        )
+        previous = resilience.initial_state(
+            catalog, inventory, manifest_digest, snapshot, now
+        )
+        previous_hash = None
+    else:
+        previous, snapshot, previous_hash = resilience.read_run(
+            previous_run, catalog, inventory, manifest_digest
+        )
+    if importer.parse_timestamp(now) < importer.parse_timestamp(
+        previous["generatedAt"]
+    ):
+        raise ValueError("Degradation-state clock moved backwards.")
+    quarantine = (
+        resilience.apply_evidence(
+            previous["quarantine"], authority_evidence, catalog, manifest_digest, now
+        )
+        if authority_evidence is not None
+        else previous["quarantine"]
+    )
+    try:
+        urls = (
+            importer.parse_parquet_urls_payload(discovery_body)
+            if discovery_body is not None
+            else importer.fetch_parquet_urls(
+                "RO", list(importer.POLLUTANT_NAMES.values())
+            )
+        )
+        discovery = registry.reconcile_discovery(urls, catalog, inventory)
+    except (
+        urllib.error.URLError,
+        TimeoutError,
+        ValueError,
+        TypeError,
+        KeyError,
+        OSError,
+    ):
+        discovery = None
+        findings = None
+    else:
+        findings = inspect_channels(
+            urls,
+            catalog,
+            inventory,
+            previous,
+            {row["stationId"] for row in quarantine},
+            now,
+        )
+    state, snapshot, publication = resilience.advance_state(
+        previous,
+        catalog,
+        inventory,
+        manifest_digest,
+        snapshot,
+        now,
+        previous_hash,
+        discovery,
+        findings,
+        quarantine,
+    )
+    report = resilience.report_for(state, discovery, findings, publication)
+    resilience.write_run(output, state, report, snapshot)
     return report
 
 

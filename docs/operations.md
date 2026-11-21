@@ -239,3 +239,14 @@ production history. Recheck recovery after schema or data-volume changes.
 The configured CA is `~/Library/Application Support/Atlasul Aerului/supabase-ca.crt`.
 It is a verified copy of the downloaded certificate; the redundant Downloads copy was removed.
 The writer reads the private path, so cleaning Downloads does not affect TLS verification.
+
+## Local controlled-degradation run
+
+The opt-in [controlled-degradation command](controlled-degradation.md) writes a
+private, restartable bundle: degradation state, report and the accepted
+snapshot. Select the latest complete `--previous-run` bundle; never replace a
+missing/corrupt one with automatic initialization. Exit 0 includes blocked
+results, so read `decision` and `blockedBy`. A `corrective` result removed only
+confirmed withdrawals or quarantined stations. Quarantine starts and ends only
+through a reviewed `--authority-evidence` file. The bundle is not copied to the
+public snapshot; the scheduled refresh is unchanged.

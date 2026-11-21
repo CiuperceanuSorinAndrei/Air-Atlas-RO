@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
-import { validateObservationDocument, acceptSnapshot, groupByStation, latestMeasurement } from '../src/airQualityObservation.ts'
+import { validateObservationDocument, acceptSnapshot, groupByStation, latestImport, latestMeasurement } from '../src/airQualityObservation.ts'
 const baseline = JSON.parse(readFileSync(new URL('../src/data/observations.json', import.meta.url)))
 test('published hourly and daily data satisfy runtime contract', () => {
   assert.equal(validateObservationDocument(baseline), baseline)
@@ -69,4 +69,28 @@ test('latest measurement handles absent data and compares instants across time z
     { ...baseline.observations[0], observedTo: '2026-10-07T10:30:00+01:00' },
   ]
   assert.equal(latestMeasurement({ ...baseline, observations }), Date.parse('2026-10-07T09:30:00Z'))
+})
+
+test('controlled publications order by generation time and may be empty only as corrections', () => {
+  const generatedAt = new Date(Math.max(...baseline.observations.map(row => Date.parse(row.ingestedAt))) + 3_600_000).toISOString()
+  const publication = { schemaVersion: 1, mode: 'corrective', generation: 2, generatedAt, degradedChannels: 7, degradedStations: 3 }
+  const summary = rows => ({ attempted: baseline.importSummary.attempted, imported: rows.length, skipped: baseline.importSummary.attempted - rows.length, failed: 0 })
+  const newest = Math.max(...baseline.observations.map(row => Date.parse(row.ingestedAt)))
+  const remaining = baseline.observations.filter(row => Date.parse(row.ingestedAt) < newest)
+  const legacySubset = { observations: remaining, importSummary: summary(remaining) }
+  if (remaining.length) assert.throws(() => acceptSnapshot(baseline, validateObservationDocument(legacySubset)), /Older snapshot/)
+  const corrected = validateObservationDocument({ ...legacySubset, publication })
+  assert.equal(acceptSnapshot(baseline, corrected), corrected)
+  const empty = validateObservationDocument({ observations: [], importSummary: summary([]), publication: { ...publication, generation: 3 } })
+  assert.equal(acceptSnapshot(corrected, empty), empty)
+  assert.equal(latestImport(empty), null)
+  assert.equal(latestMeasurement(empty), null)
+  assert.throws(() => acceptSnapshot(empty, baseline), /Older snapshot/)
+  const later = { ...corrected, publication: { ...publication, mode: 'normal', generatedAt: new Date(Date.parse(generatedAt) + 1).toISOString() } }
+  assert.equal(acceptSnapshot(empty, validateObservationDocument(later)), later)
+  for (const change of [{ mode: 'normal' }, { mode: 'repair' }, { generation: 0 }, { generatedAt: '2026-11-10T13:00:00' }, { degradedChannels: -1 }, { extra: 1 }, { schemaVersion: 2 }]) {
+    assert.throws(() => validateObservationDocument({ ...empty, publication: { ...empty.publication, ...change } }))
+  }
+  assert.throws(() => validateObservationDocument({ ...corrected, publication: { ...publication, generatedAt: new Date(newest - 3_600_000).toISOString() } }))
+  assert.throws(() => validateObservationDocument({ observations: [], importSummary: summary([]) }))
 })

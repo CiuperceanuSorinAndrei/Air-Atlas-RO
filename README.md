@@ -149,6 +149,7 @@ available. Point coverage/model estimates are not yet implemented.
 
 The [station catalog and channel inventory](docs/station-catalog.md) now have offline validation,
 bounded discovery reconciliation and an opt-in collection wrapper using catalog metadata without
-live metadata/cache calls. National registry artifacts and controlled degradation remain planned;
-the scheduled refresh continues its current path. [Geoapify configuration](docs/address-search.md)
+live metadata/cache calls. A local opt-in [controlled-degradation run](docs/controlled-degradation.md)
+writes private bundles only; production activation of the registries and of controlled degradation
+remains planned and the scheduled refresh continues its current path. [Geoapify configuration](docs/address-search.md)
 records the October 30 restriction readback and actual allowed/disallowed-origin results.
