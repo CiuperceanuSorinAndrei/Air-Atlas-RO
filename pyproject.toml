@@ -3,14 +3,14 @@ name = "atlasul-aerului"
 version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
-    "psycopg[binary]>=3.3.6,<4",
-    "pyarrow>=26.0.0",
+    "psycopg[binary]>=3.3.9,<4",
+    "pyarrow>=26.0.1",
 ]
 
 [dependency-groups]
 dev = [
-    "pytest>=9.1.1",
-    "ruff>=0.17.1",
+    "pytest>=9.2.0",
+    "ruff>=0.17.5",
 ]
 
 [tool.pytest.ini_options]
