@@ -18,6 +18,10 @@ candidate with a workflow notice and a successful exit; it does not publish or r
 Other fetch/push failures still fail the workflow. Every failure leaves the published snapshot intact.
 The next scheduled/manual run starts from the new main; no force push or automatic rebase is used.
 
+The same workflow has two opt-in controlled-degradation modes selected by a repository variable;
+see [controlled activation](controlled-activation.md). Unless that variable is set, the behavior
+described here is unchanged. The publication commands now live in `scripts/publish_snapshot.sh`.
+
 ## Import failure or stale page
 
 Inspect `Refresh EEA observations` and the subsequent Pages run separately. Code, data import,

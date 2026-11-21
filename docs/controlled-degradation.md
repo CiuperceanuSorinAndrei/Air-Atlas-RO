@@ -8,11 +8,11 @@ station quarantine, and decides between a normal, a strictly corrective or a
 blocked result. It implements the policies in the
 [accepted contract](reliability-and-history-contract.md).
 
-It writes only a new private bundle directory. Nothing copies that bundle to
-`src/data/observations.json`; the scheduled refresh, the default importer and
-the strict registry trial keep their existing behavior. Registry approval,
-production cutover and scheduling remain separate gates. No provider settings,
-remote database, workflow or monitor configuration changes.
+It writes only a new private bundle directory. The default importer and the
+strict registry trial keep their existing behavior, and the scheduled refresh
+uses this command only when the owner enables one of the opt-in modes in
+[controlled activation](controlled-activation.md). Production approval of the
+registry is a separate reviewed document.
 
 ## Invocation and restart
 
@@ -49,8 +49,8 @@ CLI/input/I/O failure is nonzero and exposes no output directory.
 ## Bundle
 
 - `state.json`: every approved channel with `hasObserved`, status, reasons,
-  `degradedSince`, the `latest` accepted source version and retained
-  `withdrawals`; station `quarantine`; registry identity; predecessor hash.
+  `degradedSince`, the `latest` accepted source version, retained
+  `withdrawals` and per-stream `retiredBefore`; station `quarantine`; registry identity; predecessor hash.
 - `collection-report.json`: `decision`, `blockedBy`, budget, discovery,
   outcome counts, `exclusions`, `retainedFallbacks`, `omittedReadings`.
 - `observations.json`: the accepted snapshot after this run, when one exists.
@@ -79,7 +79,7 @@ discovery streams are reported and never collected.
 Reasons: `notInspected`, `missingRegisteredStream`, `sourceFailure` (transient
 transport), `invalidSource` (schema, identity, unknown codes, non-retryable
 HTTP), `unconfirmedObservationLoss`, `observationWithdrawn`,
-`withdrawalEvidenceLimit`, `unconfirmedRegression`, `staleSourceVersion`, `versionConflict`,
+`retiredInterval`, `unconfirmedRegression`, `staleSourceVersion`, `versionConflict`,
 `quarantined`.
 
 ## Source confirmation and version order
@@ -121,10 +121,24 @@ A later payload presenting that interval as valid is accepted only with a
 later `ResultTime`; equal is `versionConflict`, earlier is
 `staleSourceVersion`. Withdrawal records belong to their native stream: a
 lower sequence reached after a decoded-empty preferred stream is separate
-evidence, not a version of the withdrawn record. Records are not pruned. The
-32nd withdrawal freezes only that channel: it stays degraded with
-`withdrawalEvidenceLimit`, accepts no further reading and needs a reviewed new
-lineage; other channels continue.
+evidence, not a version of the withdrawn record.
+
+Each channel keeps its **8 most recent withdrawn intervals** (by interval end,
+counted across all its streams). When a ninth is recorded, the oldest record is
+retired: its interval end becomes `retiredBefore` for that record's native
+stream, and no reading of that stream ending at or before that time is
+accepted again, whatever its `ResultTime`. Such a reading is rejected as
+`retiredInterval`; like any other rejected version it does not permit a lower
+sequence, so the channel stays degraded until that stream reports a later
+interval. A floor is never compared with readings of another stream, although
+withdrawals on one stream of a channel can retire the older record of another.
+A channel is never frozen by its withdrawal count, and withdrawal evidence
+stays bounded: all 717 approved channels at the window limit fit inside the
+8 MiB state limit. The cost is deliberate: once eight more recent withdrawals
+exist, an older withdrawn interval can no longer be re-validated, and the
+stream cannot step back to a still-valid reading at or before it. State files
+use `schemaVersion: 3`; bundles written by the earlier schema 2 are rejected
+and need a new initialization.
 
 ## Transport fallback
 
@@ -200,15 +214,19 @@ envelope, require `generatedAt` not earlier than any ingestion time and allow
 an empty `observations` array only for `mode: corrective`. The frontend orders
 snapshots by `generatedAt` when present, so a correction replaces a displayed
 legacy snapshot; a legacy snapshot cannot replace a later controlled one in
-an open session. `check_served_data.py` reports an empty correction as
-degraded with null times. The legacy writer rejects envelopes and empty
-batches. The deployed Checkly script is unchanged and fails on an empty
-snapshot.
+an open session. `check_served_data.py` and the Checkly script source measure
+the two-hour limit from `generatedAt` for controlled snapshots and report an
+empty correction as degraded. The legacy writer rejects envelopes and empty
+batches. The deployed Checkly check still runs the earlier script until it is
+updated separately.
 
 ## Not covered
 
-No production activation, scheduling, shared durable storage or concurrent
-runs. No history API/UI or storage redesign. Dynamic metadata cache policy is
-untouched because catalog stations make no live metadata calls. The source's
-semantics for `ResultTime` on invalidation are not documented by the provider;
-withdrawals are honored when not earlier than the accepted version.
+The command itself schedules nothing and writes only private bundles.
+[Controlled activation](controlled-activation.md) describes the opt-in
+workflow modes, the persisted state branch, monitoring and rollback; that path
+is implemented but not active. No history API/UI or storage redesign. Dynamic
+metadata cache policy is untouched because catalog stations make no live
+metadata calls. The source's semantics for `ResultTime` on invalidation are
+not documented by the provider; withdrawals are honored when not earlier than
+the accepted version.

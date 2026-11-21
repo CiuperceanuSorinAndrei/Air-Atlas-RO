@@ -1074,9 +1074,7 @@ def test_version_order_never_comes_from_arrival_or_payload_hash(
         assert channels[key]["latest"]["observedTo"] == "2026-11-01T11:00:00+01:00"
 
 
-def test_lower_sequence_cannot_introduce_an_unconfirmed_regression(
-    bundle, tmp_path, monkeypatch
-):
+def two_streams(bundle):
     folder, cat, inv, _ = bundle
     low = inv["channels"][0]["streams"][0]["sourceUrl"]
     sequence = importer.parse_series_url(low)[2]
@@ -1104,6 +1102,14 @@ def test_lower_sequence_cannot_introduce_an_unconfirmed_regression(
         inv,
         resilience.digest((changed / "manifest.json").read_bytes()),
     )
+    return bundle, low, high
+
+
+def test_lower_sequence_cannot_introduce_an_unconfirmed_regression(
+    bundle, tmp_path, monkeypatch
+):
+    bundle, low, high = two_streams(bundle)
+    inv = bundle[2]
     key = key_of(low)
     source = Source(monkeypatch, inv)
     source.rows[low] = [reading(low, 9)]
@@ -1347,7 +1353,9 @@ def test_corrective_publication_may_empty_the_snapshot_but_normal_cannot(
     )
     assert degraded is True
     assert result["latest_measurement"] is None
-    assert result["latest_ingestion"] is None
+    assert result["latest_ingestion"] == LATER
+    assert result["ingestion_is_recent"] is True
+    assert result["publication_mode"] == "corrective"
     target = tmp_path / "legacy.json"
     with pytest.raises(ValueError):
         importer.write_observation_snapshot(document, target)
@@ -1375,52 +1383,298 @@ def test_corrective_publication_may_empty_the_snapshot_but_normal_cannot(
         importer.validate_document(normal)
 
 
-def test_withdrawal_evidence_limit_freezes_only_its_channel(
+def hour_end(hour):
+    return f"2026-11-01T{hour + 1:02d}:00:00+01:00"
+
+
+def test_rolling_withdrawals_retire_old_evidence_without_freezing_or_revival(
     bundle, tmp_path, monkeypatch
 ):
-    _, cat, inv, digest = bundle
+    _, _, inv, _ = bundle
     url = urls_for(inv)[0]
     key = key_of(url)
     source = Source(monkeypatch, inv)
+    source.rows[url] = [reading(url, 0)]
+    previous = tmp_path / "run0"
+    run(bundle, previous)
+    limit = resilience.MAX_WITHDRAWALS
+    for hour in range(1, limit + 2):
+        source.rows[url] = [
+            *(reading(url, h, validity=-1, reported=5) for h in range(hour)),
+            reading(url, hour),
+        ]
+        output = tmp_path / f"run{hour}"
+        report = run(bundle, output, previous=previous, now=at(hour))
+        _, channels, rows, _ = load(bundle, output)
+        assert report["decision"] == "normal"
+        assert rows[key]["observedTo"] == hour_end(hour)
+        assert channels[key]["status"] == "available"
+        assert len(channels[key]["withdrawals"]) == min(hour, limit)
+        previous = output
+    assert channels[key]["retiredBefore"] == {url: hour_end(0)}
+    assert [w["observedTo"] for w in channels[key]["withdrawals"]] == [
+        hour_end(h) for h in range(1, limit + 1)
+    ]
+    last = limit + 1
+    withdrawn = [reading(url, h, validity=-1, reported=5) for h in range(1, last + 1)]
+    for index, (rows_now, reason) in enumerate(
+        [
+            ([reading(url, 0), *withdrawn], "retiredInterval"),
+            ([reading(url, 0, reported=9), *withdrawn], "retiredInterval"),
+            (
+                [reading(url, 0), reading(url, 1), *withdrawn[1:]],
+                "staleSourceVersion",
+            ),
+        ]
+    ):
+        source.rows[url] = rows_now
+        output = tmp_path / f"revival{index}"
+        run(bundle, output, previous=previous, now=at(last + 1))
+        state, channels, rows, _ = load(bundle, output)
+        assert key not in rows
+        assert channels[key]["latest"] is None
+        assert channels[key]["reasons"] == [reason]
+        assert len(channels[key]["withdrawals"]) == limit
+        again = tmp_path / f"revival-again{index}"
+        run(bundle, again, previous=output, now=at(last + 2))
+        _, channels, rows, _ = load(bundle, again)
+        assert key not in rows and channels[key]["latest"] is None
+    source.rows[url] = [*withdrawn, reading(url, last + 1)]
+    output = tmp_path / "recovered"
+    run(bundle, output, previous=again, now=at(last + 3))
+    _, channels, rows, _ = load(bundle, output)
+    assert rows[key]["observedTo"] == hour_end(last + 1)
+    assert channels[key]["status"] == "available"
+
+
+def test_descending_withdrawals_stop_at_the_retired_floor(
+    bundle, tmp_path, monkeypatch
+):
+    _, _, inv, _ = bundle
+    url = urls_for(inv)[0]
+    key = key_of(url)
+    source = Source(monkeypatch, inv)
+    top = resilience.MAX_WITHDRAWALS + 2
+    source.rows[url] = [reading(url, h) for h in range(top + 1)]
+    previous = tmp_path / "run0"
+    run(bundle, previous)
+    for step in range(1, resilience.MAX_WITHDRAWALS + 1):
+        lowest = top - step + 1
+        source.rows[url] = [
+            reading(url, h, validity=-1 if h >= lowest else 1, reported=5)
+            if h >= lowest
+            else reading(url, h)
+            for h in range(top + 1)
+        ]
+        output = tmp_path / f"run{step}"
+        run(bundle, output, previous=previous, now=at(step))
+        _, channels, rows, _ = load(bundle, output)
+        assert rows[key]["observedTo"] == hour_end(lowest - 1)
+        assert channels[key]["retiredBefore"] == {}
+        previous = output
+    source.rows[url] = [
+        reading(url, h, validity=-1, reported=5) if h >= 2 else reading(url, h)
+        for h in range(top + 1)
+    ]
+    for index in range(2):
+        output = tmp_path / f"floor{index}"
+        report = run(bundle, output, previous=previous, now=at(top + index))
+        _, channels, rows, _ = load(bundle, output)
+        assert report["decision"] == "normal"
+        assert key not in rows
+        assert channels[key]["latest"] is None
+        assert channels[key]["reasons"] == ["retiredInterval"]
+        assert channels[key]["retiredBefore"] == {url: hour_end(2)}
+        assert len(channels[key]["withdrawals"]) == resilience.MAX_WITHDRAWALS
+        previous = output
+
+
+def test_retired_floor_belongs_to_its_native_stream(bundle, tmp_path, monkeypatch):
+    bundle, low, high = two_streams(bundle)
+    _, cat, inv, digest = bundle
+    key = key_of(low)
+    source = Source(monkeypatch, inv)
+    source.rows[low] = [reading(low, 9)]
     first = tmp_path / "first"
     run(bundle, first)
     state, body, _ = resilience.read_run(first, cat, inv, digest)
-    row = state["channels"][0]
-    assert (row["stationId"], row["pollutant"]) == key
-    row["withdrawals"] = [
-        {
-            "sourceUrl": url,
-            "observedFrom": f"2026-10-{day:02d}T00:00:00+01:00",
-            "observedTo": f"2026-10-{day:02d}T01:00:00+01:00",
-            "reportedAt": f"2026-10-{day:02d}T02:00:00+01:00",
-            "confirmedAt": NOW,
-            "etag": None,
-            "payloadSha256": "c" * 64,
-        }
-        for day in range(1, 32)
-    ]
+    assert state["channels"][0]["latest"]["sourceUrl"] == high
+    state["channels"][0]["retiredBefore"] = {high: hour_end(9)}
     report = json.loads((first / "collection-report.json").read_bytes())
     report["stateSha256"] = resilience.digest(builder.encode(state))
-    full = tmp_path / "full"
-    resilience.write_run(full, state, report, body)
-    source.rows[url] = [reading(url, 9), reading(url, validity=-1)]
-    previous = full
-    for index, now in enumerate((LATER, LAST)):
-        output = tmp_path / f"frozen{index}"
-        report = run(bundle, output, previous=previous, now=now)
-        _, channels, rows, _ = load(bundle, output)
-        assert report["decision"] == "normal"
-        assert len(rows) == 11 and key not in rows
-        assert len(channels[key]["withdrawals"]) == 32
-        assert channels[key]["latest"] is None
-        assert channels[key]["reasons"] == ["withdrawalEvidenceLimit"]
-        assert channels[key]["degradedSince"] == LATER
-        source.rows[url] = [reading(url, 12)]
+    floored = tmp_path / "floored"
+    resilience.write_run(floored, state, report, body)
+    source.rows[high] = [reading(high, validity=-1)]
+    second = tmp_path / "second"
+    run(bundle, second, previous=floored, now=LATER)
+    _, channels, rows, _ = load(bundle, second)
+    assert rows[key]["sourceUrl"] == low
+    assert rows[key]["observedTo"] == hour_end(9)
+    assert channels[key]["status"] == "available"
+    assert channels[key]["retiredBefore"] == {high: hour_end(9)}
+
+
+def test_retired_reading_on_preferred_stream_never_permits_a_lower_sequence(
+    bundle, tmp_path, monkeypatch
+):
+    bundle, low, high = two_streams(bundle)
+    _, cat, inv, digest = bundle
+    key = key_of(low)
+    source = Source(monkeypatch, inv)
+    source.rows[high] = [reading(high, 8), reading(high, 10)]
+    source.rows[low] = [reading(low, 9)]
+    first = tmp_path / "first"
+    run(bundle, first)
+    state, body, _ = resilience.read_run(first, cat, inv, digest)
+    state["channels"][0]["retiredBefore"] = {high: hour_end(8)}
+    report = json.loads((first / "collection-report.json").read_bytes())
+    report["stateSha256"] = resilience.digest(builder.encode(state))
+    floored = tmp_path / "floored"
+    resilience.write_run(floored, state, report, body)
+    source.rows[high] = [reading(high, 8), reading(high, validity=-1, reported=5)]
+    second = tmp_path / "second"
+    run(bundle, second, previous=floored, now=LATER)
+    _, channels, rows, _ = load(bundle, second)
+    assert key not in rows
+    assert channels[key]["latest"] is None
+    assert channels[key]["reasons"] == ["retiredInterval"]
+    assert low not in source.calls[-len(urls_for(inv)) :]
+
+
+def test_ninth_withdrawal_in_a_corrective_run_keeps_a_valid_state(
+    bundle, tmp_path, monkeypatch
+):
+    _, cat, inv, digest = bundle
+    urls = urls_for(inv)
+    url = urls[0]
+    key = key_of(url)
+    source = Source(monkeypatch, inv)
+    previous = tmp_path / "run0"
+    source.rows[url] = [reading(url, 0)]
+    run(bundle, previous)
+    limit = resilience.MAX_WITHDRAWALS
+    for hour in range(1, limit + 1):
+        source.rows[url] = [
+            *(reading(url, h, validity=-1, reported=5) for h in range(hour)),
+            reading(url, hour),
+        ]
+        output = tmp_path / f"run{hour}"
+        run(bundle, output, previous=previous, now=at(hour))
         previous = output
-    state, body, _ = resilience.read_run(previous, cat, inv, digest)
-    state["channels"][0]["latest"] = copy.deepcopy(state["channels"][1]["latest"])
-    with pytest.raises(ValueError):
+    source.rows[url] = [
+        *(reading(url, h, validity=-1, reported=5) for h in range(limit + 1)),
+        reading(url, limit + 1),
+    ]
+    source.errors = {u: TimeoutError("synthetic") for u in urls[1:8]}
+    corrective = tmp_path / "corrective"
+    report = run(bundle, corrective, previous=previous, now=at(limit + 1))
+    state, channels, rows, _ = load(bundle, corrective)
+    assert report["decision"] == "corrective"
+    assert key not in rows and channels[key]["latest"] is None
+    assert len(channels[key]["withdrawals"]) == limit
+    assert channels[key]["retiredBefore"] == {url: hour_end(0)}
+    source.errors.clear()
+    source.rows[url] = [reading(url, 0, reported=9)]
+    after = tmp_path / "after"
+    run(bundle, after, previous=corrective, now=at(limit + 2))
+    _, channels, rows, _ = load(bundle, after)
+    assert key not in rows
+    assert channels[key]["reasons"] == ["retiredInterval"]
+
+
+def test_rewithdrawn_interval_replaces_its_own_record(bundle, tmp_path, monkeypatch):
+    _, _, inv, _ = bundle
+    url = urls_for(inv)[0]
+    key = key_of(url)
+    source = Source(monkeypatch, inv)
+    previous = tmp_path / "run0"
+    run(bundle, previous)
+    for index, (validity, reported) in enumerate([(-1, 5), (1, 6), (-1, 7)]):
+        source.rows[url] = [reading(url, validity=validity, reported=reported)]
+        output = tmp_path / f"run{index + 1}"
+        run(bundle, output, previous=previous, now=at(index + 1))
+        previous = output
+    _, channels, rows, _ = load(bundle, previous)
+    assert key not in rows
+    assert [w["reportedAt"] for w in channels[key]["withdrawals"]] == [
+        "2026-11-01T17:00:00+01:00"
+    ]
+    assert channels[key]["retiredBefore"] == {}
+
+
+@pytest.mark.parametrize(
+    "corruption",
+    ["tooMany", "belowFloor", "latestBelowFloor", "foreignFloor", "list", "naive"],
+)
+def test_retired_floor_and_window_are_strictly_validated(
+    bundle, tmp_path, monkeypatch, corruption
+):
+    _, cat, inv, digest = bundle
+    urls = urls_for(inv)
+    url = urls[0]
+    source = Source(monkeypatch, inv)
+    first = tmp_path / "first"
+    run(bundle, first)
+    source.rows[url] = [reading(url, validity=-1, reported=5), reading(url, 11)]
+    second = tmp_path / "second"
+    run(bundle, second, previous=first, now=LATER)
+    state, body, _ = resilience.read_run(second, cat, inv, digest)
+    row = state["channels"][0]
+    tombstone = row["withdrawals"][0]
+    resilience.validate_state(state, cat, inv, digest, body)
+    if corruption == "tooMany":
+        row["withdrawals"] = [
+            {
+                **tombstone,
+                "observedFrom": f"2026-10-{day:02d}T00:00:00+01:00",
+                "observedTo": f"2026-10-{day:02d}T01:00:00+01:00",
+            }
+            for day in range(1, resilience.MAX_WITHDRAWALS + 2)
+        ]
+    elif corruption == "belowFloor":
+        row["retiredBefore"] = {url: tombstone["observedTo"]}
+    elif corruption == "latestBelowFloor":
+        row["retiredBefore"] = {url: row["latest"]["observedTo"]}
+        row["withdrawals"] = []
+    elif corruption == "foreignFloor":
+        row["retiredBefore"] = {urls[1]: "2026-10-01T00:00:00+01:00"}
+    elif corruption == "naive":
+        row["retiredBefore"] = {url: "2026-10-01T00:00:00"}
+    else:
+        row["retiredBefore"] = []
+    with pytest.raises((ValueError, TypeError)):
         resilience.validate_state(state, cat, inv, digest, body)
+
+
+def test_worst_case_withdrawal_evidence_fits_the_state_byte_limit():
+    cat, inv, manifest_digest = registry.load_registry(
+        Path("data/eea/registries/v1/manifest.json")
+    )
+    snapshot = Path("src/data/observations.json").read_bytes()
+    state = resilience.initial_state(cat, inv, manifest_digest, snapshot, NOW)
+    approved = catalog_tools.validate_channel_inventory(inv, cat)
+    for row in state["channels"]:
+        streams = approved[row["stationId"], row["pollutant"]]
+        url = max(streams, key=lambda s: len(s["sourceUrl"]))["sourceUrl"]
+        row["hasObserved"] = True
+        row["retiredBefore"] = {
+            s["sourceUrl"]: "2020-01-01T01:00:00+01:00" for s in streams
+        }
+        row["withdrawals"] = [
+            {
+                "sourceUrl": url,
+                "observedFrom": f"2020-02-{day:02d}T00:00:00+01:00",
+                "observedTo": f"2020-02-{day:02d}T01:00:00+01:00",
+                "reportedAt": f"2020-02-{day:02d}T02:00:00+01:00",
+                "confirmedAt": NOW,
+                "etag": '"0x8DF4796893AAA50-long-enough-etag-value"',
+                "payloadSha256": "c" * 64,
+            }
+            for day in range(1, resilience.MAX_WITHDRAWALS + 1)
+        ]
+    resilience.validate_state(state, cat, inv, manifest_digest, snapshot)
+    size = len(builder.encode(state))
+    assert size < catalog_tools.MAX_DOCUMENT_BYTES * 3 // 4
 
 
 def test_new_lineage_can_bootstrap_from_a_controlled_snapshot(

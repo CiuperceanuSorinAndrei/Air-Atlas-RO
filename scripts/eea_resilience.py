@@ -20,14 +20,14 @@ REASONS = REJECTIONS | {
     "invalidSource",
     "unconfirmedObservationLoss",
     "observationWithdrawn",
-    "withdrawalEvidenceLimit",
+    "retiredInterval",
     "quarantined",
 }
 OUTCOMES = {"available", "empty", "failed", "missing", "quarantined"}
 DECISIONS = {"normal", "corrective", "blocked"}
 BLOCKERS = {"globalDiscoveryFailure", "budgetExceeded", "emptyNormalBatch"}
 FALLBACK = timedelta(hours=24)
-MAX_WITHDRAWALS = 32
+MAX_WITHDRAWALS = 8
 MAX_QUARANTINE = 64
 VERSION = ("sourceUrl", "observedFrom", "observedTo", "reportedAt")
 RECEIPT = ("etag", "payloadSha256", "confirmedAt")
@@ -222,7 +222,7 @@ def validate_state(state, catalog, inventory, manifest_digest, snapshot_body):
     checked_digest(manifest_digest)
     if (
         type(state["schemaVersion"]) is not int
-        or state["schemaVersion"] != 2
+        or state["schemaVersion"] != 3
         or state["mode"] != MODE
         or state["registryManifestSha256"] != manifest_digest
         or type(state["catalogVersion"]) is not int
@@ -263,6 +263,7 @@ def validate_state(state, catalog, inventory, manifest_digest, snapshot_body):
                 "degradedSince",
                 "latest",
                 "withdrawals",
+                "retiredBefore",
             ),
         )
         if not isinstance(row["stationId"], str) or not isinstance(
@@ -282,10 +283,23 @@ def validate_state(state, catalog, inventory, manifest_digest, snapshot_body):
             raise ValueError("Invalid withdrawal evidence.")
         for withdrawal in withdrawals:
             checked_version(withdrawal, approved[key], (), generated, True)
+        retired = row["retiredBefore"]
+        if not isinstance(retired, dict) or not retired.keys() <= {
+            stream["sourceUrl"] for stream in approved[key]
+        }:
+            raise ValueError("Invalid retired withdrawal floor.")
+        floors = {
+            url: importer.parse_timestamp(value) for url, value in retired.items()
+        }
         intervals = [tuple(w[k] for k in VERSION[:3]) for w in withdrawals]
         if (
             len(set(intervals)) != len(intervals)
-            or (len(withdrawals) == MAX_WITHDRAWALS and latest is not None)
+            or any(
+                version["sourceUrl"] in floors
+                and importer.parse_timestamp(version["observedTo"])
+                <= floors[version["sourceUrl"]]
+                for version in (*withdrawals, *([latest] if latest else []))
+            )
             or any(
                 latest is not None
                 and tuple(latest[k] for k in VERSION[:3]) == interval
@@ -294,7 +308,7 @@ def validate_state(state, catalog, inventory, manifest_digest, snapshot_body):
                 for w, interval in zip(withdrawals, intervals, strict=True)
             )
         ):
-            raise ValueError("Duplicate, exhausted or revived withdrawal evidence.")
+            raise ValueError("Duplicate, retired or revived withdrawal evidence.")
         if key in accepted and (
             key[0] in quarantined
             or latest is None
@@ -347,7 +361,7 @@ def initial_state(catalog, inventory, manifest_digest, snapshot_body, now):
     approved = catalog_tools.validate_channel_inventory(inventory, catalog)
     accepted = snapshot_rows(snapshot_body, approved)
     state = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "mode": MODE,
         "registryManifestSha256": manifest_digest,
         "catalogVersion": catalog["catalogVersion"],
@@ -372,12 +386,31 @@ def initial_state(catalog, inventory, manifest_digest, snapshot_body, now):
                 if (sid, pollutant) in accepted
                 else None,
                 "withdrawals": [],
+                "retiredBefore": {},
             }
             for sid, pollutant in sorted(approved)
         ],
     }
     validate_state(state, catalog, inventory, manifest_digest, snapshot_body)
     return state
+
+
+def retire_withdrawals(row):
+    def end(withdrawal):
+        return importer.parse_timestamp(withdrawal["observedTo"])
+
+    floors = row["retiredBefore"]
+    kept = [
+        w
+        for w in row["withdrawals"]
+        if w["sourceUrl"] not in floors
+        or end(w) > importer.parse_timestamp(floors[w["sourceUrl"]])
+    ]
+    while len(kept) > MAX_WITHDRAWALS:
+        oldest = min(kept, key=lambda w: (end(w), w["sourceUrl"]))
+        kept.remove(oldest)
+        floors[oldest["sourceUrl"]] = oldest["observedTo"]
+    row["withdrawals"] = kept
 
 
 def budget(state):
@@ -514,11 +547,15 @@ def advance_state(
                     "confirmedAt": now,
                 }
             ]
+            retire_withdrawals(row)
             latest = None
             if key in accepted:
                 exclusions[key] = "withdrawn"
-        frozen = len(row["withdrawals"]) == MAX_WITHDRAWALS
-        if frozen:
+        floor = candidate and row["retiredBefore"].get(candidate["sourceUrl"])
+        retired = bool(floor) and importer.parse_timestamp(
+            candidate["observedTo"]
+        ) <= importer.parse_timestamp(floor)
+        if retired:
             candidate = None
         confirmed = latest is not None and result["latestReceipt"] is not None
         if confirmed:
@@ -546,8 +583,8 @@ def advance_state(
                 omitted.append(key)
         proposals[key] = normal_latest, latest
         reasons = list(result["rejections"])
-        if frozen:
-            reasons.append("withdrawalEvidenceLimit")
+        if retired:
+            reasons.append("retiredInterval")
         if any(stream["sourceUrl"] in missing for stream in streams):
             reasons.append("missingRegisteredStream")
         if outcome == "failed":

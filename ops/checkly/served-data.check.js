@@ -1,10 +1,23 @@
 const { test, expect } = require('@playwright/test');
 
 function assessSnapshot(document, now) {
-  if (!document || !Array.isArray(document.observations) || !document.observations.length) {
-    throw new Error('Snapshot must contain nonempty observations.');
-  }
+  if (!document || !Array.isArray(document.observations)) throw new Error('Snapshot must contain observations.');
   const rows = document.observations;
+  const publication = document.publication;
+  let generated = null;
+  if (publication !== undefined) {
+    if (!publication || Object.keys(publication).sort().join() !== 'degradedChannels,degradedStations,generatedAt,generation,mode,schemaVersion' ||
+        publication.schemaVersion !== 1 || !Number.isInteger(publication.generation) || publication.generation < 1 ||
+        ![publication.degradedChannels, publication.degradedStations].every(count => Number.isInteger(count) && count >= 0) ||
+        !['normal', 'corrective'].includes(publication.mode) || typeof publication.generatedAt !== 'string' ||
+        !/(Z|[+-]\d{2}:\d{2})$/.test(publication.generatedAt) || !Number.isFinite(Date.parse(publication.generatedAt))) {
+      throw new Error('Invalid publication envelope.');
+    }
+    generated = Date.parse(publication.generatedAt);
+  }
+  if (!rows.length && !(publication && publication.mode === 'corrective')) {
+    throw new Error('Only a corrective publication may be empty.');
+  }
   const summary = document.importSummary;
   if (!summary || !['attempted', 'imported', 'skipped', 'failed'].every(key => Number.isInteger(summary[key]) && summary[key] >= 0) ||
       summary.imported !== rows.length || summary.attempted !== summary.imported + summary.skipped + summary.failed) {
@@ -34,15 +47,18 @@ function assessSnapshot(document, now) {
     const pair = `${row.stationId}/${row.pollutant}`;
     if (pairs.has(pair)) throw new Error('Duplicate station/pollutant pair.');
     pairs.add(pair);
+    if (generated !== null && ingested > generated) throw new Error('Publication precedes its observations.');
     latestIngestion = Math.max(latestIngestion, ingested);
     latestMeasurement = Math.max(latestMeasurement, end);
     if (start <= now && reported <= now && now - end >= 0 && now - end < 6 * 3600000) recentReadings++;
   }
+  if (generated !== null) latestIngestion = generated;
   const age = now - latestIngestion;
   return {
     readings: rows.length,
     recent_readings: recentReadings,
-    latest_measurement: new Date(latestMeasurement).toISOString(),
+    publication_mode: publication ? publication.mode : null,
+    latest_measurement: rows.length ? new Date(latestMeasurement).toISOString() : null,
     latest_ingestion: new Date(latestIngestion).toISOString(),
     ingestion_age_hours: age / 3600000,
     ingestion_is_recent: age >= 0 && age < 2 * 3600000

@@ -150,6 +150,7 @@ available. Point coverage/model estimates are not yet implemented.
 The [station catalog and channel inventory](docs/station-catalog.md) now have offline validation,
 bounded discovery reconciliation and an opt-in collection wrapper using catalog metadata without
 live metadata/cache calls. A local opt-in [controlled-degradation run](docs/controlled-degradation.md)
-writes private bundles only; production activation of the registries and of controlled degradation
-remains planned and the scheduled refresh continues its current path. [Geoapify configuration](docs/address-search.md)
+writes private bundles only. The scheduled refresh can run it in opt-in shadow or publishing modes
+([controlled activation](docs/controlled-activation.md)); neither is enabled, so the refresh continues its current path. A local-only [history pilot](docs/history-pilot.md)
+serves one captured DJ-1/NO2 hour through a read API and an opt-in interface panel. [Geoapify configuration](docs/address-search.md)
 records the October 30 restriction readback and actual allowed/disallowed-origin results.

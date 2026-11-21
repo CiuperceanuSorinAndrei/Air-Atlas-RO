@@ -28,7 +28,7 @@ source conflicts, original labels and versioned rules. The public path remains u
 The [bounded persistence writer](dj1-no2-history.md) now carries this contract into private
 PostgreSQL/PostGIS: atomic reports/measurements, retained raw revisions, replay deduplication
 and isolated pilot-role access. Numeric widening preserves source precision.
-Next: connect the persisted pilot to a bounded thin Python read API and frontend, then test Compose.
+The [visible history pilot](history-pilot.md) now connects the persisted hour to a bounded read API and an opt-in interface panel, with a Compose definition whose first execution is CI.
 The accepted launch target is one VPS with Compose, within 20 EUR/month excluding domain and
 external backup; provider/size await measurements. The current public path remains EEA JSON.
 Automatic off-site backup and isolated restore precede recurring production history. Prepare/test

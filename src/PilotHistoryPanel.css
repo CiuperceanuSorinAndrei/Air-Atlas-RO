@@ -1,0 +1,31 @@
+.pilot-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  margin: 10px 0;
+}
+.pilot-table caption {
+  text-align: left;
+  color: var(--muted);
+  padding-bottom: 8px;
+}
+.pilot-table th,
+.pilot-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 7px 10px 7px 0;
+  border-top: 1px solid var(--line);
+}
+.pilot-table thead th {
+  border-top: 0;
+  font-weight: 600;
+  color: var(--muted);
+}
+.pilot-table .is-missing td {
+  color: var(--muted);
+  font-style: italic;
+}
+.pilot-table small {
+  color: var(--muted);
+}

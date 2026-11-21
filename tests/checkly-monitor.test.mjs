@@ -24,5 +24,21 @@ for (const age of [0,6*3600000-1,6*3600000,-1]) {
 for (const mutate of [d=>d.observations=[],d=>delete d.importSummary,d=>{d.importSummary.failed=1;d.importSummary.attempted=2;},d=>d.importSummary.imported=2,d=>d.observations[0].reportedAt='bad',d=>d.observations[0].ingestedAt='2026-10-10T12:00:00',d=>d.observations[0].value=Infinity,d=>d.observations[0].pollutant='bad',d=>{d.observations.push({...row});d.importSummary.imported=2;d.importSummary.attempted=2;}]) {
  const d=doc();mutate(d);assert.throws(()=>context.assessSnapshot(d,now));cases++;
 }
-assert.equal(cases, 19);
+const envelope = (mode, at) => ({schemaVersion:1,mode,generation:2,generatedAt:new Date(at).toISOString(),degradedChannels:0,degradedStations:0});
+for (const age of [0,7199999,7200000,-1]) {
+ const d=doc();d.observations[0].ingestedAt=new Date(now-5*3600000).toISOString();d.observations[0].reportedAt=d.observations[0].ingestedAt;
+ d.observations[0].observedFrom='2026-10-10T05:00:00Z';d.observations[0].observedTo='2026-10-10T06:00:00Z';
+ d.publication=envelope('normal',now-age);
+ const r=context.assessSnapshot(d,now);
+ assert.equal(r.ingestion_is_recent,age>=0&&age<7200000);assert.equal(r.ingestion_age_hours,age/3600000);assert.equal(r.publication_mode,'normal');cases++;
+}
+{
+ const d=doc();d.observations=[];d.importSummary={attempted:1,imported:0,skipped:1,failed:0};d.publication=envelope('corrective',now);
+ const r=context.assessSnapshot(d,now);
+ assert.equal(r.recent_readings,0);assert.equal(r.readings,0);assert.equal(r.latest_measurement,null);assert.equal(r.ingestion_is_recent,true);cases++;
+}
+for (const mutate of [d=>{d.observations=[];d.importSummary={attempted:1,imported:0,skipped:1,failed:0};d.publication=envelope('normal',now);},d=>d.publication=envelope('repair',now),d=>{d.publication=envelope('normal',now);d.publication.generatedAt='2026-10-10T13:00:00';},d=>d.publication=null,d=>{d.publication=envelope('normal',now);d.publication.schemaVersion=2;},d=>{d.publication=envelope('normal',now);d.publication.generation=0;},d=>{d.publication=envelope('normal',now);d.publication.degradedStations=-1;},d=>{d.publication=envelope('normal',now);d.publication.extra=1;},d=>{d.publication=envelope('normal',now);delete d.publication.degradedChannels;},d=>d.publication=envelope('normal',Date.parse('2026-10-10T11:59:59Z'))]) {
+ const d=doc();mutate(d);assert.throws(()=>context.assessSnapshot(d,now));cases++;
+}
+assert.equal(cases, 34);
 });
