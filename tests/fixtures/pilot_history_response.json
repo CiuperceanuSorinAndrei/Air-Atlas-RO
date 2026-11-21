@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "stationCode": "DJ-1",
+  "pollutant": "NO2",
+  "unit": "ug.m-3",
+  "aggregationType": "hour",
+  "windowStart": "2026-10-10T18:00:00+00:00",
+  "windowEnd": "2026-10-10T20:00:00+00:00",
+  "sources": [
+    {
+      "code": "EEA",
+      "attributionText": "Fixture EEA",
+      "licenceUrl": "https://example.test/licence"
+    },
+    {
+      "code": "RNMCA",
+      "attributionText": "Fixture RNMCA",
+      "licenceUrl": "https://example.test/licence"
+    }
+  ],
+  "observations": [
+    {
+      "observedFrom": "2026-10-10T18:00:00+00:00",
+      "observedTo": "2026-10-10T19:00:00+00:00",
+      "value": "48.81861538888885",
+      "source": "RNMCA",
+      "reportedAt": null,
+      "ingestedAt": "2026-10-12T09:00:00+00:00",
+      "validationState": "validated",
+      "sourceValidity": "79001",
+      "sourceVerification": "78002",
+      "normalizationRule": "rnmca-dj1-no2-hourly-epoch-utc-v1",
+      "temporalStatus": "resolved"
+    }
+  ],
+  "missingIntervals": [
+    {
+      "observedFrom": "2026-10-10T19:00:00+00:00",
+      "observedTo": "2026-10-10T20:00:00+00:00"
+    }
+  ],
+  "gapCause": "unknown"
+}

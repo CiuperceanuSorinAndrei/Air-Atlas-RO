@@ -37,3 +37,6 @@ __pycache__/
 # Supabase CLI local state
 supabase/.temp/
 supabase/.branches/
+
+# Local Compose secrets
+.env

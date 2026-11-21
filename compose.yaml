@@ -1,0 +1,72 @@
+name: atlas-pilot
+
+services:
+  db:
+    image: postgis/postgis:17-3.5@sha256:01a6a70e41e6c4467c8f55f6063555ed72db2d6662cd0d571040d42eadaeb6f6
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set a local database password}
+      ATLAS_WORKER_PASSWORD: ${ATLAS_WORKER_PASSWORD:?set a local worker password}
+      ATLAS_API_PASSWORD: ${ATLAS_API_PASSWORD:?set a local API password}
+    volumes:
+      - atlas-db:/var/lib/postgresql/data
+      - ./ops/pilot/initdb.sh:/docker-entrypoint-initdb.d/10-atlas.sh:ro
+      - ./ops/pilot/seed.sql:/atlas/seed.sql:ro
+      - ./supabase/migrations:/atlas/migrations:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "127.0.0.1", "-U", "postgres", "-d", "atlas"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    networks: [private]
+
+  web:
+    build: .
+    environment:
+      ATLAS_HISTORY_DSN: host=db dbname=atlas user=atlas_history_api password=${ATLAS_API_PASSWORD:?set a local API password}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:8080"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/Air-Atlas-RO/api/health', timeout=5)"]
+      interval: 5s
+      timeout: 6s
+      retries: 20
+    networks: [private]
+
+  worker:
+    build: .
+    profiles: [replay]
+    environment:
+      ATLAS_PILOT_INGESTION_DSN: host=db dbname=atlas user=atlas_pilot_worker password=${ATLAS_WORKER_PASSWORD:?set a local worker password}
+    depends_on:
+      db:
+        condition: service_healthy
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: ["no-new-privileges:true"]
+    command:
+      - /app/.venv/bin/python
+      - -m
+      - scripts.sync_dj1_no2_history
+      - --rnmca
+      - fixtures/rnmca_dj1_no2.json
+      - --eea
+      - fixtures/eea_dj1_no2.json
+      - --window-start
+      - "2026-10-10T18:00:00+00:00"
+      - --window-end
+      - "2026-10-10T20:00:00+00:00"
+      - --ingested-at
+      - "2026-10-12T09:00:00+00:00"
+    networks: [private]
+
+volumes:
+  atlas-db:
+
+networks:
+  private:

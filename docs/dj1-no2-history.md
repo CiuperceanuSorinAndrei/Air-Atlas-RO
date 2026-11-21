@@ -94,8 +94,9 @@ Restore into isolated storage and compare table payloads before any live rollout
 
 This is bounded historical persistence, not national recurring ingestion. It
 retains all overlapping report snapshots and has no retention/compaction policy.
-Changed-rule reprocessing, live source permissions, backup automation and the
-bounded read API/frontend/Compose pilot remain separate integration gates.
+Changed-rule reprocessing, live source permissions and backup automation remain
+separate gates. The bounded read API, interface panel and Compose definition are
+described in [history pilot](history-pilot.md).
 
 The [accepted October 28 contract](reliability-and-history-contract.md) replaces this bounded
 full-report replay model as the target for recurring ingestion: separate source evidence, semantic

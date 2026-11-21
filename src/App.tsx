@@ -1,5 +1,5 @@
 import './App.css'
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { divIcon, type LatLngTuple, type Point } from 'leaflet'
 import {
   MapContainer,
@@ -56,6 +56,10 @@ const romaniaBounds: [LatLngTuple, LatLngTuple] = [
 ]
 const addressKey = import.meta.env.VITE_GEOAPIFY_API_KEY?.trim() ?? ''
 const initialNow = Date.now()
+const PilotHistory =
+  import.meta.env.VITE_PILOT_HISTORY === '1'
+    ? lazy(() => import('./PilotHistoryPanel'))
+    : null
 type MapFocus = {
   latitude: number
   longitude: number
@@ -1035,6 +1039,11 @@ function App() {
                 </p>
               </div>
             </details>
+            {PilotHistory && (
+              <Suspense fallback={null}>
+                <PilotHistory />
+              </Suspense>
+            )}
             {(dataError || tilesFailed) && (
               <p className="data-error" role="status">
                 {dataError &&

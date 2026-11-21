@@ -98,6 +98,23 @@ BEGIN
   END IF;
   EXECUTE 'RESET ROLE';
 END $$;
+SET LOCAL ROLE atlas_pilot_reader;
+DO $$ BEGIN
+  IF (SELECT count(*) FROM atlas.observations) <> 0 OR (SELECT count(*) FROM atlas.source_streams) <> 0 THEN
+    RAISE EXCEPTION 'Pilot reader sees non-pilot data';
+  END IF;
+  BEGIN PERFORM count(*) FROM atlas.pilot_reports; RAISE EXCEPTION 'Pilot reader reads raw reports';
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  BEGIN PERFORM count(*) FROM atlas.source_devices; RAISE EXCEPTION 'Pilot reader reads devices';
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  BEGIN PERFORM observation_location FROM atlas.observations; RAISE EXCEPTION 'Pilot reader reads locations';
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  BEGIN DELETE FROM atlas.observations; RAISE EXCEPTION 'Pilot reader deletes observations';
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+  BEGIN UPDATE atlas.source_streams SET public_display_allowed = true; RAISE EXCEPTION 'Pilot reader changes rights';
+  EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+END $$;
+RESET ROLE;
 SET LOCAL ROLE anon;
 DO $$ BEGIN
   BEGIN PERFORM count(*) FROM atlas.observations; RAISE EXCEPTION 'Anonymous read allowed';

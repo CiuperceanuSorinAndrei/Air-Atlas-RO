@@ -1,0 +1,16 @@
+*
+!package.json
+!package-lock.json
+!index.html
+!tsconfig.json
+!tsconfig.app.json
+!tsconfig.node.json
+!vite.config.ts
+!public
+!src
+!pyproject.toml
+!uv.lock
+!scripts
+!tests/fixtures/rnmca_dj1_no2.json
+!tests/fixtures/eea_dj1_no2.json
+**/__pycache__

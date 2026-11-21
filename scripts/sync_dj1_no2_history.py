@@ -1,5 +1,10 @@
+import argparse
+import json
+import os
 from datetime import UTC, datetime
+from pathlib import Path
 
+import psycopg
 from psycopg.pq import TransactionStatus
 
 from scripts.dj1_no2_pilot import PILOT_SERIES, reconcile_dj1_no2_window
@@ -155,3 +160,43 @@ def sync_dj1_no2_history(
                 connection, source_id, stream_id, device_id, rows
             )
         return {"reportId": report_id, "observationCount": len(report["observations"])}
+
+
+def captured(path, key):
+    document = json.loads(path.read_text(encoding="utf-8"))
+    return document if isinstance(document, list) else [document[key]]
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Replay captured DJ-1/NO2 evidence into the private pilot history."
+    )
+    parser.add_argument("--rnmca", type=Path)
+    parser.add_argument("--eea", type=Path)
+    parser.add_argument("--window-start", required=True, type=parse_timestamp)
+    parser.add_argument("--window-end", required=True, type=parse_timestamp)
+    parser.add_argument("--ingested-at", required=True, type=parse_timestamp)
+    args = parser.parse_args()
+    dsn = os.environ.get("ATLAS_PILOT_INGESTION_DSN")
+    if not dsn:
+        parser.error("ATLAS_PILOT_INGESTION_DSN is required.")
+    try:
+        raw = captured(args.rnmca, "dataElement") if args.rnmca else []
+        eea = captured(args.eea, "eeaObservation") if args.eea else []
+        with psycopg.connect(dsn, autocommit=True, connect_timeout=15) as connection:
+            connection.execute("SET ROLE atlas_pilot_ingestor")
+            result = sync_dj1_no2_history(
+                connection,
+                raw,
+                eea,
+                window_start=args.window_start,
+                window_end=args.window_end,
+                ingested_at=args.ingested_at,
+            )
+    except (psycopg.Error, OSError, ValueError, TypeError, KeyError) as error:
+        parser.exit(1, f"Pilot replay failed: {type(error).__name__}\n")
+    print(json.dumps(result, sort_keys=True))
+
+
+if __name__ == "__main__":
+    main()

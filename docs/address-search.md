@@ -27,6 +27,15 @@ The existing published UI was also exercised with `Strada Unirii 1, Craiova`; Ge
 with approximate precision, preserving the lower-confidence display. This checks the published adapter, not deployment
 of the catalog changes.
 
+### Separate development key — pending owner action
+
+Planned 21 November 2026, **not done**: the existing key stays the production key. The owner creates a
+second key allowing only `http://127.0.0.1:5173` and `http://localhost:5173`, puts it in `.env.local`,
+confirms local search works, and only then removes those two origins from the existing key. No GitHub
+variable or Pages deployment changes. Verification: each key against the production origin, both local
+origins and one unlisted HTTPS origin (200 only on its own origins, 401 otherwise), a real search on the
+public site after each dashboard change, and the served bundle not containing the development key.
+
 Provider reference: [Geoapify API keys](https://myprojects.geoapify.com/help/api-keys/).
 
 
