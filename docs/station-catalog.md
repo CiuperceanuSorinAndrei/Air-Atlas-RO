@@ -169,3 +169,10 @@ The [next local checkpoint](catalog-runtime-checkpoint-2026-11-02.md) adds exact
 manifests, original-XML sampling-point review and explicit opt-in importer trials. The first
 `data/eea/registries/v1/` bundle is accepted technically for local trials, with documented exception
 dispositions. Production approval/cutover and controlled degradation remain separate future gates.
+
+The [controlled-degradation run](controlled-degradation.md) adds an explicit
+`--controlled-degradation` command over the same pinned registries. It keeps
+state across runs, evaluates the 6-channel/3-station budget, confirms source
+versions, applies transport fallback, withdrawal and quarantine, and writes a
+normal, corrective or blocked private bundle. The strict trial above is
+unchanged; production activation remains a separate gate.

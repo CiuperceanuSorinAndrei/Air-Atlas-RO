@@ -3,8 +3,10 @@
 Accepted 28 October 2026 after review of the implementation and proposed failure policies.
 This document owns the accepted future policies. The XML repair is published; the first local
 catalog/inventory validator, discovery inspector and opt-in collection wrapper are documented in
-[station-catalog.md](station-catalog.md). National catalog activation, controlled degraded
-publication and revised history storage remain planned. Local code is not a published release.
+[station-catalog.md](station-catalog.md). A local opt-in implementation of the degradation
+policies is documented in [controlled-degradation.md](controlled-degradation.md). National catalog
+activation, production use of controlled degraded publication and revised history storage remain
+planned. Local code is not a published release.
 
 ## Delivery order
 
