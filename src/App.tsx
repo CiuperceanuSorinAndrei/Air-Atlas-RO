@@ -988,7 +988,9 @@ function App() {
                 <h2>Ultimele măsurători</h2>
                 <p>
                   {latest === null
-                    ? 'Se încarcă datele…'
+                    ? document
+                      ? 'Nicio măsurătoare de afișat.'
+                      : 'Se încarcă datele…'
                     : `Cea mai nouă: ${formatTime(latest)}`}
                 </p>
               </div>

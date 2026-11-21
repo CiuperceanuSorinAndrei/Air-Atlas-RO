@@ -20,8 +20,11 @@ def assess_snapshot(document, now):
         <= now - datetime.fromisoformat(row["observedTo"])
         < timedelta(hours=6)
     ]
-    latest_ingestion = max(datetime.fromisoformat(row["ingestedAt"]) for row in rows)
-    ingestion_is_recent = timedelta(0) <= now - latest_ingestion < timedelta(hours=2)
+    latest_ingestion = max(
+        (datetime.fromisoformat(row["ingestedAt"]) for row in rows), default=None
+    )
+    ingestion_age = (now - latest_ingestion).total_seconds() / 3600 if rows else None
+    ingestion_is_recent = bool(rows) and 0 <= ingestion_age < 2
     report = {
         "readings": len(rows),
         "recent_readings": len(recent),
@@ -33,9 +36,11 @@ def assess_snapshot(document, now):
         },
         "latest_measurement": max(
             datetime.fromisoformat(row["observedTo"]) for row in rows
-        ).isoformat(),
-        "latest_ingestion": latest_ingestion.isoformat(),
-        "ingestion_age_hours": (now - latest_ingestion).total_seconds() / 3600,
+        ).isoformat()
+        if rows
+        else None,
+        "latest_ingestion": latest_ingestion.isoformat() if rows else None,
+        "ingestion_age_hours": ingestion_age,
         "ingestion_is_recent": ingestion_is_recent,
     }
     degraded = not recent or not ingestion_is_recent
@@ -63,9 +68,11 @@ def main():
     report, degraded = assess_snapshot(json.loads(payload), datetime.now(UTC))
     print(json.dumps(report, indent=2))
     if degraded:
+        age = report["ingestion_age_hours"]
+        age = "unknown" if age is None else f"{age:.2f} ore"
         raise SystemExit(
             f"Degraded: recent_readings={report['recent_readings']}; "
-            f"ingestion_age_hours={report['ingestion_age_hours']:.2f} ore; "
+            f"ingestion_age_hours={age}; "
             f"ingestion_is_recent={report['ingestion_is_recent']}."
         )
 
