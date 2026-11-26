@@ -624,25 +624,38 @@ def test_arcgis_client_error_does_not_use_dataflow_or_write_cache(
     assert not cache_path.exists()
 
 
-def test_both_metadata_services_failing_does_not_write_cache(
-    tmp_path, monkeypatch
+@pytest.mark.parametrize(
+    ("failure", "label"),
+    [
+        (HTTPError("https://example.com", 503, "Unavailable", None, None), "HTTP 503"),
+        (URLError("Unavailable"), "URLError"),
+        (TimeoutError("Unavailable"), "TimeoutError"),
+        (ConnectionResetError("Unavailable"), "ConnectionResetError"),
+    ],
+)
+def test_both_metadata_services_failing_identifies_station_and_does_not_write_cache(
+    tmp_path, monkeypatch, capsys, failure, label
 ) -> None:
     requests = []
 
-    def fail_both(request, timeout: int):
+    def fail_both(request, _limit):
         requests.append(request.full_url)
-        raise HTTPError(request.full_url, 503, "Unavailable", None, None)
+        if len(requests) == 1:
+            raise TimeoutError("ArcGIS unavailable")
+        raise failure
 
-    monkeypatch.setattr(
-        importer, "read_response", lambda request, limit: fail_both(request, 30)
-    )
+    monkeypatch.setattr(importer, "read_response", fail_both)
     cache_path = tmp_path / "cache.json"
 
-    with pytest.raises(HTTPError) as error:
+    with pytest.raises(type(failure)) as error:
         importer.get_station_metadata("RO0240A", cache_path)
 
-    assert error.value.code == 503
+    assert error.value is failure
     assert len(requests) == 2
+    assert (
+        capsys.readouterr().err
+        == f"Station metadata lookup failed for RO0240A: {label}.\n"
+    )
     assert not cache_path.exists()
 
 

@@ -996,7 +996,19 @@ def get_station_metadata(station_id: str, cache_path: Path) -> dict:
                 return metadata
         except (ValueError, TypeError, KeyError):
             pass
-    metadata = fetch_station_metadata(station_id)
+    try:
+        metadata = fetch_station_metadata(station_id)
+    except (urllib.error.URLError, TimeoutError, ConnectionError) as error:
+        reason = (
+            f"HTTP {error.code}"
+            if isinstance(error, urllib.error.HTTPError)
+            else type(error).__name__
+        )
+        print(
+            f"Station metadata lookup failed for {station_id}: {reason}.",
+            file=sys.stderr,
+        )
+        raise
     validate_station_metadata(metadata, station_id)
     cache[station_id] = {
         "metadata": metadata,
