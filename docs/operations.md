@@ -48,6 +48,13 @@ snapshot remains intact. The collect and publish jobs independently recheck this
 Measurement recency is monitored separately and does not reject a structurally valid latest-known
 snapshot. The frontend preserves the original observation time and labels expired data.
 
+A legacy `Station metadata lookup failed` line identifies an HTTP or connection failure
+during station metadata lookup. The outer importer error identifies the Parquet stream
+being processed. Use the chained traceback to identify the failing metadata endpoint. The controlled
+collector uses the pinned station registry and can continue reading measurements independently.
+An accepted controlled run can still contain old observations, which the freshness monitor
+evaluates separately.
+
 Transient network/provider failures may recover on the next run. Schema, identity, unit, coordinate
 conflict, recent lost pair or unconfirmed regressed interval errors require source review. Confirmed
 source invalidations are logged with the affected pair and previous interval. If EEA changes again
